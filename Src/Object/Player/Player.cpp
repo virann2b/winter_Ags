@@ -16,6 +16,12 @@ void Player::Load(void)
 	// モデルをロード
 	trans.LoadModel("Player/Player");
 
+	//プレイヤーサイズ
+	trans.scale = 2.0f;
+
+	// モデルの角度のズレを設定
+	trans.localAngle.y = Deg2Rad(95.0f);
+
 #pragma region 当たり判定情報設定
 
 	// メインのカプセルコライダーを設定
@@ -51,7 +57,7 @@ void Player::Load(void)
 void Player::CharacterInit(void)
 {
 	// モデルの角度のズレを設定
-	trans.localAngle.y = Deg2Rad(GetParameter("Init", "angle"));
+	trans.localAngle.y = Deg2Rad(180.0f);
 
 	// 加減速度を設定
 	ACCEL_RATE = DECEL_RATE = 3.0f;
