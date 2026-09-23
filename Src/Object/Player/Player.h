@@ -43,8 +43,13 @@ public:
 
 private:
 
+	// プレイヤーが抱える下位アクター格納配列
+	std::vector<ActorBase*> subObjects;
+
 	// 初期座標
 	const Vector3 INIT_POS;
+
+	Vector3 handPos;
 
 	void CharacterInit(void) override;
 	void CharacterUpdate(void) override;
@@ -53,9 +58,17 @@ private:
 	void CharacterUiDraw(void) override;
 	void CharacterRelease(void) override;
 
-	Vector3 GetMoveDirection(void) const;
+	//Vector3 GetMoveDirection(void) const;
 
 	void ResetPos(void) { trans.pos = INIT_POS; }
+
+
+#pragma region 受け取る参照
+
+	//座標参照
+	const Vector3* playerPos;
+
+#pragma endregion
 };
 
 

@@ -88,6 +88,8 @@ private:
 		// ステージ系にだけ当たるコライダー
 
 		{ COLLIDER_TAG::Icicle, COLLIDER_GROUP::Enemy },
+
+		{ COLLIDER_TAG::Sword, COLLIDER_GROUP::EnemyOnly}
 	};
 
 

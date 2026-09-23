@@ -57,6 +57,7 @@
     <ClCompile Include="Src\Object\Enemy\Thorn\State\ThornAttack.cpp" />
     <ClCompile Include="Src\Object\Enemy\Thorn\Wepon\Icicle.cpp" />
     <ClCompile Include="Src\Object\Enemy\Thorn\State\ThornWait.cpp" />
+    <ClCompile Include="Src\Object\Player\Wepon\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\Application.h" />
@@ -136,5 +137,6 @@
     <ClInclude Include="Src\Object\Enemy\Thorn\State\ThornAttack.h" />
     <ClInclude Include="Src\Object\Enemy\Thorn\Wepon\Icicle.h" />
     <ClInclude Include="Src\Object\Enemy\Thorn\State\ThornWait.h" />
+    <ClInclude Include="Src\Object\Player\Wepon\Sword.h" />
   </ItemGroup>
 </Project>

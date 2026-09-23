@@ -89,6 +89,8 @@ void Icicle::SubUpdate(void)
 
 void Icicle::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	//É^ÉOï Ç…ê›íË
+
 	switch (other.GetTag())
 	{
 	case COLLIDER_TAG::Player:

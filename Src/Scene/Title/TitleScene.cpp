@@ -66,7 +66,7 @@ void TitleScene::SubPreUpdate(void)
 
 		break;
 	}
-	case TitleState::MoveToDemo:
+	case TitleState::Game:
 		break;
 	default:
 		break;

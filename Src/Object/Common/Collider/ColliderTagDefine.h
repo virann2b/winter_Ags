@@ -26,5 +26,7 @@ enum class COLLIDER_TAG
 
 	Icicle,
 
+	Sword,
+
 	DebugObject,
 };

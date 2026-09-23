@@ -19,6 +19,7 @@
 #include "../../Object/Enemy/Thorn/Wepon/Icicle.h"
 
 #include "../../Object/Player/Player.h"
+#include "../../Object/Player/Wepon/Sword.h"
 
 TestScene::TestScene(void) :
 	WorldSceneBase(),
