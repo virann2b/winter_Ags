@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackGunState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Thorn\Wepon\Icicle.cpp" />
     <ClCompile Include="Src\Object\Enemy\Cactus\State\CactusAttack.cpp" />
     <ClCompile Include="Src\Object\Enemy\Cactus\State\CactusWait.cpp" />
@@ -197,6 +198,7 @@
     <ClCompile Include="Src\Object\Player\Wepon\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackGunState.h" />
     <ClInclude Include="Src\Object\Enemy\Thorn\Wepon\Icicle.h" />
     <ClInclude Include="Src\Object\Enemy\Cactus\State\CactusAttack.h" />
     <ClInclude Include="Src\Object\Enemy\Cactus\State\CactusWait.h" />

@@ -1,3 +1,29 @@
-*.bin
-.vs/
-x64/
+# Visual Studio
+**/.vs/
+
+# Build
+**/x64/
+**/x86/
+**/Debug/
+**/Release/
+
+# Intermediate
+*.obj
+*.pch
+*.idb
+*.ilk
+*.pdb
+*.ipdb
+*.iobj
+*.tlog
+*.lastbuildstate
+
+# Visual Studio
+*.VC.db
+*.VC.opendb
+*.user
+*.suo
+
+# Logs
+*.log
+Log.txt
