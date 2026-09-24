@@ -36,6 +36,9 @@ private:
 
 	// 操作対象
 	ActorBase* operatorObject;
+	
+	//テスト対象
+	ActorBase* testObject;
 
 	// Railモード確認用
 	MovementRail testRail;

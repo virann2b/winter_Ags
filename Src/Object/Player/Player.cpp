@@ -16,7 +16,7 @@
 void Player::Load(void)
 {
 	// モデルをロード
-	trans.LoadModel("Player/Player");
+	trans.LoadModel("Player/Idle");
 
 	//プレイヤーサイズ
 	trans.scale = 2.0f;
