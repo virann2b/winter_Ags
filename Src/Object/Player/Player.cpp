@@ -39,7 +39,7 @@ void Player::Load(void)
 #pragma region モデル設定
 
 	// モデルの読み込み
-	trans.LoadModel("GrapeModel");
+	trans.LoadModel("Player/Idle");
 
 	// モデルのスケール設定
 	trans.scale = 1;

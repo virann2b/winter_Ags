@@ -35,10 +35,10 @@ void GameScene::SubPostLoad(void)
 	//AddActor(new CapsuleDebugObject(Vector3(50, 0, 0), Vector3(-50, 0, 0), 50.0f, Vector3(), true, true, true, 50, true));
 	AddActor(new Player);
 
-	for (int i = 0; i < 50; i++) {
-		AddActor(new SphereDebugObject(50.0f, Vector3::Xonly(10.0f * 25 - (10.0f * i))));
-		AddActor(new SphereDebugObject(50.0f, Vector3::Zonly(10.0f * 25 - (10.0f * i))));
-	}
+	//for (int i = 0; i < 50; i++) {
+	//	AddActor(new SphereDebugObject(50.0f, Vector3::Xonly(10.0f * 25 - (10.0f * i))));
+	//	AddActor(new SphereDebugObject(50.0f, Vector3::Zonly(10.0f * 25 - (10.0f * i))));
+	//}
 }
 
 void GameScene::SubPostUpdate(void)
