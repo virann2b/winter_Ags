@@ -5,6 +5,7 @@
 #include "../../../Application/Application.h"
 
 #include "../../Input/InputManager.h"
+#include "../../TimeScale/TimeScale.h"
 
 FollowYawCamera::FollowYawCamera(
 	const Vector3* targetPos,
@@ -50,7 +51,7 @@ void FollowYawCamera::NormalUpdate(void)
 		rotInput.x = rotInput.z = 0.0f;
 
 		// âÒì]
-		controlAngle += rotInput * ROT_POWER;
+		controlAngle += (rotInput * ROT_POWER) * TimeScale::Get();
 
 		// âÒì]ÇÃêîílêßå‰
 		if (controlAngle.y <= Deg2Rad(0.0f)) { controlAngle.y += Deg2Rad(360.0f); }

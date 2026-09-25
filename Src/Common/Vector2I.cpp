@@ -250,15 +250,25 @@ bool Vector2I::operator!=(const Vector2I value) const
 	return x != value.x || y != value.y;
 }
 
-
-bool Vector2I::operator==(const float value) const
+bool Vector2I::operator==(const int value) const
 {
 	return x == value && y == value;
 }
 
-bool Vector2I::operator!=(const float value) const
+bool Vector2I::operator!=(const int value) const
 {
 	return x != value || y != value;
+}
+
+
+bool Vector2I::operator==(const float value) const
+{
+	return static_cast<float>(x) == value && static_cast<float>(y) == value;
+}
+
+bool Vector2I::operator!=(const float value) const
+{
+	return static_cast<float>(x) != value || static_cast<float>(y) != value;
 }
 
 // Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`Å`îªíË

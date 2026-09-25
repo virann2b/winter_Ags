@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Common/GameSpace/WorldSceneBase.h"
+#include"../SceneBase.h"
 
-class GameScene : public WorldSceneBase
+class GameScene : public SceneBase
 {
 public:
 	GameScene();
@@ -16,7 +16,7 @@ private:
 	void SubPostLoad(void)override;
 
 	// çXêV
-	void SubWorldPostUpdate(void)override;
+	void SubPostUpdate(void)override;
 
 	// UIï`âÊ
 	void SubUiDraw(void)override;

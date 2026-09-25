@@ -32,7 +32,7 @@ public:
 	~SphereDebugObject()override = default;
 
 	void Load(void)override {
-		ColliderCreate(new SphereCollider(COLLIDER_TAG::DebugObject, radius));
+		AddCollider(new SphereCollider(COLLIDER_TAG::DebugObject, radius));
 	}
 
 private:

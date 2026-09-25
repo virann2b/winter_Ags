@@ -4,6 +4,8 @@
 
 #include "../../../Application/Application.h"
 
+#include "../../TimeScale/TimeScale.h"
+
 DisplayAutoCamera::DisplayAutoCamera(const Vector3& fixedLookAtPos, const Vector3& lookAtDiff, float ROT_POWER, const Vector3& angle, float fov) :
 	CameraBase(Vector3(), Vector3(), fov),
 
@@ -24,7 +26,7 @@ DisplayAutoCamera::DisplayAutoCamera(const Vector3& fixedLookAtPos, const Vector
 void DisplayAutoCamera::NormalUpdate(void)
 {
 	// ‰ñ“]ˆ—iÝ’è‚³‚ê‚½’l‰¡Œü‚«‚É‰ñ‚µ‘±‚¯‚éj
-	controlAngle += Vector3::Yonly(1.0f).Normalized() * ROT_POWER;
+	controlAngle += (Vector3::Yonly(1.0f).Normalized() * ROT_POWER) * TimeScale::Get();
 
 	if (controlAngle.y >= Deg2Rad(360.0f)) { controlAngle.y -= Deg2Rad(360.0f); }
 	if (controlAngle.y <= Deg2Rad(0.0f)) { controlAngle.y += Deg2Rad(360.0f); }

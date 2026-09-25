@@ -50,8 +50,10 @@ public:
 		// ジャンプ
 		PlayerJump,
 
-		//	ダッシュ
+		// ダッシュ
 		PlayerDash,
+
+		PlayerKickDownAttack,
 
 #pragma endregion
 
@@ -138,7 +140,7 @@ public:
 	bool GetControllerConnect(void) const;
 
 	/// <summary>
-	/// コントローラーの左スティックの入力ベクトルを取得（接続されていない場合はゼロベクトルが返る）
+	/// コントローラーの右スティックの入力ベクトルを取得（接続されていない場合はゼロベクトルが返る）
 	/// </summary>
 	/// <param name="normalize">true = 戻り値を正規化する、false = 戻り値を正規化しない</param>
 	Vector2 GetLeftStickVec(bool normalize = true) const;

@@ -86,10 +86,6 @@ private:
 		// エネミー系にだけ当たるコライダー
 
 		// ステージ系にだけ当たるコライダー
-
-		{ COLLIDER_TAG::Icicle, COLLIDER_GROUP::Enemy },
-
-		{ COLLIDER_TAG::Sword, COLLIDER_GROUP::EnemyOnly}
 	};
 
 
@@ -317,11 +313,8 @@ private:
 	/// </summary>
 	void ApplyPushOneSide(ColliderBase* dynamicColl, ColliderBase* staticColl, const Vector3& overlapVec)const;
 
-	Vector3 RestrictPushVector(const ColliderBase* collider, const Vector3& pushVector)const;
-	Vector3 RestrictCollisionPoint(const ColliderBase* collider, const Vector3& collisionPoint)const;
-
 	// 押し出しベクトルをコライダーへ適用し、接地判定も行う
-	void MoveCollider(ColliderBase* collider, const Vector3& pushVector)const;
+	void MoveCollider(ColliderBase* ownCollider, const Vector3& pushVector, const ColliderBase& otherCollider)const;
 #pragma endregion
 
 };

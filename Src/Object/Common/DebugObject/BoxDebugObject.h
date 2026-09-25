@@ -32,7 +32,7 @@ public:
 	~BoxDebugObject()override = default;
 
 	void Load(void)override {
-		ColliderCreate(new BoxCollider(COLLIDER_TAG::DebugObject, size));
+		AddCollider(new BoxCollider(COLLIDER_TAG::DebugObject, size));
 	}
 
 private:

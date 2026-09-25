@@ -32,5 +32,5 @@ void GameOverScene::SubPostUpdate(void)
 
 void GameOverScene::SubUiDraw(void)
 {
-	DrawStringToHandle(0, 0, "タイトル", 0xffffff, Font::GetIns().GetFont(FontKinds::Default45));
+	DrawStringToHandle(0, 0, "タイトル", 0xffffff, Font::GetIns().GetFont(FontKinds::Marumiya40));
 }

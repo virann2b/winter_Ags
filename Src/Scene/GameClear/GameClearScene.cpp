@@ -32,5 +32,5 @@ void GameClearScene::SubPostUpdate(void)
 
 void GameClearScene::SubUiDraw(void)
 {
-	DrawStringToHandle(0, 0, "ゲームクリア", 0xffffff, Font::GetIns().GetFont(FontKinds::Default45));
+	DrawStringToHandle(0, 0, "ゲームクリア", 0xffffff, Font::GetIns().GetFont(FontKinds::Marumiya40));
 }

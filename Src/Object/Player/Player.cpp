@@ -2,122 +2,156 @@
 
 #include "../../Utility/Utility.h"
 
-#include "../../Manager/Input/InputManager.h"
-#include "../../Manager/Camera/CurrentCamera.h"
-
-#include "../../Scene/Common/GameSpace/GameSpaceController.h"
-
 #include "../Common/Collider/CapsuleCollider.h"
 
-#include "Wepon/Sword.h"
+#include "../Common/Shader/TestShader.h"
 
+#include "Wepon/PlayerKickDownAttackCollOperator.h"
+
+#include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
+#include "State/PlayerJumpState.h"
+#include "State/PlayerKickDownAttackState.h"
+
+Player::Player() : CharacterBase()
+{
+}
 
 void Player::Load(void)
 {
-	// モデルをロード
-	trans.LoadModel("Player/Idle");
 
-	//プレイヤーサイズ
-	trans.scale = 2.0f;
+#pragma region オブジェクト設定
 
-	// モデルの角度のズレを設定
-	trans.localAngle.y = Deg2Rad(95.0f);
+	// 動的オブジェクトとしての処理を有効にする
+	SetDynamicFlg(true);
 
-	//剣の実態を生成
-	Sword* sword = new Sword(playerPos,trans);
-	subObjects.emplace_back(sword);
-	
-	sword->Load();
-	
-	
-	
+	// 重力を有効にする
+	SetGravityFlg(true);
 
-#pragma region 当たり判定情報設定
+	// 当たり判定による押し出しを有効にする
+	SetPushFlg(true);
 
-	// メインのカプセルコライダーを設定
-	ColliderCreate(
+	// 押し出しだしによる重みを設定
+	SetPushWeight(50);
+
+#pragma endregion
+
+#pragma region モデル設定
+
+	// モデルの読み込み
+	trans.LoadModel("GrapeModel");
+
+	// モデルのスケール設定
+	trans.scale = 1;
+
+	// モデルの中心点のズレの補正
+	trans.centerDiff = Vector3(0.0f, -102.81f, 0.0f) * trans.scale;
+
+	// モデルの角度のズレの補正
+	trans.localAngle = Vector3(0.0f, Deg2Rad(180.0f), 0.0f);
+
+#pragma endregion
+
+
+#pragma region アニメーション読み込み
+
+	// アニメーションコントローラーの生成
+	CreateAnimationController();
+
+	// アニメーションの読み込み
+	AddInFbxAnimation((int)ANIME_TYPE::Max, ANIME_SPEED_TABLE, ANIME_LOOP_TABLE);
+
+#pragma endregion
+
+
+#pragma region コライダーの生成
+
+	AddCollider(
 		new CapsuleCollider(
 			COLLIDER_TAG::Player,
-			GetParameterToVector3("Collider", "StartPos"),
-			GetParameterToVector3("Collider", "EndPos"),
-			GetParameter("Collider", "Radius")
+			Vector3::Yonly(60.0f) * trans.scale,
+			Vector3::Yonly(-60.0f) * trans.scale,
+			60.0f * trans.scale.MaxElementF()
 		)
 	);
 
 #pragma endregion
 
-#pragma region 状態初期設定
 
-	// 移動状態を追加
+#pragma region 下位アクターの生成
+
+	// 攻撃当たり判定管理クラス
+	PlayerKickDownAttackCollOperator* kickDownAttackCollOperator =
+		new PlayerKickDownAttackCollOperator(100.0f, Vector3(0, -100, 100), trans);
+
+	AddChildActor(kickDownAttackCollOperator);
+#pragma endregion
+
+
+#pragma region 状態設定
+
+	// 待機状態
+	AddState(
+		STATE::Idle,
+		new PlayerIdleState([&]() { AnimePlay(ANIME_TYPE::Idle); })
+	);
+
+	// 移動状態
 	AddState(
 		STATE::Move,
 		new PlayerMoveState(
-			GetGameSpaceController(),
-			GetSpaceConstraint(),
-			trans.pos,
+			10.0f, 1.5f, 300,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
-			isGround,
-			velocity.y
+			ACCEL_MAX,
+			[&]() { AnimePlay(ANIME_TYPE::Walk); },
+			[&]() { AnimePlay(ANIME_TYPE::Run); }
 		)
 	);
+
+	// ジャンプ状態
+	AddState(
+		STATE::Jump,
+		new PlayerJumpState(
+			20.0f, velocity.y, isGround,
+			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
+			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
+			[&]() { AnimePlay(ANIME_TYPE::JumpLoop); },
+			[&]() { AnimePlay(ANIME_TYPE::Stamp); },
+			std::bind(&Player::IsAnimeEnd, this),
+			[&]() { ChangeState(STATE::Idle); }
+		)
+	);
+
+	// 攻撃（踏みつけ）状態
+	AddState(
+		STATE::KickDownAttack,
+		new PlayerKickDownAttackState(
+			0.9f, 1.0f,
+			*kickDownAttackCollOperator,
+			[&]() { AnimePlay(ANIME_TYPE::KickDown); },
+			[&]() { return GetAnimeRatio(); },
+			[&]() { ChangeState(STATE::Idle); }
+		)
+	);
+
+	// 「待機状態」->「移動状態」の自動遷移登録
+	RegisterStateTransition(STATE::Idle, STATE::Move);
+	// 「移動状態」->「待機状態」の自動遷移登録
+	RegisterStateTransition(STATE::Move, STATE::Idle);
+
+	// 「待機状態」->「ジャンプ状態」の自動遷移登録
+	RegisterStateTransition(STATE::Idle, STATE::Jump);
+	// 「移動状態」->「ジャンプ状態」の自動遷移登録
+	RegisterStateTransition(STATE::Move, STATE::Jump);
+
+	// 「待機状態」->「攻撃（踏みつけ）状態」の自動遷移登録
+	RegisterStateTransition(STATE::Idle, STATE::KickDownAttack);
+	// 「移動状態」->「攻撃（踏みつけ）状態」の自動遷移登録
+	RegisterStateTransition(STATE::Move, STATE::KickDownAttack);
 
 #pragma endregion
 }
 
-void Player::CharacterInit(void)
+void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
-	// モデルの角度のズレを設定
-	trans.localAngle.y = Deg2Rad(180.0f);
-
-	// 加減速度を設定
-	ACCEL_RATE = DECEL_RATE = 3.0f;
-	// 加速最大値を設定
-	ACCEL_MAX = 15.0f;
-
-
-	// 初期状態を設定
-	ChangeState(STATE::Move);
-
-	for (ActorBase* subObject : subObjects) { subObject->Init(); }
-}
-
-void Player::CharacterUpdate(void)
-{
-	if (CheckHitKey(KEY_INPUT_Z) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::StageDefault); }
-
-	if (CheckHitKey(KEY_INPUT_X) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::FixedPlane); }
-
-	if (CheckHitKey(KEY_INPUT_C) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::Rail); }
-
-	if (CheckHitKey(KEY_INPUT_V) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::None); }
-
-
-	for (ActorBase* subObject : subObjects) { subObject->Update(); }
-}
-
-void Player::CharacterDraw(void)
-{
-	for (ActorBase* subObject : subObjects) { subObject->Draw(); }
-}
-
-void Player::CharacterAlphaDraw(void)
-{
-	for (ActorBase* subObject : subObjects) { subObject->AlphaDraw(); }
-}
-
-void Player::CharacterUiDraw(void)
-{
-	for (ActorBase* subObject : subObjects) { subObject->UiDraw(); }
-}
-
-void Player::CharacterRelease(void)
-{
-	//抱える下位アクターすべての解放
-	for (ActorBase*& subObject : subObjects) {
-		subObject->Release();
-		delete subObject;
-		subObject = nullptr;
-	}
-	subObjects.clear();
 }

@@ -40,7 +40,7 @@ public:
 	void Update(void);
 
 	// 適用
-	virtual void Apply(void);
+	void Apply(void);
 
 	// デバッグ用描画
 	virtual void DrawDebug(void) const;
@@ -81,7 +81,7 @@ public:
 	static void SetControllerSensi(float sensi) { controllerRotSensi = sensi; }
 
 	// カメラ移動における補間数値
-	static void SetSmoothCameraMoveRate(float rate) { smoothCameraMoveRate = rate; }
+	static float SetSmoothCameraMoveRate(float rate) { smoothCameraMoveRate = rate; }
 #pragma endregion
 
 #pragma region イベント関数

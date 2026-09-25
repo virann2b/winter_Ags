@@ -5,6 +5,7 @@
 #include "../../../Application/Application.h"
 
 #include "../../Input/InputManager.h"
+#include "../../TimeScale/TimeScale.h"
 
 FreeCamera::FreeCamera(float MOVE_POWER, float ROT_POWER, AngleTag, const Vector3& pos, const Vector3& angle, float fov) :
 	CameraBase(pos, angle, fov),
@@ -32,7 +33,7 @@ void FreeCamera::NormalUpdate(void)
 	if (RotationInput(rotInput)) {
 
 		// 回転させる
-		angle += rotInput * ROT_POWER;
+		angle += (rotInput * ROT_POWER) * TimeScale::Get();
 
 		// 回転の数値制御
 		if (angle.y <= Deg2Rad(0.0f)) { angle.y += Deg2Rad(360.0f); }
@@ -44,7 +45,7 @@ void FreeCamera::NormalUpdate(void)
 	Vector3 moveInput = Vector3();
 	if (MoveInput(moveInput)) {
 		// 入力があれば、方向×スピードで移動量を作って、座標に足して移動
-		SmoothCameraMove(pos, pos + (moveInput.TransMat(MGetRotY(angle.y)) * MOVE_POWER));
+		SmoothCameraMove(pos, pos + (moveInput.TransMat(MGetRotY(angle.y)) * MOVE_POWER) * TimeScale::Get());
 	}
 }
 

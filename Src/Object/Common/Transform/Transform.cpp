@@ -26,7 +26,17 @@ void Transform::Duplicate(int model) { this->model = MV1DuplicateModel(model); }
 
 void Transform::LoadEffect(std::string path) { model = LoadEffekseerEffect(("Data/Effect/" + path + ".efk").c_str()); }
 
-void Transform::Attach(void) { MV1ModelMatrix(model, scale, pos + centerDiff.TransMat(MatrixAllMultZXY({ localAngle,angle })), { localAngle,angle }); }
+void Transform::Attach(void) {
+
+	if (model == -1) { return; }
+
+	MV1ModelMatrix(
+		model,
+		scale,
+		pos + centerDiff.TransMat(MatrixAllMultZXY({ localAngle,angle })),
+		{ localAngle,angle }
+	); 
+}
 
 void Transform::Draw(void) {
 	if (dynamicFlg) { Attach(); }

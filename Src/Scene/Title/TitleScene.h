@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../SceneBase.h"
-#include "../../Common/Vector2I.h"
 
 class TitleScene : public SceneBase
 {
@@ -11,39 +10,19 @@ public:
 
 private:
 
-	void SubPreLoad(void)override;
-	void SubPreInit(void)override;
-	void SubPreUpdate(void)override;
+#pragma region 主要関数再定義
+
+	// 読み込み
+	void SubPostLoad(void)override;
+
+	// 更新
 	void SubPostUpdate(void)override;
+
+	// UI描画
 	void SubUiDraw(void)override;
 
-	enum class TitleState
-	{
-		Title = 5,	// タイトル画面
-		Movie = 10,	// ロゴの後ろでゲームムービーを流す
-		Game,	// デモシーンへ遷移
-	};
-
-	// タイトルロゴの横幅
-	static constexpr int TITLE_LOGO_WIDTH = 552;
-	// タイトルロゴの縦幅
-	static constexpr int TITLE_LOGO_HEIGHT = 106;
-	// タイトルロゴの横幅の半分
-	static constexpr int TITLE_LOGO_WIDTH_HALF = 276;
-	// タイトルロゴの縦幅の半分
-	static constexpr int TITLE_LOGO_HEIGHT_HALF = 53;
-
-#pragma region メンバ変数
-	// タイトルロゴのハンドル
-	int titleLogoHandle_;
-
-	// タイトルシーンの状態
-	TitleState state_;
-
-	// タイトルロゴの座標
-	Vector2I pos_;
-
-	// タイトルロゴのアニメーション時間
-	float animTime_;
 #pragma endregion
+
+	// 当たり判定管理は使用しない
+	bool UseCollisionManager(void)const override { return false; }
 };

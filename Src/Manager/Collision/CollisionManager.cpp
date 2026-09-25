@@ -17,8 +17,6 @@
 #include"../../Object/Common/Collider/MeshCollider.h"
 #include"../../Object/Common/Collider/XZCircleCollider.h"
 
-#include"../../Scene/Common/GameSpace/GameSpaceController.h"
-
 // 衝突判定のための補助関数群をまとめた名前空間
 namespace
 {
@@ -593,9 +591,7 @@ void CollisionManager::CheckPairOnce(ColliderBase* a, ColliderBase* b)
 		}
 
 		CollisionResult aResult = result;
-		aResult.point = RestrictCollisionPoint(a, result.point);
 		CollisionResult bResult = result;
-		bResult.point = RestrictCollisionPoint(b, result.point);
 
 		// BからAへ向かう法線をAへ通知し、Bへは反転した法線を通知する
 		bResult.normal = -result.normal;
@@ -611,7 +607,7 @@ void CollisionManager::CheckPairOnce(ColliderBase* a, ColliderBase* b)
 bool CollisionManager::IsHit(ColliderBase* a, ColliderBase* b, CollisionResult& result)
 {
 	// 当たり判定フラグを確認
-	if (!a->GetJudge() || !b->GetJudge()) { return false; }
+	if (!a->GetJudgeFlg() || !b->GetJudgeFlg()) { return false; }
 
 	const COLLIDER_SHAPE aShape = a->GetShape();
 	const COLLIDER_SHAPE bShape = b->GetShape();
@@ -909,69 +905,42 @@ bool CollisionManager::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b, 
 #pragma region 衝突判定（お互いの線分上における最近点を求めてその２点間の距離をはかって 未衝突なら終了）
 	// 線分同士の最近接点を求める ～～～～～～～～～～～
 
-	const Vector3 u = aEndPos - aStartPos;
-	const Vector3 v = bEndPos - bStartPos;
-	const Vector3 w = aStartPos - bStartPos;
+	// ここに最近接点が入る
+	Vector3 pa = {}, pb = {};
 
-	const float aLenSq = u.Dot(u);
-	const float bLenSq = v.Dot(v);
-	const float vw = v.Dot(w);
+	// Aの方向ベクトル
+	Vector3 u = aEndPos - aStartPos;
+	// Bの方向ベクトル
+	Vector3 v = bEndPos - bStartPos;
 
-	constexpr float EPSILON = 1e-6f;
+	// Bの始点からAの始点までのベクトル
+	Vector3 w = aStartPos - bStartPos;
 
-	float s = 0.0f;
-	float t = 0.0f;
+	float aLen = u.LengthSq();
+	float bLen = v.LengthSq();
+	float ab = u.Dot(v);
+	float aw = u.Dot(w);
+	float bw = v.Dot(w);
 
-	// A、B両方とも点
-	if (aLenSq <= EPSILON && bLenSq <= EPSILON) { s = t = 0.0f; }
-	// Aだけ点
-	else if (aLenSq <= EPSILON) {
+	float denom = aLen * bLen - ab * ab;
+	float s, t;
+
+	if (denom < 1e-6f) {
+		// 線分がほぼ平行 → 片方に合わせて計算
 		s = 0.0f;
-		t = std::clamp(vw / bLenSq, 0.0f, 1.0f);
+		t = bw / bLen;
 	}
 	else {
-		const float uw = u.Dot(w);
-
-		// Bだけ点
-		if (bLenSq <= EPSILON) {
-			t = 0.0f;
-			s = std::clamp(-uw / aLenSq, 0.0f, 1.0f);
-		}
-		else {
-			const float uv = u.Dot(v);
-			const float denom = aLenSq * bLenSq - uv * uv;
-
-			// 平行でない場合
-			if (denom > EPSILON) {
-				s = std::clamp((uv * vw - uw * bLenSq) / denom, 0.0f, 1.0f);
-			}
-			// ほぼ平行
-			else { s = 0.0f; }
-
-			// 求めたsに対するB側の最近点を求める
-			t = (uv * s + vw) / bLenSq;
-
-			// Bの始点より外
-			if (t < 0.0f) {
-				t = 0.0f;
-
-				// tが変わったのでsも再計算
-				s = std::clamp(-uw / aLenSq, 0.0f, 1.0f);
-			}
-			// Bの終点より外
-			else if (t > 1.0f) {
-				t = 1.0f;
-
-				// tが変わったのでsも再計算
-				s = std::clamp((uv - uw) / aLenSq, 0.0f, 1.0f);
-			}
-		}
+		s = (ab * bw - bLen * aw) / denom;
+		t = (aLen * bw - ab * aw) / denom;
 	}
 
-	// A線分上の最近点
-	const Vector3 pa = aStartPos + u * s;
-	// B線分上の最近点
-	const Vector3 pb = bStartPos + v * t;
+	// 線分内に clamp
+	s = std::clamp(s, 0.0f, 1.0f);
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	pa = aStartPos + u * s;  // A線分上の最近点
+	pb = bStartPos + v * t;  // B線分上の最近点
 
 	// 距離計算
 	Vector3 normal = pa - pb;
@@ -2514,30 +2483,16 @@ bool CollisionManager::BoxToMesh(BoxCollider* box, MeshCollider* mesh, Collision
 
 #pragma region 押し出し
 
-Vector3 CollisionManager::RestrictPushVector(const ColliderBase* collider, const Vector3& pushVector)const
+void CollisionManager::MoveCollider(ColliderBase* ownCollider, const Vector3& pushVector, const ColliderBase& otherCollider)const
 {
-	if (collider == nullptr) { return pushVector; }
-	const GameSpaceController* gameSpace = collider->GetGameSpaceController();
-	if (gameSpace == nullptr) { return pushVector; }
-	return gameSpace->RestrictDirection(pushVector, collider->GetTransform().pos, collider->GetSpaceConstraint());
-}
+	if (ownCollider == nullptr) { return; }
 
-Vector3 CollisionManager::RestrictCollisionPoint(const ColliderBase* collider, const Vector3& collisionPoint)const
-{
-	if (collider == nullptr) { return collisionPoint; }
-	const GameSpaceController* gameSpace = collider->GetGameSpaceController();
-	if (gameSpace == nullptr) { return collisionPoint; }
-	return gameSpace->RestrictPosition(collisionPoint, collider->GetSpaceConstraint());
-}
+	if (pushVector.LengthSq() <= 0.000001f) { return; }
 
-void CollisionManager::MoveCollider(ColliderBase* collider, const Vector3& pushVector)const
-{
-	if (collider == nullptr) { return; }
-	const Vector3 restrictedPush = RestrictPushVector(collider, pushVector);
-	if (restrictedPush.LengthSq() <= 0.000001f) { return; }
-	collider->SetTransformPosAdd(restrictedPush);
-	const Vector3 restrictedNormal = restrictedPush.Normalized();
-	if (restrictedNormal.y > 0.5f) { collider->CallOnGrounded(); }
+	ownCollider->SetTransformPosAdd(pushVector);
+
+	const Vector3 pushNormal = pushVector.Normalized();
+	if (pushNormal.y > 0.5f) { ownCollider->CallOnGrounded(ownCollider->GetTag(), otherCollider); }
 }
 
 void CollisionManager::ApplyPush(ColliderBase* a, ColliderBase* b, const Vector3& normal, float overlap)const
@@ -2557,16 +2512,16 @@ void CollisionManager::ApplyPush(ColliderBase* a, ColliderBase* b, const Vector3
 		float aRatio = 0.0f, bRatio = 0.0f;
 		WeightRatioCalculation(a->GetPushWeight(), b->GetPushWeight(), aRatio, bRatio);
 
-		MoveCollider(a, overlapVec * aRatio);
-		MoveCollider(b, -overlapVec * bRatio);
+		MoveCollider(a, overlapVec * aRatio, *b);
+		MoveCollider(b, -overlapVec * bRatio, *a);
 	}
-	else if (aDynamic && !bDynamic) { MoveCollider(a, overlapVec); }
-	else if (!aDynamic && bDynamic) { MoveCollider(b, -overlapVec); }
+	else if (aDynamic && !bDynamic) { MoveCollider(a, overlapVec, *b); }
+	else if (!aDynamic && bDynamic) { MoveCollider(b, -overlapVec, *a); }
 }
 
 void CollisionManager::ApplyPushOneSide(ColliderBase* dynamicColl, ColliderBase* staticColl, const Vector3& overlapVec)const
 {
-	MoveCollider(dynamicColl, overlapVec);
+	MoveCollider(dynamicColl, overlapVec, *staticColl);
 }
 
 #pragma endregion

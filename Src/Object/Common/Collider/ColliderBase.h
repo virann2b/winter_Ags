@@ -9,7 +9,6 @@
 #include "../Transform/Transform.h"
 
 #include "ColliderTagDefine.h"
-#include "../../../Scene/Common/GameSpace/SpaceDefine.h"
 
 // 衝突結果構造体
 struct CollisionResult
@@ -26,8 +25,6 @@ struct CollisionResult
 	CollisionResult(void);
 };
 
-
-class GameSpaceController;
 
 class ColliderBase
 {
@@ -75,14 +72,11 @@ public:
 	// 押し出し時の重さの参照先をセット
 	void SetPushWeightPtr(const unsigned char* ptr);
 
-	void SetGameSpaceControllerPtr(const GameSpaceController* ptr);
-	void SetSpaceConstraintPtr(const SPACE_CONSTRAINT* ptr);
-
 	// 当たり判定通知用関数セット
-	void SetOnCollisionFunc(std::function<void(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)> OnCollisionFunc);
+	void SetOnCollisionFunc(std::function<void(COLLIDER_TAG, const ColliderBase&, const CollisionResult&)> OnCollisionFunc);
 
 	// 接地判定通知用関数セット
-	void SetOnGroundedFunc(std::function<void(void)> OnGroundedFunc);
+	void SetOnGroundedFunc(std::function<void(COLLIDER_TAG, const ColliderBase&)> OnGroundedFunc);
 #pragma endregion
 
 #pragma region 各ゲット関数
@@ -104,14 +98,11 @@ public:
 	// モデル制御情報を直接取得
 	const Transform& GetTransform(void)const;
 
-	const GameSpaceController* GetGameSpaceController(void)const;
-	SPACE_CONSTRAINT GetSpaceConstraint(void)const;
-
 	// 動的オブジェクトか否か
 	bool GetDynamicFlg(void)const;
 
 	// 当たり判定フラグ
-	bool GetJudge(void)const;
+	bool GetJudgeFlg(void)const;
 
 	// 押し出しのフラグ
 	bool GetPushFlg(void)const;
@@ -129,7 +120,7 @@ public:
 	void CallOnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result);
 
 	// 接地判定通知の呼び出し
-	void CallOnGrounded(void);
+	void CallOnGrounded(COLLIDER_TAG ownTag, const ColliderBase& other);
 
 	// 自分が占有している範囲
 	virtual AABB GetAABB(void)const = 0;
@@ -153,9 +144,6 @@ private:
 	const bool* pushFlg;
 	const unsigned char* pushWeight;
 
-	const GameSpaceController* gameSpace;
-	const SPACE_CONSTRAINT* spaceConstraint;
-
 	// 相対座標 / 相対角度
 	Vector3 pos;
 	Vector3 angle;
@@ -170,10 +158,10 @@ private:
 	COLLIDER_SHAPE shape;
 
 	// 当たったときに呼び出す関数
-	std::function<void(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)> OnCollision;
+	std::function<void(COLLIDER_TAG, const ColliderBase&, const CollisionResult&)> OnCollision;
 
 	// 接地したときに呼び出す関数
-	std::function<void(void)> OnGrounded;
+	std::function<void(COLLIDER_TAG, const ColliderBase&)> OnGrounded;
 
 protected:
 	void SetShape(COLLIDER_SHAPE s);

@@ -1,11 +1,9 @@
 #pragma once
 
 #include "../ActorBase/ActorBase.h"
-#include "../../../Common/Vector2.h"
 
 #include "../../../Manager/Input/InputManager.h"
 #include "../../../Manager/Camera/CurrentCamera.h"
-#include "../../../Scene/Common/GameSpace/GameSpaceController.h"
 
 class DebugObjectBase : public ActorBase
 {
@@ -21,7 +19,6 @@ public:
 		bool isOperator
 	) :
 		ActorBase(),
-		INIT_POS(pos),
 		isOperator(isOperator)
 	{
 		trans.pos = pos;
@@ -43,7 +40,6 @@ public:
 		bool isOperator
 	) :
 		ActorBase(parameterPath),
-		INIT_POS(pos),
 		isOperator(isOperator)
 	{
 		trans.pos = pos;
@@ -58,13 +54,7 @@ private:
 	// 操作可能かどうか
 	bool isOperator;
 
-	// 初期座標
-	const Vector3 INIT_POS;
-
 	void SubInit(void)override {
-
-		trans.pos = INIT_POS;
-
 		// 移動加速力
 		ACCEL_RATE = 3.0f;
 		// 移動減速力
@@ -73,44 +63,24 @@ private:
 		ACCEL_MAX = 15.0f;
 	}
 
-	Vector3 GetMoveDirection(void)const {
-		const GameSpaceController& gameSpace = GetGameSpaceController();
-
-		if (gameSpace.IsStopInput()) { return Vector3(); }
-
-		Vector2 input = Input::GetIns().GetLeftStickVec();
-
-		// コントローラー入力がない場合はキーボードを使う
-		if (input == 0.0f) {
-			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveRight).now) { input.x += 1.0f; }
-			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveLeft).now) { input.x -= 1.0f; }
-			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveFront).now) { input.y += 1.0f; }
-			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveBack).now) { input.y -= 1.0f; }
-
-			if (input.LengthSq() > 1.0f) { input.Normalize(); }
-		}
-
-		return gameSpace.ConvertMoveInput(input, trans.pos, CurrentCamera::Get().GetPos(), GetSpaceConstraint());
-	}
-
-	void ResetPos(void) { trans.pos = INIT_POS; }
-
 	void SubUpdate(void)override {
 		if (!isOperator) { return; }
 
-		if (CheckHitKey(KEY_INPUT_Z) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::StageDefault); }
+		// 移動方向
+		Vector3 vec = {};
 
-		if (CheckHitKey(KEY_INPUT_X) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::FixedPlane); }
+		// 操作
+		if (Input::GetIns().GetInfo(KEY_TYPE::DebugObjectFront).now) { vec.z++; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::DebugObjectBack).now) { vec.z--; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::DebugObjectRight).now) { vec.x++; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::DebugObjectLeft).now) { vec.x--; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::DebugObjectUp).now) { vec.y++; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::DebugObjectDown).now) { vec.y--; }
 
-		if (CheckHitKey(KEY_INPUT_C) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::Rail); }
+		// カメラの角度に合わせて移動方向を回転させる
+		vec.TransMatOwn(MGetRotY(CurrentCamera::Get().GetAngle().y));
 
-		if (CheckHitKey(KEY_INPUT_V) != 0) { SetSpaceConstraint(SPACE_CONSTRAINT::None); }
-
-		MoveAccel(GetMoveDirection());
-
-		// ジャンプと重力・接地判定を確認する
-		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerJump).down && isGround) { velocity.y = 14.0f; }
-
-		if (CheckHitKey(KEY_INPUT_R) != 0) { ResetPos(); }
+		// 移動
+		MoveAccel(vec);
 	}
 };

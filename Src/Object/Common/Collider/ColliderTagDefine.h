@@ -19,14 +19,11 @@ enum class COLLIDER_TAG
 	None = -1,
 
 	Player,
+	PlayerKickDownAttack,
 
 	Enemy,
 
 	Stage,
-
-	Icicle,
-
-	Sword,
 
 	DebugObject,
 };

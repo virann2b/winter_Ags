@@ -5,6 +5,7 @@
 #include "../../../Application/Application.h"
 
 #include "../../Input/InputManager.h"
+#include "../../TimeScale/TimeScale.h"
 
 DisplayRemoteCamera::DisplayRemoteCamera(const Vector3& fixedLookAtPos, const Vector3& lookAtDiff, float ROT_POWER, const Vector3& angle, float fov) :
 	CameraBase(Vector3(), Vector3(), fov),
@@ -32,7 +33,7 @@ void DisplayRemoteCamera::NormalUpdate(void)
 	if (RotationInput(rotInput)) {
 
 		// âÒì]Ç≥ÇπÇÈ
-		controlAngle += rotInput * ROT_POWER;
+		controlAngle += (rotInput * ROT_POWER) * TimeScale::Get();
 
 		// âÒì]ÇÃêîílêßå‰
 		if (controlAngle.y <= Deg2Rad(0.0f)) { controlAngle.y += Deg2Rad(360.0f); }

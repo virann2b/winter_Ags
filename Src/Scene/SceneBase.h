@@ -6,6 +6,8 @@
 #include <utility>
 #include <vector>
 
+#include "../Object/Common/ActorBase/ActorDrawTypeDefine.h"
+
 class CollisionManager;
 class CameraBase;
 class ActorBase;
@@ -74,45 +76,10 @@ public:
 
 #pragma endregion
 
-#pragma region 画面演出
-
-	// ヒットストップ演出
-	static void HitStop(int time = 20);
-
-	// スロー演出（interフレームに1回だけゲーム更新する）
-	static void Slow(int time = 10, int inter = 5);
-
-	// 画面揺れの種類
-	enum ShakeKinds
-	{
-		WID,   // 横揺れ
-		HIG,   // 縦揺れ
-		DIAG,  // 斜め揺れ
-		ROUND, // 円を描くように揺れる
-	};
-
-	// 画面揺れの大きさ
-	enum ShakeSize
-	{
-		SMALL = 3,
-		MEDIUM = 5,
-		BIG = 8,
-	};
-
-	/// <summary>
-	/// 画面揺れを開始する。
-	/// </summary>
-	/// <param name="kinds">揺れ方</param>
-	/// <param name="size">揺れの大きさ</param>
-	/// <param name="time">揺れるフレーム数</param>
-	static void Shake(ShakeKinds kinds = ShakeKinds::DIAG, ShakeSize size = ShakeSize::MEDIUM, int time = 20);
-
-#pragma endregion
-
 protected:
 
 	// 既に生成済みのActorを追加する場合に使用する。所有権はSceneBaseへ移る
-	void ObjAdd(ActorBase* newObj);
+	void AddActor(ActorBase* newActor);
 
 #pragma region 派生先の主要関数
 
@@ -130,10 +97,6 @@ protected:
 	virtual void SubPreUpdate(void) {}
 	// 更新（Actor更新・当たり判定の後、Camera更新の前）
 	virtual void SubPostUpdate(void) {}
-
-	virtual void SubPreObjectAdd(ActorBase& object) {}
-	// ActorがSceneへ追加された直後に呼ばれる
-	virtual void SubPostObjectAdd(ActorBase& object) {}
 
 	// 描画（メイン処理の前）
 	virtual void SubPreDraw(void) {}
@@ -162,26 +125,13 @@ private:
 	// 当たり判定管理
 	CollisionManager* collision;
 
-	// ゲーム更新を実行するフレームか判定する
-	bool IsUpdateFrame(void);
-	// 画面揺れによる描画位置を値で返す
-	Vector2I GetShakePoint(void);
+	// ポストエフェクト用のスクリーンハンドル
+	int postEffectScreen;
 
-#pragma region 画面演出用
+	// アクター描画関数
+	void ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYPE drawType);
 
-	static int hitStop;
-	static int slow;
-	static int slowInter;
-	static int slowCounter;
-
-	static int shake;
-	static ShakeKinds shakeKinds;
-	static ShakeSize shakeSize;
-
-	// 画面揺れを適用するためのメインスクリーン
-	int mainScreen;
-
-#pragma endregion
+	void ActorsColliderDebugDraw(const std::vector<ActorBase*>& actors);
 
 protected:
 
@@ -192,8 +142,5 @@ protected:
 	virtual void CreateCamera(void) { camera = nullptr; }
 
 	// Actor格納用配列
-	std::vector<ActorBase*> objects;
+	std::vector<ActorBase*> actors;
 };
-
-using ShakeKinds = SceneBase::ShakeKinds;
-using ShakeSize = SceneBase::ShakeSize;

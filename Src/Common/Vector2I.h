@@ -151,6 +151,13 @@ struct Vector2I
 	bool operator!=(const Vector2I value)const;
 
 
+	// 整数(int)型との判定（指定数値(value)と各要素すべてが完全一致 =「true」、それ以外 =「false」）
+	bool operator==(const int value)const;
+
+	// 整数(int)型との逆判定（指定数値(value)と各要素すべてが完全一致 =「false」、それ以外 =「true」）
+	bool operator!=(const int value)const;
+
+
 	// 浮動小数(float)型との判定（指定数値(value)と各要素すべてが完全一致 =「true」、それ以外 =「false」）
 	bool operator==(const float value)const;
 

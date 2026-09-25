@@ -3,9 +3,11 @@
 #include "../pch.h"
 
 #include "../Manager/FPS/FPS.h"
+#include "../Manager/TimeScale/TimeScale.h"
 #include "../Manager/Input/InputManager.h"
 #include "../Manager/Sound/SoundManager.h"
 #include "../Manager/Font/FontManager.h"
+#include "../Manager/Shader/ShaderResourceManager.h"
 #include "../Scene/SceneManager.h"
 
 Application* Application::ins = nullptr;
@@ -42,7 +44,7 @@ void Application::Init(void)
 	ChangeWindowMode(true);
 #endif // _DEBUG
 
-	// 開発中の複数起動を許可
+	// ネットワーク動作テストの為、多重起動を可能な仕様に設定しておく
 	SetDoubleStartValidFlag(true);
 
 	SetAlwaysRunFlag(true);
@@ -66,6 +68,9 @@ void Application::Init(void)
 	fps = new FPS;
 	fps->Init();
 
+	// 時間倍率管理クラスの生成
+	TimeScale::CreateIns();
+
 	// 入力管理クラスの生成 / 初期化処理
 	Input::CreateIns();
 
@@ -74,6 +79,9 @@ void Application::Init(void)
 
 	// フォントデータ生成 / 初期化処理
 	Font::CreateIns();
+
+	// シェーダーデータ生成
+	ShaderResourceManager::CreateIns();
 
 	// シーン管理初期化 / 初期化処理
 	SceneManager::CreateIns();
@@ -87,6 +95,9 @@ void Application::Run(void)
 	{
 		// フレームレート上限まで経過していないなら再ループさせる
 		if (!fps->UpdateFrameRate()) { continue; }
+
+		// 時間倍率管理クラスの更新
+		TimeScale::GetIns().Update();
 
 		// 入力管理クラスの更新
 		Input::GetIns().Update();
@@ -125,6 +136,9 @@ void Application::Release(void)
 	// シーン管理解放・削除	
 	SceneManager::DeleteIns();
 
+	// シェーダーデータの削除
+	ShaderResourceManager::DeleteIns();
+
 	// フォントデータの削除
 	Font::DeleteIns();
 
@@ -133,6 +147,9 @@ void Application::Release(void)
 
 	// 入力制御削除
 	Input::DeleteIns();
+
+	// 時間倍率管理クラス削除
+	TimeScale::DeleteIns();
 
 	// フレームレート解放
 	delete fps;

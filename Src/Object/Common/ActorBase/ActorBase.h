@@ -8,11 +8,12 @@
 
 #include "../Collider/ColliderTagDefine.h"
 
-#include "../../../Scene/Common/GameSpace/SpaceDefine.h"
+#include "ActorDrawTypeDefine.h"
 
 class ColliderBase;
-class GameSpaceController;
 struct CollisionResult;
+
+class ShaderBase;
 
 class ParameterLoad;
 
@@ -22,18 +23,24 @@ struct Vector2I;
 class ActorBase
 {
 public:
+	
 	// デフォルトコンストラクタ
 	ActorBase();
 	// パラメーターを外部から読み込む場合に使うコンストラクタ
 	ActorBase(const std::string& parameterPath);
+
+	// デストラクタ
 	virtual ~ActorBase() = default;
 
+	// 読み込み処理
 	virtual void Load(void) = 0;
+	// 初期化処理
 	virtual void Init(void);
+	// 更新処理
 	virtual void Update(void);
+	// 描画処理
 	virtual void Draw(void);
-	virtual void AlphaDraw(void);
-	virtual void UiDraw(void) {}
+	// 解放処理
 	virtual void Release(void);
 
 	// モデルを複製する
@@ -42,66 +49,43 @@ public:
 	// モデル制御情報構造体のゲット関数
 	const Transform& GetTrans(void)const { return trans; }
 
-	/// 座標を設定する
-	void SetPos(const Vector3& pos) { trans.pos = pos; }
-
-	/// 現在座標に移動量を加算する
-	void AddMove(const Vector3& move) { trans.pos += move; }
-
-#pragma region ゲーム空間制約
-	/// ゲーム空間制約を管理するコントローラーを設定する
-	void SetGameSpaceController(const GameSpaceController* controller);
-
-	/// ゲーム空間制約を管理するコントローラーを取得する
-	const GameSpaceController& GetGameSpaceController(void)const { return *gameSpace; }
-
-	/// このオブジェクトに適用する空間制約を設定する
-	void SetSpaceConstraint(SPACE_CONSTRAINT constraint) { spaceConstraint = constraint; }
-
-	/// このオブジェクトに適用されている空間制約を取得する
-	const SPACE_CONSTRAINT& GetSpaceConstraint(void)const { return spaceConstraint; }
-
-	/// 指定した方向ベクトルを現在の空間制約に合わせて制限する
-	Vector3 RestrictSpaceDirection(const Vector3& direction)const;
-
-	/// 現在の速度をゲーム空間の制約に合わせて制限する
-	void RestrictVelocity(void);
-#pragma endregion
-
 	// 当たり判定の通知
 	virtual void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) {}
 
 	// 接地判定の通知
-	virtual void OnGrounded() {
-		if (dynamicFlg) { velocity.y = (velocity.y < 0.0f) ? 0.0f : velocity.y; }
+	virtual void OnGrounded(COLLIDER_TAG ownTag, const ColliderBase& other) {
+
+		// 接地判定
 		isGroundMaster = true;
+
+		// 挙動
+		SubOnGrounded(ownTag, other);
 	}
 
-	/// <summary>
-	/// コライダーすべてを取得
-	/// </summary>
-	virtual std::vector<ColliderBase*> GetCollider(void)const { return collider; }
+	// コライダーすべてを取得
+	virtual std::vector<ColliderBase*> GetColliders(void)const;
 
-	/// <summary>
-	/// 当たり判定フラグの取得
-	/// </summary>
-	/// <returns>どれか一つでも「判定する」状態ならtrue</returns>
-	bool GetJudgeFlg(void);
+	// コライダーのデバッグ描画
+	void DrawColliderDebug(void)const;
 
-	// 描画判定の取得
-	bool GetIsDraw(void)const { return isDraw; }
+	// 描画タイプを取得
+	const ACTOR_DRAW_TYPE& GetDrawType(void)const { return drawType; }
+
+	// 子クラスを取得する
+	const std::vector<ActorBase*>& GetChildActors(void)const { return childActors; }
 
 private:
-	// 当たり判定情報
-	std::vector<ColliderBase*> collider;
 
-	// 動的オブジェクトか否か（true = 動的、false = 静的）
+	// 当たり判定情報
+	std::vector<ColliderBase*> colliders;
+	
+	// 動的オブジェクトかどうか（true = 動的、false = 静的）
 	bool dynamicFlg;
 
-	// 重力を適用するかどうか(true = する、false = しない)
+	// 重力を適用するかどうか（true = する、false = しない）
 	bool gravityFlg;
 
-	// 衝突時押し出しを行うか否か（true = 押し出す、false = 押し出さず通り抜ける）
+	// 衝突時押し出しを行うかどうか（true = 押し出す、false = 押し出さず通り抜ける）
 	bool pushFlg;
 
 	// 押し出しを行う際の重さ（0 ～ 100 で設定）
@@ -113,27 +97,31 @@ private:
 	// 重力更新
 	void Gravity(void);
 
-	// 重力
-	static constexpr float GRAVITY = -0.6f;
-	static constexpr float GRAVITY_MAX = -30.0f;
+	// 重力加速度
+	static constexpr float GRAVITY = -0.9f;
+	// 重力の最大値
+	static constexpr float GRAVITY_MAX = -100.0f;
 
 	// 接地判定 管理用(派生先で変更不可で参照渡し)
 	bool isGroundMaster;
 
-	// 描画判定 （true = 「描画する」、false = 「描画しない」）
+	// 描画判定 （true =「描画する」、false =「描画しない」）
 	bool isDraw;
 
-	// アルファ判定（true = 「メインの描画にアルファをかける」、false = 「メインの描画を普通に描画する」）（メインの描画 = 基底クラスで自動で描画されるモデルなど）
-	bool isAlphaDraw;
+	// 描画タイプ（通常描画、アルファ描画、UI描画など）
+	ACTOR_DRAW_TYPE drawType;
 
-	// WorldSceneBaseが所有する空間制約管理への非所有参照
-	const GameSpaceController* gameSpace;
-	SPACE_CONSTRAINT spaceConstraint;
+	// シェーダーデータ
+	ShaderBase* shader;
 
 	// パラメーター外部ファイル管理クラス
 	ParameterLoad* parameter;
 
+	// 子クラス
+	std::vector<ActorBase*> childActors;
+
 protected:
+
 	// モデル制御情報構造体
 	Transform trans;
 
@@ -151,14 +139,15 @@ protected:
 	const bool& isGround = isGroundMaster;
 
 #pragma region 初期設定
-	// 当たり判定情報を生成
-	void ColliderCreate(ColliderBase* newClass);
+
+	// コライダー追加
+	void AddCollider(ColliderBase* newCollider);
 
 	/// <summary>
 	/// 移動するかを切り替える
 	/// </summary>
 	/// <param name="flg">true = 「移動する」に切り替える、false = 「移動しない」に切り替える</param>
-	void SetDynamicFlg(bool flg);
+	void SetDynamicFlg(bool flg) { dynamicFlg = trans.dynamicFlg = flg; }
 
 	/// <summary>
 	/// 重力を適用するかを切り替える
@@ -170,13 +159,26 @@ protected:
 	/// 衝突時押し出しを行うかを設定する
 	/// </summary>
 	/// <param name="flg">true = 押し出す、false = 押し出さず通り抜ける</param>
-	void SetPushFlg(bool flg);
+	void SetPushFlg(bool flg) { pushFlg = flg; }
 
 	/// <summary>
 	/// 押し出しを行う際の重さ
 	/// </summary>
 	/// <param name="weight">0 ～ 100 で設定（数値が大きいほど重い）</param>
-	void SetPushWeight(unsigned char weight);
+	void SetPushWeight(unsigned char weight) { pushWeight = weight; }
+
+	// シェーダーを設定
+	void CreateShader(ShaderBase* newShader);
+	// シェーダーを消去
+	void ResetShader();
+
+	// 子クラスを追加する
+	void AddChildActor(ActorBase* child) {
+		child->Load();
+		childActors.push_back(child); 
+	}
+#pragma endregion
+
 
 #pragma region パラメーター外部ファイル管理に関する関数
 
@@ -228,53 +230,32 @@ protected:
 
 #pragma endregion
 
-#pragma endregion
 
+	/// <summary>
+	/// 当たり判定フラグの取得
+	/// </summary>
+	/// <returns>所有するコライダーどれか1つでも「判定する」状態ならtrue</returns>
+	bool GetJudgeFlg(void);
 	// 当たり判定の設定（true = 「判定する」、false = 「判定しない」）
-	void SetJudge(bool flg);
+	void SetJudgeFlg(bool flg);
 
 	// 移動するオブジェクトかの設定を取得
 	bool GetDynamicFlg(void)const { return dynamicFlg; }
 	// 重力の設定の状態を取得
 	bool GetGravityFlg(void)const { return gravityFlg; }
 
+	// 描画判定の取得（true = 「描画する」、false = 「描画しない」）
+	bool GetIsDraw(void)const { return isDraw; }
 	// 描画判定の設定（true = 「描画する」、false = 「描画しない」）
 	void SetIsDraw(bool flg) { isDraw = flg; }
 	// 描画判定の設定（引数省略で現在の逆にスイッチ）
 	void SetIsDraw(void) { isDraw = !isDraw; }
 
-	// アルファ判定（true = 「メインの描画にアルファをかける」、false = 「メインの描画を普通に描画する」）（メインの描画 = 基底クラスで自動で描画されるモデルなど）
-	bool GetIsAlphaDraw(void)const { return isAlphaDraw; }
-
-	// アルファ判定の設定（true = 「メインの描画にアルファをかける」、false = 「メインの描画を普通に描画する」）（メインの描画 = 基底クラスで自動で描画されるモデルなど）
-	void SetIsAlphaDraw(bool flg) { isAlphaDraw = flg; }
-	// アルファ判定の設定（引数省略で現在の逆にスイッチ）
-	void SetIsAlphaDraw(void) { isAlphaDraw = !isAlphaDraw; }
+	// 描画タイプの設定
+	void SetDrawType(const ACTOR_DRAW_TYPE& type) { drawType = type; }
 
 	// 指定の方向に向かって加速度を用いて移動する
-	void MoveAccel(const Vector3& vec) {
-
-		if (vec == 0.0f) { return; }
-
-		// 単位ベクトルを取得
-		Vector3 unitVector = vec.Normalized();
-
-		// 加速
-		velocity += unitVector * ACCEL_RATE;
-
-		// 目標角度
-		float targetAngle = atan2f(unitVector.x, unitVector.z);
-
-		// 現在角度から目標角度までの角度差
-		float diffAngle = targetAngle - trans.angle.y;
-
-		// -π ～ +π に正規化して最短方向を求める
-		while (diffAngle > DX_PI_F) { diffAngle -= DX_TWO_PI_F; }
-		while (diffAngle < -DX_PI_F) { diffAngle += DX_TWO_PI_F; }
-
-		// 最短方向に補間
-		trans.angle.y += diffAngle * 0.1f;
-	}
+	void MoveAccel(const Vector3& vec);
 
 	// 派生先追加初期化
 	virtual void SubInit(void) {}
@@ -282,8 +263,21 @@ protected:
 	virtual void SubUpdate(void) {}
 	// 派生先追加描画
 	virtual void SubDraw(void) {}
-	// 派生先追加アルファ描画
-	virtual void SubAlphaDraw(void) {}
 	// 派生先追加解放
 	virtual void SubRelease(void) {}
+
+	// 派生先追加接地判定（デフォルトはY軸加速度の打ち消し）
+	virtual void SubOnGrounded(COLLIDER_TAG ownTag, const ColliderBase& other) {
+
+		// 動的オブジェクトの場合のみ、下方向のY軸加速度のみを打ち消す
+		if (dynamicFlg) { velocity.y = (velocity.y < 0.0f) ? 0.0f : velocity.y; }
+	}
+
+private:
+
+	// 中間基底クラス用追加処理
+	virtual void BaseInit(void) {}
+	virtual void BaseUpdate(void) {}
+	virtual void BaseDraw(void) {}
+	virtual void BaseRelease(void) {}
 };

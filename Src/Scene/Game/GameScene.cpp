@@ -4,21 +4,25 @@
 
 #include "../../Application/Application.h"
 
+#include "../../Manager/TimeScale/TimeScale.h"
 #include "../../Manager/Input/InputManager.h"
 #include "../../Manager/Sound/SoundManager.h"
 #include "../../Manager/Font/FontManager.h"
 
-#include "../../Manager/Camera/GameSpaceFollow/GameSpaceFollowCamera.h"
+#include "../../Manager/Camera/FollowRemote/FollowRemoteCamera.h"
 
 #include "../SceneManager.h"
 
-#include "../ObjectUseDefine.h"
+#include "../ActorUseDefine.h"
 
 #include "../../Object/Common/DebugObject/BoxDebugObject.h"
 #include "../../Object/Common/DebugObject/SphereDebugObject.h"
+#include "../../Object/Common/DebugObject/CapsuleDebugObject.h"
 #include "../../Object/Common/DebugObject/MeshDebugObject.h"
 
-GameScene::GameScene() : WorldSceneBase()
+#include "../../Object/Player/Player.h"
+
+GameScene::GameScene() : SceneBase()
 {
 }
 
@@ -26,12 +30,18 @@ void GameScene::SubPostLoad(void)
 {
 	Snd::GetIns().ChangeScene("Game");
 
-	ObjAdd(new BoxDebugObject(Vector3(2000, 1000, 2000), Vector3::Yonly(-500), false));
+	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
 
-	ObjAdd(new SphereDebugObject(50.0f, Vector3(), true, true, true, 50, true));
+	//AddActor(new CapsuleDebugObject(Vector3(50, 0, 0), Vector3(-50, 0, 0), 50.0f, Vector3(), true, true, true, 50, true));
+	AddActor(new Player);
+
+	for (int i = 0; i < 50; i++) {
+		AddActor(new SphereDebugObject(50.0f, Vector3::Xonly(10.0f * 25 - (10.0f * i))));
+		AddActor(new SphereDebugObject(50.0f, Vector3::Zonly(10.0f * 25 - (10.0f * i))));
+	}
 }
 
-void GameScene::SubWorldPostUpdate(void)
+void GameScene::SubPostUpdate(void)
 {
 	// ƒQ[ƒ€I—¹ˆ—
 	if (Input::GetIns().GetInfo(KEY_TYPE::End).down) {
@@ -39,19 +49,17 @@ void GameScene::SubWorldPostUpdate(void)
 	}
 
 	// Œˆ’è
-	if (Input::GetIns().GetInfo(KEY_TYPE::Enter).down) {
+	if (CheckHitKey(KEY_INPUT_RSHIFT) == 1) {
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
 	}
 }
 
 void GameScene::SubUiDraw(void)
 {
-	DrawStringToHandle(0, 0, "ƒQ[ƒ€", 0xffffff, Font::GetIns().GetFont(FontKinds::Default45));
+	DrawStringToHandle(0, 0, "ƒQ[ƒ€", 0xffffff, Font::GetIns().GetFont(FontKinds::Marumiya40));
 }
 
 void GameScene::CreateCamera(void)
 {
-	SphereDebugObject* target = ObjSerch<SphereDebugObject>(objects);
-	if (target == nullptr) { camera = nullptr; return; }
-	camera = new GameSpaceFollowCamera(target->GetTrans(), GetGameSpace());
+	camera = new FollowRemoteCamera(&ActorSerch<Player>(actors)->GetTrans().pos);
 }
