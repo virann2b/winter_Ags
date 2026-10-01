@@ -15,12 +15,17 @@
 
 #include "../ActorUseDefine.h"
 
+#include "../Common/PostEffect/CRTPostEffect/CRTPostEffect.h"
+#include "../Common/PostEffect/FocusLinesPostEffect/FocusLinesPostEffect.h"
+
 #include "../../Object/Common/DebugObject/BoxDebugObject.h"
 #include "../../Object/Common/DebugObject/SphereDebugObject.h"
 #include "../../Object/Common/DebugObject/CapsuleDebugObject.h"
 #include "../../Object/Common/DebugObject/MeshDebugObject.h"
 
 #include "../../Object/Player/Player.h"
+
+#include "../../Object/Water.h"
 
 GameScene::GameScene() : SceneBase()
 {
@@ -32,13 +37,13 @@ void GameScene::SubPostLoad(void)
 
 	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
 
-	//AddActor(new CapsuleDebugObject(Vector3(50, 0, 0), Vector3(-50, 0, 0), 50.0f, Vector3(), true, true, true, 50, true));
 	AddActor(new Player);
 
-	//for (int i = 0; i < 50; i++) {
-	//	AddActor(new SphereDebugObject(50.0f, Vector3::Xonly(10.0f * 25 - (10.0f * i))));
-	//	AddActor(new SphereDebugObject(50.0f, Vector3::Zonly(10.0f * 25 - (10.0f * i))));
-	//}
+}
+
+void GameScene::SubPostInit(void)
+{
+	AddPostEffect(new FocusLinesPostEffect(1.5f, 18.0f, 100.0f));
 }
 
 void GameScene::SubPostUpdate(void)

@@ -13,6 +13,8 @@ class CameraBase;
 class ActorBase;
 struct Vector2I;
 
+class PostEffectBase;
+
 class SceneBase
 {
 public:
@@ -55,6 +57,27 @@ public:
 
 	// カメラを取得する。カメラを使用しない場合はnullptrを返す。
 	CameraBase* GetCamera(void)const { return camera; }
+
+	// ポストエフェクトを追加
+	void AddPostEffect(PostEffectBase* postEffect);
+
+	// 指定した種類のポストエフェクトを削除
+	template<class T>
+	void RemovePostEffect() {
+		for (auto it = postEffects.begin(); it != postEffects.end(); ++it) {
+			T* effect = dynamic_cast<T*>(*it);
+
+			if (effect == nullptr) { continue; }
+
+			effect->Release();
+
+			delete effect;
+
+			postEffects.erase(it);
+
+			return;
+		}
+	}
 
 #pragma region シーンスタック設定
 
@@ -125,8 +148,12 @@ private:
 	// 当たり判定管理
 	CollisionManager* collision;
 
+	// ポストエフェクト配列
+	std::vector<PostEffectBase*> postEffects;
+
 	// ポストエフェクト用のスクリーンハンドル
-	int postEffectScreen;
+	int mainScreen;
+	int tempScreen[2];
 
 	// アクター描画関数
 	void ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYPE drawType);

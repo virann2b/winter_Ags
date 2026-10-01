@@ -110,4 +110,6 @@ private:
 		// ‘Ò‹@ó‘Ô‚É‘JˆÚ
 		ChangeState(STATE::Idle);
 	}
+
+	void SubUpdate(void)override;
 };

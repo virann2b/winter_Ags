@@ -14,11 +14,14 @@
 #include "../Manager/Collision/CollisionManager.h"
 #include "../Object/Common/ActorBase/ActorBase.h"
 
+#include "Common/PostEffect/PostEffectBase.h"
+
 SceneBase::SceneBase(void) :
 
 	state(STATE::Created),
 
-	postEffectScreen(-1),
+	mainScreen(-1),
+	tempScreen(),
 
 	camera(nullptr),
 	collision(nullptr),
@@ -36,8 +39,10 @@ void SceneBase::Load(void)
 	SubPreLoad();
 
 	// 画面揺れを適用するため、一度このスクリーンへ3D描画をまとめる
-	postEffectScreen = MakeScreen(App::SCREEN_SIZE_X, App::SCREEN_SIZE_Y, true);
-	if (postEffectScreen < 0) { throw std::runtime_error("SceneBaseのメインスクリーン生成に失敗しました"); }
+	mainScreen = MakeScreen(App::SCREEN_SIZE_X, App::SCREEN_SIZE_Y, true);
+	if (mainScreen < 0) { throw std::runtime_error("SceneBaseのメインスクリーン生成に失敗しました"); }
+	tempScreen[0] = MakeScreen(App::SCREEN_SIZE_X, App::SCREEN_SIZE_Y, true);
+	tempScreen[1] = MakeScreen(App::SCREEN_SIZE_X, App::SCREEN_SIZE_Y, true);
 
 	// シーンごとに独立した当たり判定管理クラスを生成する
 	if (UseCollisionManager()) { collision = new CollisionManager(); }
@@ -96,79 +101,84 @@ void SceneBase::Update(void)
 
 	// カメラ更新
 	if (camera != nullptr) { camera->Update(); }
+
+	// ポストエフェクト更新
+	for (PostEffectBase* postEffect : postEffects) { postEffect->Update(); }
 }
 
 void SceneBase::Draw(void)
 {
-	// 安全処理
-	if (state != STATE::Initialized || postEffectScreen < 0) { return; }
+	if (state != STATE::Initialized || mainScreen < 0) { return; }
 
-	// 描画先を設定
-	SetDrawScreen(postEffectScreen);
+#pragma region 画面揺れ用スクリーンへ描画
 
-	// 画面をクリア
+	SetDrawScreen(mainScreen);
 	ClearDrawScreen();
 
 	// カメラ情報をDxLibへ反映
 	if (camera != nullptr) { camera->Apply(); }
-
-	// エフェクシア設定
 	Effekseer_Sync3DSetting();
-
-#pragma region メイン描画
-
-	// 通常描画～～～～～～～～～～～～～～～～～～～～
-
-	// 派生先追加描画（前）
-	SubPreDraw();
-
-	// アクター全ての描画（通常描画）
-	ActorsDraw(actors, ACTOR_DRAW_TYPE::Normal);
-
-	// 派生先追加描画（前）
-	SubPostDraw();
-
-	// ～～～～～～～～～～～～～～～～～～～～通常描画
-
-	// 半透明描画～～～～～～～～～～～～～～～～～～～
-
-	// 描画モードを切り替える
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
-
-	// アクター全ての描画（半透明描画）
-	ActorsDraw(actors, ACTOR_DRAW_TYPE::Alpha);
-
-	// 派生先追加描画
-	SubAlphaDraw();
-
-	// <デバッグ用>アクター全ての当たり判定デバッグ描画
-	ActorsColliderDebugDraw(actors);
-
-	// <デバッグ用>チャンク描画
-	if (collision != nullptr && camera != nullptr) { collision->DrawChunkGrid(camera->GetPos()); }
-
-	// 描画モードを元に戻す
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	// ～～～～～～～～～～～～～～～～～～～半透明描画
 
 #pragma endregion
 
-	// 描画先の画面を元に戻す
+#pragma region メイン描画
+
+	// 通常描画
+	SubPreDraw();
+	ActorsDraw(actors, ACTOR_DRAW_TYPE::Normal);
+	SubPostDraw();
+
+	// 半透明描画
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+	ActorsDraw(actors, ACTOR_DRAW_TYPE::Alpha);
+	SubAlphaDraw();
+
+	ActorsColliderDebugDraw(actors);
+
+	// デバッグ用チャンク描画
+	if (collision != nullptr && camera != nullptr) { collision->DrawChunkGrid(camera->GetPos()); }
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+#pragma endregion
+
+#pragma region ポストエフェクト適用
+
+	// 最初の入力はシーン本体
+	int srcScreen = mainScreen;
+
+	// tempScreen[0] → tempScreen[1] → tempScreen[0]...
+	int tempIndex = 0;
+
+	for (PostEffectBase* postEffect : postEffects) {
+		if (postEffect == nullptr) { continue; }
+
+		const int dstScreen = tempScreen[tempIndex];
+
+		// srcScreenの内容にポストエフェクトを掛けて
+		// dstScreenへ描画
+		postEffect->Apply(srcScreen, dstScreen);
+
+		// 今生成した画面を次の入力にする
+		srcScreen = dstScreen;
+
+		// 次は反対側の一時スクリーンを使用
+		tempIndex = 1 - tempIndex;
+	}
+
+#pragma endregion
+
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	// 描画
-	DrawGraph(0, 0, postEffectScreen, true);
+	// PostEffectが0個ならmainScreen、
+	// 1個以上なら最後に生成されたtempScreenが入っている
+	DrawGraph(0, 0, srcScreen, true);
 
 #pragma region UI描画
 
-	// アクター全ての描画（UI描画）
 	ActorsDraw(actors, ACTOR_DRAW_TYPE::Ui);
-
-	// 派生先追加描画（UI描画）
 	SubUiDraw();
 
-	// <デバッグ用>カメラのデバッグ描画
 	if (camera != nullptr) { camera->DrawDebug(); }
 
 #pragma endregion
@@ -181,6 +191,14 @@ void SceneBase::Release(void)
 
 	// 派生先の解放（前）
 	SubPreRelease();
+
+	// 全てのポストエフェクトを解放
+	for (PostEffectBase*& postEffect : postEffects) {
+		postEffect->Release();
+		delete postEffect;
+		postEffect = nullptr;
+	}
+	postEffects.clear();
 
 	// 全てのオブジェクトを解放
 	for (ActorBase*& actor : actors) {
@@ -205,15 +223,24 @@ void SceneBase::Release(void)
 	}
 
 	// 画面演出用のスクリーン解放
-	if (postEffectScreen >= 0) {
-		DeleteGraph(postEffectScreen);
-		postEffectScreen = -1;
+	if (mainScreen >= 0) {
+		DeleteGraph(mainScreen);
+		mainScreen = -1;
 	}
 
 	// 派生先の解放（後）
 	SubPostRelease();
 
 	state = STATE::Released;
+}
+
+void SceneBase::AddPostEffect(PostEffectBase* postEffect)
+{
+	if (postEffect == nullptr) { return; }
+
+	postEffect->Init();
+
+	postEffects.emplace_back(postEffect);
 }
 
 void SceneBase::AddActor(ActorBase* newActor)

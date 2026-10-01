@@ -15,6 +15,9 @@ private:
 	// “Ç‚İ‚İ
 	void SubPostLoad(void)override;
 
+	// ‰Šú‰»
+	void SubPostInit(void)override;
+
 	// XV
 	void SubPostUpdate(void)override;
 

@@ -17,10 +17,10 @@ void TestShader::Init(void)
     // 頂点シェーダーは使用しない
     vertexShaderHandle = -1;
 
-    manager.CreatePixelShader(PIXEL_SHADER_TYPE::Test);
-    manager.CreatePixelShader(PIXEL_SHADER_TYPE::Test);
+    //manager.CreatePixelShader(PIXEL_SHADER_TYPE::Test);
+    //manager.CreatePixelShader(PIXEL_SHADER_TYPE::Test);
 
-    pixelShaderHandle = manager.GetPixelShader(PIXEL_SHADER_TYPE::Test);
+    //pixelShaderHandle = manager.GetPixelShader(PIXEL_SHADER_TYPE::Test);
 
     param.time = 0.0f;
     param.scale = 20.0f;

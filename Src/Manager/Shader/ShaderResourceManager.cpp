@@ -12,13 +12,13 @@ void ShaderResourceManager::CreateVertexShader(VERTEX_SHADER_TYPE type)
 	if (vertexShaderList.contains(type)) { return; }
 
 	// テーブルに指定されたパスが存在しない場合は生成しない
-	if (!VERTEX_SHADER_PATH_TABLE.contains(type)) { 
+	if (!VERTEX_SHADER_NAME_TABLE.contains(type)) { 
 		// エラー処理
-		throw std::runtime_error("指定された頂点シェーダーのパスが存在しません");
+		throw std::runtime_error("指定された頂点シェーダーの名前指定が存在しません");
 	}
 
 	// シェーダーを読み込み
-	vertexShaderList[type] = LoadVertexShader(VERTEX_SHADER_PATH_TABLE.at(type).c_str());
+	vertexShaderList[type] = LoadVertexShader(ShaderNameToPath(VERTEX_SHADER_NAME_TABLE.at(type)).c_str());
 }
 
 int ShaderResourceManager::GetVertexShader(VERTEX_SHADER_TYPE type)
@@ -60,13 +60,13 @@ void ShaderResourceManager::CreatePixelShader(PIXEL_SHADER_TYPE type)
 	if (pixelShaderList.contains(type)) { return; }
 
 	// テーブルに指定されたパスが存在しない場合は生成しない
-	if (!PIXEL_SHADER_PATH_TABLE.contains(type)) { 
+	if (!PIXEL_SHADER_NAME_TABLE.contains(type)) { 
 		// エラー処理
-		throw std::runtime_error("指定されたピクセルシェーダーのパスが存在しません。");
+		throw std::runtime_error("指定されたピクセルシェーダーの名前指定が存在しません");
 	}
 
 	// シェーダーを読み込み
-	pixelShaderList[type] = LoadPixelShader(PIXEL_SHADER_PATH_TABLE.at(type).c_str());
+	pixelShaderList[type] = LoadPixelShader(ShaderNameToPath(PIXEL_SHADER_NAME_TABLE.at(type)).c_str());
 }
 
 int ShaderResourceManager::GetPixelShader(PIXEL_SHADER_TYPE type)

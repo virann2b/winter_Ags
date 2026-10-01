@@ -4,7 +4,9 @@
 
 #include "../Common/Collider/CapsuleCollider.h"
 
-#include "../Common/Shader/TestShader.h"
+#include "../Common/Shader/DefaultShader.h"
+#include "../Common/Shader/RimLightShader.h"
+#include "../Common/Shader/WaterShader.h"
 
 #include "Wepon/PlayerKickDownAttackCollOperator.h"
 
@@ -36,6 +38,7 @@ void Player::Load(void)
 
 #pragma endregion
 
+
 #pragma region モデル設定
 
 	// モデルの読み込み
@@ -49,6 +52,9 @@ void Player::Load(void)
 
 	// モデルの角度のズレの補正
 	trans.localAngle = Vector3(0.0f, Deg2Rad(180.0f), 0.0f);
+
+	// シェーダー登録
+	CreateShader(new DefaultShader());
 
 #pragma endregion
 
@@ -154,4 +160,23 @@ void Player::Load(void)
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+}
+
+void Player::SubUpdate(void)
+{
+	static char type = 0;
+	static bool prev = false, now = false;
+
+	prev = now;
+	now = CheckHitKey(KEY_INPUT_SPACE) == 1;
+
+	if (!prev && now) {
+
+		if (++type > 1) { type = 0; }
+
+		switch (type){
+		case 0: { CreateShader(new DefaultShader()); break; }
+		case 1: { CreateShader(new RimLightShader()); break; }
+		}
+	}
 }

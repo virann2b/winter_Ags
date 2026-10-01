@@ -153,11 +153,7 @@ void ActorBase::Release(void)
 	}
 
 	// シェーダーの解放
-	if (shader != nullptr) {
-		shader->Release();
-		delete shader;
-		shader = nullptr;
-	}
+	ResetShader();
 
 	// パラメータの解放
 	if (parameter != nullptr) {
@@ -260,11 +256,7 @@ void ActorBase::AddCollider(ColliderBase* newCollider)
 void ActorBase::CreateShader(ShaderBase* newShader)
 {
 	// 既に生成されている場合、破棄
-	if (shader != nullptr) {
-		shader->Release();
-		delete shader;
-		shader = nullptr;
-	}
+	ResetShader();
 
 	// 新規シェーダーをこのアクターに適用
 	shader = newShader;

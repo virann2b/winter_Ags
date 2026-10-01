@@ -62,75 +62,116 @@ public:
 
 private:
 
-	// 頂点シェーダーのパステーブル
-	const std::map<VERTEX_SHADER_TYPE, std::string> VERTEX_SHADER_PATH_TABLE = {
+	// シェーダーの名前をパスへ
+	std::string ShaderNameToPath(const std::string& shaderName) {
+		return "Data/Shader/" + shaderName + ".cso";
+	}
 
-	{
-		VERTEX_SHADER_TYPE::PostEffect,
-		"Data/Shader/PostEffect/PostEffectVS.cso"
-	},
+	// 頂点シェーダーの名前テーブル
+	const std::map<VERTEX_SHADER_TYPE, std::string> VERTEX_SHADER_NAME_TABLE = {
 
-	{
-		VERTEX_SHADER_TYPE::Default,
-		"Data/Shader/Model/DefaultVS.cso"
-	},
+	#pragma region デフォルト
+		{
+			VERTEX_SHADER_TYPE::Default1Frame,
+			"DefaultVS_1Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::Default4Frame,
+			"DefaultVS_4Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::Default8Frame,
+			"DefaultVS_8Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::DefaultNMap1Frame,
+			"DefaultVS_NMap1Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::DefaultNMap4Frame,
+			"DefaultVS_NMap4Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::DefaultNMap8Frame,
+			"DefaultVS_NMap8Frame"
+		},
+	#pragma endregion
 
-	{
-		VERTEX_SHADER_TYPE::Skinning,
-		"Data/Shader/Model/DefaultVS.cso"
-	},
+	#pragma region リムライト
+		{
+			VERTEX_SHADER_TYPE::RimLight1Frame,
+			"RimLightVS_1Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::RimLight4Frame,
+			"RimLightVS_4Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::RimLight8Frame,
+			"RimLightVS_8Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::RimLightNMap1Frame,
+			"RimLightVS_NMap1Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::RimLightNMap4Frame,
+			"RimLightVS_NMap4Frame"
+		},
+		{
+			VERTEX_SHADER_TYPE::RimLightNMap8Frame,
+			"RimLightVS_NMap8Frame"
+		},
+	#pragma endregion
 
+		// 水面
+		{
+			VERTEX_SHADER_TYPE::Water,
+			"WaterVS"
+		},
 	};
 
 	// 頂点シェーダー
 	std::map<VERTEX_SHADER_TYPE, int> vertexShaderList;
 
 
-	// ピクセルシェーダーのパステーブル
-	const std::map<PIXEL_SHADER_TYPE, std::string> PIXEL_SHADER_PATH_TABLE = {
+	// ピクセルシェーダーの名前テーブル
+	const std::map<PIXEL_SHADER_TYPE, std::string> PIXEL_SHADER_NAME_TABLE = {
 
-		// =========================
-		// Model
-		// =========================
-
+		// デフォルト
 		{
-			PIXEL_SHADER_TYPE::Toon,
-			"Data/Shader/Model/ToonPS.cso"
+			PIXEL_SHADER_TYPE::Default,
+			"DefaultPS"
 		},
 
+		// リムライト
 		{
-			PIXEL_SHADER_TYPE::Dissolve,
-			"Data/Shader/Model/DissolvePS.cso"
+			PIXEL_SHADER_TYPE::RimLight,
+			"RimLightPS"
 		},
 
+		// 水面
 		{
 			PIXEL_SHADER_TYPE::Water,
-			"Data/Shader/Model/WaterPS.cso"
+			"WaterPS"
 		},
 
-		{
-			PIXEL_SHADER_TYPE::Test,
-			"Data/Shader/Model/TestPS.cso"
-		},
+	#pragma region ポストエフェクト
 
-		// =========================
-		// PostEffect
-		// =========================
-
-		{
-			PIXEL_SHADER_TYPE::GrayScale,
-			"Data/Shader/PostEffect/GrayScalePS.cso"
-		},
-
+		// ブラウン管
 		{
 			PIXEL_SHADER_TYPE::CRT,
-			"Data/Shader/PostEffect/CRT_PS.cso"
+			"CRT_PS"
 		},
 
+		// 集中線
 		{
 			PIXEL_SHADER_TYPE::FocusLines,
-			"Data/Shader/PostEffect/FocusLinesPS.cso"
+			"FocusLinesPS"
 		},
+
+
+	#pragma endregion 
 
 	};
 

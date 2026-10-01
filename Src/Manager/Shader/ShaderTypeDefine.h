@@ -3,33 +3,39 @@
 // 頂点シェーダーの種類
 enum class VERTEX_SHADER_TYPE
 {
-    // ポストエフェクト用
-    PostEffect,
+    // デフォルト
+    Default1Frame,
+    Default4Frame,
+    Default8Frame,
+    DefaultNMap1Frame,
+    DefaultNMap4Frame,
+    DefaultNMap8Frame,
 
-	// 3Dモデル用(通常)
-    Default,
+    // リムライト
+    RimLight1Frame,
+    RimLight4Frame,
+    RimLight8Frame,
+    RimLightNMap1Frame,
+    RimLightNMap4Frame,
+    RimLightNMap8Frame,
 
-	// 3Dモデル用(スキニング)
-    Skinning,
-
-	// 3Dモデル用(スキニング+テクスチャアニメーション)
+	// 水面
     Water,
 };
 
 // ピクセルシェーダーの種類
 enum class PIXEL_SHADER_TYPE
 {
-    // トゥーン
-    Toon,
+    // デフォルト
+    Default,
 
-    // 
-    Dissolve,
+    // リムライト
+    RimLight,
 
-    // 
+    // 水面
     Water,
 
-
-    Test,
+#pragma region ポストエフェクト
 
 	// グレースケールポストエフェクト
     GrayScale,
@@ -39,4 +45,17 @@ enum class PIXEL_SHADER_TYPE
 
     // 集中線ポストエフェクト
     FocusLines,
+
+#pragma endregion
+};
+
+// 頂点タイプ
+enum SHADER_VERTEX_TYPE
+{
+    Frame1,
+    Frame4,
+    Frame8,
+    NMapFrame1,
+    NMapFrame4,
+    NMapFrame8,
 };

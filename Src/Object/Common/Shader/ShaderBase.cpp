@@ -10,7 +10,7 @@ ShaderBase::ShaderBase() :
 
 void ShaderBase::Apply(void)
 {
-    //MV1SetUseOrigShader(true);
+    MV1SetUseOrigShader(true);
 
     // 頂点シェーダーの適用
     if (vertexShaderHandle != -1) { SetUseVertexShader(vertexShaderHandle); }
