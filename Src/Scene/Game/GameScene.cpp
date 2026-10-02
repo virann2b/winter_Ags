@@ -25,6 +25,7 @@
 
 #include "../../Object/Player/Player.h"
 
+
 #include "../../Object/Water.h"
 
 GameScene::GameScene() : SceneBase()
@@ -39,11 +40,12 @@ void GameScene::SubPostLoad(void)
 
 	AddActor(new Player);
 
+
 }
 
 void GameScene::SubPostInit(void)
 {
-	AddPostEffect(new FocusLinesPostEffect(1.5f, 18.0f, 100.0f));
+	//AddPostEffect(new FocusLinesPostEffect(1.5f, 18.0f, 100.0f));
 }
 
 void GameScene::SubPostUpdate(void)

@@ -9,6 +9,7 @@
 #include "../Common/Shader/WaterShader.h"
 
 #include "Wepon/PlayerKickDownAttackCollOperator.h"
+#include "Wepon/Sword.h"
 
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
@@ -91,6 +92,10 @@ void Player::Load(void)
 		new PlayerKickDownAttackCollOperator(100.0f, Vector3(0, -100, 100), trans);
 
 	AddChildActor(kickDownAttackCollOperator);
+
+	Sword* sword = new Sword(trans);
+
+	AddChildActor(sword);
 #pragma endregion
 
 
@@ -164,7 +169,7 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 
 void Player::SubUpdate(void)
 {
-	static char type = 0;
+	/*static char type = 0;
 	static bool prev = false, now = false;
 
 	prev = now;
@@ -178,5 +183,5 @@ void Player::SubUpdate(void)
 		case 0: { CreateShader(new DefaultShader()); break; }
 		case 1: { CreateShader(new RimLightShader()); break; }
 		}
-	}
+	}*/
 }
