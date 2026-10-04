@@ -38,5 +38,12 @@ void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const Co
 
 void Sword::SubUpdate(void)
 {
-	trans.pos = playerTrans.pos;
+	// フレーム22のワールドマトリクスを取得
+	MATRIX mat = MV1GetFrameLocalWorldMatrix(playerTrans.model, RIGHT_HAND_FLAME_INDEX);
+
+	// 位置補正（プレイヤーの向きに合わせて微調整）
+	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+
+	// 武器自身の位置を適用
+	trans.pos = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
 }

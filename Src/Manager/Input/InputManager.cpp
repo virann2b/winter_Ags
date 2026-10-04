@@ -60,6 +60,10 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerDash, KEY_INPUT_LSHIFT);
 	SET_C_BUTTON(KEY_TYPE::PlayerDash, XINPUT_BUTTON_A);
 
+	//回避
+	SET_MOUSE_BUTTON(KEY_TYPE::PlayerRoll, MOUSE_INPUT_RIGHT);
+	
+
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerKickDownAttack, MOUSE_INPUT_LEFT);
 
 #pragma endregion

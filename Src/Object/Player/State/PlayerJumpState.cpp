@@ -36,14 +36,16 @@ PlayerJumpState::PlayerJumpState(
 
 	changeStateIdle(changeStateIdle),
 
-	step(STEP::Start)
+	step(STEP::Start),
+
+	jumpCount(0)
 {
 }
 
 void PlayerJumpState::OwnStateConditionUpdate(void)
 {
 	// ジャンプキーのダウントリガーで遷移
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerJump).down) { OwnChangeState(); }
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerJump).down&&jumpCount < MAX_JUMP_COUNT) { OwnChangeState(); }
 }
 
 void PlayerJumpState::Enter(void)
@@ -53,6 +55,9 @@ void PlayerJumpState::Enter(void)
 
 	// ジャンプ開始アニメを再生
 	playAnimeJumpStart();
+
+	//ジャンプ回数を加算
+	jumpCount++;
 }
 
 void PlayerJumpState::Update(void)
@@ -93,6 +98,8 @@ void PlayerJumpState::Update(void)
 			vec.Normalize();
 		}
 
+		OwnStateConditionUpdate();
+
 		// 最終的に入力があれば移動させる
 		if (vec != 0.0f) {
 
@@ -105,6 +112,9 @@ void PlayerJumpState::Update(void)
 
 		// 着地
 		if (isGround) {
+
+			//ジャンプカウントリセット
+			jumpCount = 0;
 
 			// 着地のアニメーションを再生
 			playAnimeStamp();

@@ -11,6 +11,7 @@ enum class COLLIDER_SHAPE
 	Box,
 	Mesh,
 	XzCircle,
+	Screen,
 };
 
 // コライダータグ列挙型定義

@@ -14,7 +14,7 @@
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
 #include "State/PlayerJumpState.h"
-#include "State/PlayerKickDownAttackState.h"
+#include "State/PlayerRollState.h"
 
 Player::Player() : CharacterBase()
 {
@@ -43,7 +43,7 @@ void Player::Load(void)
 #pragma region モデル設定
 
 	// モデルの読み込み
-	trans.LoadModel("Player/Idle");
+	trans.LoadModel("Player/Player");
 
 	// モデルのスケール設定
 	trans.scale = 1;
@@ -55,7 +55,7 @@ void Player::Load(void)
 	trans.localAngle = Vector3(0.0f, Deg2Rad(180.0f), 0.0f);
 
 	// シェーダー登録
-	CreateShader(new DefaultShader());
+	//CreateShader(new DefaultShader());
 
 #pragma endregion
 
@@ -65,8 +65,12 @@ void Player::Load(void)
 	// アニメーションコントローラーの生成
 	CreateAnimationController();
 
-	// アニメーションの読み込み
-	AddInFbxAnimation((int)ANIME_TYPE::Max, ANIME_SPEED_TABLE, ANIME_LOOP_TABLE);
+	//個別のアニメーション読み込み
+	for (int i = 0; i < (int)ANIME_TYPE::Max; ++i) 
+	{
+		AddAnimation(i, ANIME_SPEED_TABLE[i], ANIME_LOOP_TABLE[i], ANIME_PATH_TABLE[i]);
+	}
+	
 
 #pragma endregion
 
@@ -114,7 +118,7 @@ void Player::Load(void)
 			10.0f, 1.5f, 300,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			ACCEL_MAX,
-			[&]() { AnimePlay(ANIME_TYPE::Walk); },
+			[&]() { AnimePlay(ANIME_TYPE::Run); },
 			[&]() { AnimePlay(ANIME_TYPE::Run); }
 		)
 	);
@@ -123,27 +127,36 @@ void Player::Load(void)
 	AddState(
 		STATE::Jump,
 		new PlayerJumpState(
-			20.0f, velocity.y, isGround,
+			23.0f, velocity.y, isGround,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
-			[&]() { AnimePlay(ANIME_TYPE::JumpLoop); },
-			[&]() { AnimePlay(ANIME_TYPE::Stamp); },
+			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
+			[&]() { AnimePlay(ANIME_TYPE::JumpEnd); },
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]() { ChangeState(STATE::Idle); }
 		)
 	);
 
-	// 攻撃（踏みつけ）状態
 	AddState(
-		STATE::KickDownAttack,
-		new PlayerKickDownAttackState(
-			0.9f, 1.0f,
-			*kickDownAttackCollOperator,
-			[&]() { AnimePlay(ANIME_TYPE::KickDown); },
-			[&]() { return GetAnimeRatio(); },
-			[&]() { ChangeState(STATE::Idle); }
+		STATE::Roll,
+		new PlayerRollState(
+			[&]() {ChangeState(STATE::Idle); },
+			[&]() {AnimePlay(ANIME_TYPE::Roll); },
+			std::bind(&Player::IsAnimeEnd, this)
 		)
 	);
+	
+	//// 攻撃（踏みつけ）状態
+	//AddState(
+	//	STATE::KickDownAttack,
+	//	new PlayerKickDownAttackState(
+	//		0.9f, 1.0f,
+	//		*kickDownAttackCollOperator,
+	//		[&]() { AnimePlay(ANIME_TYPE::KickDown); },
+	//		[&]() { return GetAnimeRatio(); },
+	//		[&]() { ChangeState(STATE::Idle); }
+	//	)
+	//);
 
 	// 「待機状態」->「移動状態」の自動遷移登録
 	RegisterStateTransition(STATE::Idle, STATE::Move);
@@ -155,10 +168,15 @@ void Player::Load(void)
 	// 「移動状態」->「ジャンプ状態」の自動遷移登録
 	RegisterStateTransition(STATE::Move, STATE::Jump);
 
-	// 「待機状態」->「攻撃（踏みつけ）状態」の自動遷移登録
-	RegisterStateTransition(STATE::Idle, STATE::KickDownAttack);
-	// 「移動状態」->「攻撃（踏みつけ）状態」の自動遷移登録
-	RegisterStateTransition(STATE::Move, STATE::KickDownAttack);
+	// 「移動状態」->「回避状態」の自動遷移登録
+	RegisterStateTransition(STATE::Idle, STATE::Roll);
+	// 「移動状態」->「回避状態」の自動遷移登録
+	RegisterStateTransition(STATE::Move, STATE::Roll);
+
+	//// 「待機状態」->「攻撃（踏みつけ）状態」の自動遷移登録
+	//RegisterStateTransition(STATE::Idle, STATE::KickDownAttack);
+	//// 「移動状態」->「攻撃（踏みつけ）状態」の自動遷移登録
+	//RegisterStateTransition(STATE::Move, STATE::KickDownAttack);
 
 #pragma endregion
 }

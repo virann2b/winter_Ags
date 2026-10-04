@@ -42,6 +42,9 @@ private:
 	// ジャンプ力
 	const float JUMP_POWER;
 
+	// ジャンプ回数の最大値
+	static constexpr int MAX_JUMP_COUNT = 2;
+
 #pragma endregion
 
 #pragma region 受け取る参照変数・関数
@@ -85,4 +88,7 @@ private:
 
 	// 現在ステップ
 	STEP step;
+
+	// ジャンプカウント
+	int jumpCount;
 };

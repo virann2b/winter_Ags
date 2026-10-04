@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\State\PlayerRollState.cpp" />
     <ClCompile Include="Src\Object\Player\Wepon\Gun.cpp" />
     <ClCompile Include="Src\Application\Application.cpp" />
     <ClCompile Include="Src\Common\Vector2.cpp" />
@@ -208,6 +209,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Player\Wepon\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\State\PlayerRollState.h" />
     <ClInclude Include="Src\Object\Player\Wepon\Gun.h" />
     <ClInclude Include="Src\Application\resource.h" />
     <ClInclude Include="Src\Application\Application.h" />

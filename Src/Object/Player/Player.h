@@ -25,7 +25,7 @@ private:
 		Move,
 		Jump,
 
-		KickDownAttack,
+		Roll,
 
 		Max
 	};
@@ -39,45 +39,29 @@ private:
 
 		Idle,
 
-		Walk,
 		Run,
 
-		Damage,
-		Down,
-		Death,
-		
-		KickDown,
-
-		ForwardThrow,
-		Toss,
-
 		JumpStart,
-		JumpLoop,
-		Stamp,
+		JumpIdle,
+		JumpEnd,
+
+		Roll,
 
 		Max
 	};
 
 	// アニメーション再生速度テーブル
-	float ANIME_SPEED_TABLE[(int)ANIME_TYPE::Max] =
+	const float ANIME_SPEED_TABLE[(int)ANIME_TYPE::Max] =
 	{
 		1.0f,	// Idle
 
-		1.0f,	// Walk
-		1.5f,	// Run
+		0.8f,	// Run
 
-		1.0f,	// Damage
-		1.0f,	// Down
-		1.0f,	// Death
+		1.0f,	// JumpStart
+		1.0f,	// JumpIdle
+		1.0f,	// JumpEnd
 
-		1.0f,	// KickDown
-
-		1.0f,	// ForwardThrow
-		1.0f,	// Toss
-
-		3.0f,	// JumpStart
-		1.0f,	// JumpLoop
-		3.0f,	// Stamp
+		1.0f,   // Roll
 	};
 
 	// アニメーションループ再生フラグテーブル
@@ -85,22 +69,29 @@ private:
 	{
 		true,	// Idle
 
-		true,	// Walk
 		true,	// Run
 
-		false,	// Damage
-		false,	// Down
-		false,	// Death
+		false,  //JumpStart
+		true,	//JumpIdle
+		false,  //JumpEnd
 
-		false,	// KickDown
-
-		false,	// ForwardThrow
-		false,	// Toss
-
-		false,	// JumpStart
-		true,	// JumpLoop
-		false,	// Stamp
+		false,  // Roll
 	};
+
+	// アニメーションパステーブル
+	const char* ANIME_PATH_TABLE[(int)ANIME_TYPE::Max] =
+	{
+		"Data/Model/Player/Idle.mv1",//Idle
+
+		"Data/Model/Player/Run.mv1",//Run
+
+		"Data/Model/Player/Jump_Start.mv1",//JumpStart
+		"Data/Model/Player/Jump_Idle.mv1",//JumpIdle
+		"Data/Model/Player/Jump_End.mv1",//JumpEnd
+
+		"Data/Model/Player/Roll.mv1",//Roll
+	};
+
 
 #pragma endregion
 

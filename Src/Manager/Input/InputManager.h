@@ -55,6 +55,9 @@ public:
 
 		PlayerKickDownAttack,
 
+		//‰ñ”ğ
+		PlayerRoll,
+
 #pragma endregion
 
 #pragma region ƒJƒƒ‰‘€ì

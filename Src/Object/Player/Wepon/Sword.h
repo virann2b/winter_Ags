@@ -30,9 +30,12 @@ private:
 	// Wait状態の待ち時間
 	const unsigned short WAIT_TIME = 60;
 	//落下時の最大Y座標
-	constexpr static float MAX_FALL_POS_Y = -200.0f;
+	static constexpr float MAX_FALL_POS_Y = -200.0f;
 	//拡大量
-	constexpr static float SCALE_POW = 0.05f;
+	static constexpr float SCALE_POW = 0.05f;
+
+	//右手のフレーム番号
+	static constexpr int RIGHT_HAND_FLAME_INDEX = 17;
 
 #pragma endregion
 
