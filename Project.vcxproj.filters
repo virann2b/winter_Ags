@@ -46,9 +46,7 @@
     <ClCompile Include="Src\Object\Common\Shader\TestShader.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerIdleState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerJumpState.cpp" />
-    <ClCompile Include="Src\Object\Player\State\PlayerKickDownAttackState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerMoveState.cpp" />
-    <ClCompile Include="Src\Object\Player\Wepon\PlayerKickDownAttackCollOperator.cpp" />
     <ClCompile Include="Src\Object\Player\Player.cpp" />
     <ClCompile Include="Src\Object\Common\Shader\DefaultShader.cpp" />
     <ClCompile Include="Src\Object\Common\Shader\RimLightShader.cpp" />
@@ -62,6 +60,7 @@
     <ClCompile Include="Src\Object\Player\State\PlayerRollState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\Chilbi.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.cpp" />
+    <ClCompile Include="Src\Common\Quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -132,9 +131,7 @@
     <ClInclude Include="Src\Object\Common\Shader\TestShader.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerIdleState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerJumpState.h" />
-    <ClInclude Include="Src\Object\Player\State\PlayerKickDownAttackState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerMoveState.h" />
-    <ClInclude Include="Src\Object\Player\Wepon\PlayerKickDownAttackCollOperator.h" />
     <ClInclude Include="Src\Object\Player\Player.h" />
     <ClInclude Include="Src\Object\Common\Shader\DefaultShader.h" />
     <ClInclude Include="Src\Object\Common\Shader\RimLightShader.h" />
@@ -149,6 +146,7 @@
     <ClInclude Include="Src\Object\Player\State\PlayerRollState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\Chilbi.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.h" />
+    <ClInclude Include="Src\Common\Quaternion.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

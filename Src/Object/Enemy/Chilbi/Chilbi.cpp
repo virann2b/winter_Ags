@@ -47,7 +47,7 @@ void Chilbi::Load(void)
 	trans.centerDiff = Vector3(0.0f, -102.81f, 0.0f) * trans.scale;
 
 	// モデルの角度のズレの補正
-	trans.localAngle = Vector3(0.0f, Deg2Rad(180.0f), 0.0f);
+	trans.SetLocalRotation(Quaternion::FromRotationY(Deg2Rad(180.0f)));
 
 	//初期座標登録
 	trans.pos = initPos;

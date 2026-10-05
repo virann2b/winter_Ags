@@ -8,7 +8,6 @@
 #include "../Common/Shader/RimLightShader.h"
 #include "../Common/Shader/WaterShader.h"
 
-#include "Wepon/PlayerKickDownAttackCollOperator.h"
 #include "Wepon/Sword/Sword.h"
 #include "Wepon/Gun/Gun.h"
 
@@ -53,7 +52,7 @@ void Player::Load(void)
 	trans.centerDiff = Vector3(0.0f, -102.81f, 0.0f) * trans.scale;
 
 	// モデルの角度のズレの補正
-	trans.localAngle = Vector3(0.0f, Deg2Rad(180.0f), 0.0f);
+	trans.SetLocalRotation(Quaternion::FromRotationY(Deg2Rad(180.0f)));
 
 	// シェーダー登録
 	//CreateShader(new DefaultShader());
@@ -92,17 +91,12 @@ void Player::Load(void)
 
 #pragma region 下位アクターの生成
 
-	// 攻撃当たり判定管理クラス
-	PlayerKickDownAttackCollOperator* kickDownAttackCollOperator =
-		new PlayerKickDownAttackCollOperator(100.0f, Vector3(0, -100, 100), trans);
-
-	AddChildActor(kickDownAttackCollOperator);
-
 	Sword* sword = new Sword(trans);
+	AddChildActor(sword);
 
 	Gun* gun = new Gun(trans);
-
 	AddChildActor(gun);
+
 #pragma endregion
 
 

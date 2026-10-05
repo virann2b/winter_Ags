@@ -98,7 +98,7 @@ private:
 	void Gravity(void);
 
 	// 重力加速度
-	static constexpr float GRAVITY = -0.7f;
+	static constexpr float GRAVITY = -0.9f;
 	// 重力の最大値
 	static constexpr float GRAVITY_MAX = -100.0f;
 
