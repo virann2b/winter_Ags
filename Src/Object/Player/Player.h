@@ -2,6 +2,7 @@
 
 #include "../Common/CharacterBase/CharacterBase.h"
 
+
 class Player : public CharacterBase
 {
 public:
@@ -91,7 +92,12 @@ private:
 
 		"Data/Model/Player/Roll.mv1",//Roll
 	};
+#pragma endregion
 
+#pragma region 定数
+
+	//プレイヤーサイズ
+	static constexpr float PLAYER_SCALE = 1.3f;
 
 #pragma endregion
 

@@ -9,7 +9,8 @@
 #include "../Common/Shader/WaterShader.h"
 
 #include "Wepon/PlayerKickDownAttackCollOperator.h"
-#include "Wepon/Sword.h"
+#include "Wepon/Sword/Sword.h"
+#include "Wepon/Gun/Gun.h"
 
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
@@ -46,7 +47,7 @@ void Player::Load(void)
 	trans.LoadModel("Player/Player");
 
 	// モデルのスケール設定
-	trans.scale = 1;
+	trans.scale = PLAYER_SCALE;
 
 	// モデルの中心点のズレの補正
 	trans.centerDiff = Vector3(0.0f, -102.81f, 0.0f) * trans.scale;
@@ -99,7 +100,9 @@ void Player::Load(void)
 
 	Sword* sword = new Sword(trans);
 
-	AddChildActor(sword);
+	Gun* gun = new Gun(trans);
+
+	AddChildActor(gun);
 #pragma endregion
 
 
@@ -127,7 +130,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Jump,
 		new PlayerJumpState(
-			23.0f, velocity.y, isGround,
+			19.0f, velocity.y, isGround,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
 			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
@@ -146,17 +149,6 @@ void Player::Load(void)
 		)
 	);
 	
-	//// 攻撃（踏みつけ）状態
-	//AddState(
-	//	STATE::KickDownAttack,
-	//	new PlayerKickDownAttackState(
-	//		0.9f, 1.0f,
-	//		*kickDownAttackCollOperator,
-	//		[&]() { AnimePlay(ANIME_TYPE::KickDown); },
-	//		[&]() { return GetAnimeRatio(); },
-	//		[&]() { ChangeState(STATE::Idle); }
-	//	)
-	//);
 
 	// 「待機状態」->「移動状態」の自動遷移登録
 	RegisterStateTransition(STATE::Idle, STATE::Move);
@@ -173,10 +165,6 @@ void Player::Load(void)
 	// 「移動状態」->「回避状態」の自動遷移登録
 	RegisterStateTransition(STATE::Move, STATE::Roll);
 
-	//// 「待機状態」->「攻撃（踏みつけ）状態」の自動遷移登録
-	//RegisterStateTransition(STATE::Idle, STATE::KickDownAttack);
-	//// 「移動状態」->「攻撃（踏みつけ）状態」の自動遷移登録
-	//RegisterStateTransition(STATE::Move, STATE::KickDownAttack);
 
 #pragma endregion
 }

@@ -13,7 +13,7 @@ public:
 	/// <param name="focusPos">常に画角に収めたい対象</param>
 	/// <param name="TARGET_DISTANCE_MIN">追従対象からカメラ座標までの最低距離</param>
 	/// <param name="TARGET_DISTANCE_MAX">追従対象からカメラ座標までの最大距離</param>
-	/// <param name="fov"></param>
+	/// <param name="fov">視野角</param>
 	FollowAutoCamera(
 		const Vector3* targetPos,
 		const Vector3* focusPos,

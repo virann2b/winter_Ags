@@ -148,8 +148,10 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Chilbi\Chilbi.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerRollState.cpp" />
-    <ClCompile Include="Src\Object\Player\Wepon\Gun.cpp" />
+    <ClCompile Include="Src\Object\Player\Wepon\Gun\Gun.cpp" />
     <ClCompile Include="Src\Application\Application.cpp" />
     <ClCompile Include="Src\Common\Vector2.cpp" />
     <ClCompile Include="Src\Common\Vector2I.cpp" />
@@ -206,11 +208,13 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Scene\SceneBase.cpp" />
     <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\Title\TitleScene.cpp" />
-    <ClCompile Include="Src\Object\Player\Wepon\Sword.cpp" />
+    <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.h" />
+    <ClInclude Include="Src\Object\Enemy\Chilbi\Chilbi.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerRollState.h" />
-    <ClInclude Include="Src\Object\Player\Wepon\Gun.h" />
+    <ClInclude Include="Src\Object\Player\Wepon\Gun\Gun.h" />
     <ClInclude Include="Src\Application\resource.h" />
     <ClInclude Include="Src\Application\Application.h" />
     <ClInclude Include="Src\Common\Vector2.h" />
@@ -291,7 +295,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClInclude Include="Src\Scene\SceneManager.h" />
     <ClInclude Include="Src\Scene\Title\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
-    <ClInclude Include="Src\Object\Player\Wepon\Sword.h" />
+    <ClInclude Include="Src\Object\Player\Wepon\Sword\Sword.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

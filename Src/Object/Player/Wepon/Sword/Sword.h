@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Common/ActorBase/ActorBase.h"
+#include "../../../Common/ActorBase/ActorBase.h"
 
 
 class Sword

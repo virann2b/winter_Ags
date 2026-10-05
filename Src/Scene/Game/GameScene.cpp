@@ -10,6 +10,7 @@
 #include "../../Manager/Font/FontManager.h"
 
 #include "../../Manager/Camera/FollowRemote/FollowRemoteCamera.h"
+#include "../../Manager/Camera/FollowAuto/FollowAutoCamera.h"
 
 #include "../SceneManager.h"
 
@@ -25,6 +26,8 @@
 
 #include "../../Object/Player/Player.h"
 
+#include "../../Object/Enemy/Chilbi/Chilbi.h"
+
 
 #include "../../Object/Water.h"
 
@@ -39,6 +42,9 @@ void GameScene::SubPostLoad(void)
 	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
 
 	AddActor(new Player);
+
+	//ìGê∂ê¨
+	AddActor(new Chilbi(Vector3(300,50, 200)));
 
 
 }
@@ -68,5 +74,11 @@ void GameScene::SubUiDraw(void)
 
 void GameScene::CreateCamera(void)
 {
-	camera = new FollowRemoteCamera(&ActorSerch<Player>(actors)->GetTrans().pos);
+	//camera = new FollowRemoteCamera(&ActorSerch<Player>(actors)->GetTrans().pos);
+
+	camera = new FollowAutoCamera(
+		&ActorSerch<Player>(actors)->GetTrans().pos,
+		&ActorSerch<Chilbi>(actors)->GetTrans().pos,
+		100.0f,300.0f,-30.0f
+		);
 }

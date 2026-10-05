@@ -1,20 +1,19 @@
-#include "Sword.h"
+#include "Gun.h"
 
-#include "../../../Utility/Utility.h"
-#include "../../Common/Collider/CapsuleCollider.h"
+#include "../../../../Utility/Utility.h"
+#include "../../../Common/Collider/CapsuleCollider.h"
 
-
-Sword::Sword(
-	const Transform& playerTrans)
-	:ActorBase(),
+Gun::Gun(const Transform& playerTrans)
+	:
+	ActorBase(),
 	playerTrans(playerTrans)
 {
 }
 
-void Sword::Load(void)
+void Gun::Load(void)
 {
 	// モデルをロード
-	trans.LoadModel("Sword/Sword");
+	trans.LoadModel("Gun/Gun");
 
 
 	AddCollider(
@@ -32,11 +31,11 @@ void Sword::Load(void)
 	SetJudgeFlg(false);
 }
 
-void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
+void Gun::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
 }
 
-void Sword::SubUpdate(void)
+void Gun::SubUpdate(void)
 {
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(playerTrans.model, RIGHT_HAND_FLAME_INDEX);

@@ -57,9 +57,11 @@
     <ClCompile Include="Src\Scene\Common\PostEffect\GrayScalePostEffect\GrayScalePostEffect.cpp" />
     <ClCompile Include="Src\Scene\Common\PostEffect\CRTPostEffect\CRTPostEffect.cpp" />
     <ClCompile Include="Src\Scene\Common\PostEffect\FocusLinesPostEffect\FocusLinesPostEffect.cpp" />
-    <ClCompile Include="Src\Object\Player\Wepon\Gun.cpp" />
-    <ClCompile Include="Src\Object\Player\Wepon\Sword.cpp" />
+    <ClCompile Include="Src\Object\Player\Wepon\Gun\Gun.cpp" />
+    <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerRollState.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Chilbi\Chilbi.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -142,9 +144,11 @@
     <ClInclude Include="Src\Scene\Common\PostEffect\GrayScalePostEffect\GrayScalePostEffect.h" />
     <ClInclude Include="Src\Scene\Common\PostEffect\CRTPostEffect\CRTPostEffect.h" />
     <ClInclude Include="Src\Scene\Common\PostEffect\FocusLinesPostEffect\FocusLinesPostEffect.h" />
-    <ClInclude Include="Src\Object\Player\Wepon\Gun.h" />
-    <ClInclude Include="Src\Object\Player\Wepon\Sword.h" />
+    <ClInclude Include="Src\Object\Player\Wepon\Gun\Gun.h" />
+    <ClInclude Include="Src\Object\Player\Wepon\Sword\Sword.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerRollState.h" />
+    <ClInclude Include="Src\Object\Enemy\Chilbi\Chilbi.h" />
+    <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />
