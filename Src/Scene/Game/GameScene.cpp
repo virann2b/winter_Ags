@@ -9,8 +9,7 @@
 #include "../../Manager/Sound/SoundManager.h"
 #include "../../Manager/Font/FontManager.h"
 
-#include "../../Manager/Camera/FollowRemote/FollowRemoteCamera.h"
-#include "../../Manager/Camera/FollowAuto/FollowAutoCamera.h"
+#include "../../Manager/Camera/Game/GameCamera.h"
 
 #include "../SceneManager.h"
 
@@ -74,11 +73,19 @@ void GameScene::SubUiDraw(void)
 
 void GameScene::CreateCamera(void)
 {
-	//camera = new FollowRemoteCamera(&ActorSerch<Player>(actors)->GetTrans().pos);
 
-	camera = new FollowAutoCamera(
+	camera = new GameCamera(
 		&ActorSerch<Player>(actors)->GetTrans().pos,
 		&ActorSerch<Chilbi>(actors)->GetTrans().pos,
-		100.0f,300.0f,-30.0f
+		Vector3::Zonly(-400),
+		Vector3(0.0f, 100.0f, 0.0f),
+		3.0f * (DX_PI_F / 180.0f),
+		Vector3(),
+		350.0f, 400.0f,
+		80.0f * (DX_PI_F / 180.0f),
+		true,                // Remoteで開始
+		KEY_TYPE::PlayerLockOn,      // ターゲットキー
+		KEY_TYPE::PlayerGunMode        // 銃キー
 		);
+
 }

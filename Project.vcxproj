@@ -148,6 +148,8 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\Camera\Game\GameCamera.cpp" />
+    <ClCompile Include="Src\Manager\Camera\Gun\GunCamera.cpp" />
     <ClCompile Include="Src\Common\Quaternion.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\Chilbi.cpp" />
@@ -210,6 +212,8 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Camera\Game\GameCamera.h" />
+    <ClInclude Include="Src\Manager\Camera\Gun\GunCamera.h" />
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiIdleState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\Chilbi.h" />

@@ -61,10 +61,10 @@ void InputManager::Init(void)
 	SET_C_BUTTON(KEY_TYPE::PlayerDash, XINPUT_BUTTON_A);
 
 	//回避
-	SET_MOUSE_BUTTON(KEY_TYPE::PlayerRoll, MOUSE_INPUT_RIGHT);
+	SET_KEYBOARD(KEY_TYPE::PlayerLockOn, KEY_INPUT_R);
 	
-
-	SET_MOUSE_BUTTON(KEY_TYPE::PlayerKickDownAttack, MOUSE_INPUT_LEFT);
+	//武器切り替え
+	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);
 
 #pragma endregion
 

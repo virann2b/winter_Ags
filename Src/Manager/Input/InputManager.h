@@ -53,7 +53,8 @@ public:
 		// ƒ_ƒbƒVƒ…
 		PlayerDash,
 
-		PlayerKickDownAttack,
+		PlayerLockOn,
+		PlayerGunMode,
 
 		//‰ñ”ð
 		PlayerRoll,
