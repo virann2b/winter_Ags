@@ -7,12 +7,10 @@
 
 
 PlayerRollState::PlayerRollState(
-	std::function<void(void)> MoveControlAnimeRoll,
 	std::function<void(void)> ChangeStateIdle,
 	std::function<void(void)> playAnimeRoll,
 	std::function<bool(void)> isAnimeEnd)
 	:
-	MoveControlAnimeRoll(MoveControlAnimeRoll),
 	ChangeStateIdle(ChangeStateIdle),
 	playAnimeRoll(playAnimeRoll),
 	isAnimeEnd(isAnimeEnd)
