@@ -26,6 +26,8 @@ private:
 		Move,
 		Jump,
 
+		NormalAttack,
+
 		Roll,
 
 		Max
@@ -46,6 +48,10 @@ private:
 		JumpIdle,
 		JumpEnd,
 
+		NormalAttack_1,
+		NormalAttack_2,
+		NormalAttack_3,
+
 		Roll,
 
 		Max
@@ -62,6 +68,10 @@ private:
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
 
+		1.0f,	// NormalAttack1
+		1.0f,	// NormalAttack2
+		1.0f,	// NormalAttack3
+
 		1.0f,   // Roll
 	};
 
@@ -76,6 +86,10 @@ private:
 		true,	//JumpIdle
 		false,  //JumpEnd
 
+		false,	// NormalAttack1
+		false,	// NormalAttack2
+		false,	// NormalAttack3
+
 		false,  // Roll
 	};
 
@@ -89,6 +103,10 @@ private:
 		"Data/Model/Player/Jump_Start.mv1",//JumpStart
 		"Data/Model/Player/Jump_Idle.mv1",//JumpIdle
 		"Data/Model/Player/Jump_End.mv1",//JumpEnd
+
+		"Data/Model/Player/NormalAttack_1.mv1",//NomalAttack_1
+		"Data/Model/Player/NormalAttack_2.mv1",//NomalAttack_2
+		"Data/Model/Player/NormalAttack_3.mv1",//NomalAttack_3
 
 		"Data/Model/Player/Roll.mv1",//Roll
 	};

@@ -60,8 +60,12 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerDash, KEY_INPUT_LSHIFT);
 	SET_C_BUTTON(KEY_TYPE::PlayerDash, XINPUT_BUTTON_A);
 
+	//攻撃
+	SET_MOUSE_BUTTON(KEY_TYPE::PlayerAttack, MOUSE_INPUT_LEFT);
+
 	//回避
-	SET_KEYBOARD(KEY_TYPE::PlayerLockOn, KEY_INPUT_R);
+	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
+
 	
 	//武器切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);

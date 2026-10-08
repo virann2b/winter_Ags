@@ -53,11 +53,19 @@ public:
 		// ダッシュ
 		PlayerDash,
 
+		// ロックオン
 		PlayerLockOn,
+
+		// 攻撃
+		PlayerAttack,
+
+		// ガンモード
 		PlayerGunMode,
 
 		//回避
 		PlayerRoll,
+
+
 
 #pragma endregion
 

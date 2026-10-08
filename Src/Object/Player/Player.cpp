@@ -15,6 +15,7 @@
 #include "State/PlayerMoveState.h"
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
+#include "State/PlayerNormalAttackState.h"
 
 Player::Player() : CharacterBase()
 {
@@ -134,12 +135,26 @@ void Player::Load(void)
 		)
 	);
 
+	//回避状態
 	AddState(
 		STATE::Roll,
 		new PlayerRollState(
 			[&]() {ChangeState(STATE::Idle); },
 			[&]() {AnimePlay(ANIME_TYPE::Roll); },
 			std::bind(&Player::IsAnimeEnd, this)
+		)
+	);
+
+	//攻撃状態
+	AddState(
+		STATE::NormalAttack,
+		new PlayerNormalAttack(
+			[&]() {ChangeState(STATE::Idle); },
+			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_1); },
+			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_2); },
+			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_3); },
+			std::bind(&Player::IsAnimeEnd, this),
+			std::bind(&Player::GetAnimeRatio,this)
 		)
 	);
 	
@@ -154,10 +169,15 @@ void Player::Load(void)
 	// 「移動状態」->「ジャンプ状態」の自動遷移登録
 	RegisterStateTransition(STATE::Move, STATE::Jump);
 
-	// 「移動状態」->「回避状態」の自動遷移登録
+	// 「待機状態」->「回避状態」の自動遷移登録
 	RegisterStateTransition(STATE::Idle, STATE::Roll);
 	// 「移動状態」->「回避状態」の自動遷移登録
 	RegisterStateTransition(STATE::Move, STATE::Roll);
+
+	// 「待機状態」->「回避状態」の自動遷移登録
+	RegisterStateTransition(STATE::Idle, STATE::NormalAttack);
+	// 「移動状態」->「回避状態」の自動遷移登録
+	RegisterStateTransition(STATE::Move, STATE::NormalAttack);
 
 
 #pragma endregion
