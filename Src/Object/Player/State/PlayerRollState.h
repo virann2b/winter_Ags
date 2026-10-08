@@ -8,6 +8,7 @@ class PlayerRollState : public CharacterStateBase
 public:
 
 	PlayerRollState(
+		std::function<void(void)> MoveControlAnimeRoll,
 		std::function<void(void)> ChangeStateIdle,
 		std::function<void(void)> playAnimeRoll,
 		std::function<bool(void)> isAnimeEnd
@@ -34,10 +35,15 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
+	// 回避アニメーション移動量
+	const std::function<void(void)> MoveControlAnimeRoll;
+
 	// 回避アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimeRoll;
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
+
+
 
 	// アニメーション終了取得関数のポインタ
 	const std::function<bool(void)> isAnimeEnd;

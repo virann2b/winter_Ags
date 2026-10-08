@@ -72,6 +72,7 @@ void Player::Load(void)
 		AddAnimation(i, ANIME_SPEED_TABLE[i], ANIME_LOOP_TABLE[i], ANIME_PATH_TABLE[i]);
 	}
 	
+	//AnimeMoveControl();
 
 #pragma endregion
 
@@ -139,6 +140,33 @@ void Player::Load(void)
 	AddState(
 		STATE::Roll,
 		new PlayerRollState(
+			[&]() 
+			{
+				// フレーム番号をフレーム名で取得する
+				int frnNo = MV1SearchFrame(trans.model, "mixamorig:Hips");
+
+				// 対象フレームのローカル行列を初期値にリセットする
+				MV1ResetFrameUserLocalMatrix(trans.model, frnNo);
+				// 対象フレームのローカル行列(大きさ、回転、位置)を取得する
+				auto mat = MV1GetFrameLocalMatrix(trans.model, frnNo);
+				auto scl = MGetSize(mat);
+				// 行列から大きさを取り出す
+				auto rot = MGetRotElem(mat);
+				auto pos = MGetTranslateElem(mat);
+
+				// 行列から回転を取り出す
+				// 行列から移動値を取り出す
+				// 大きさ、回転、位置をローカル行列に戻す
+				MATRIX mix = MGetIdent();
+				mix = MMult(mix, MGetScale(scl)); // 大きさ
+				mix = MMult(mix, rot); // 回転
+				// ここでローカル座標を行列に、そのまま戻さず、
+				// 調整したローカル座標を設定する
+				mix = MMult(mix, MGetTranslate({ 0.0f, 79.0f, 0.0f }));
+				// 合成した行列を対象フレームにセットし直して、
+				// アニメーションの移動値を無効化
+				MV1SetFrameUserLocalMatrix(trans.model, frnNo, mix);
+			},
 			[&]() {ChangeState(STATE::Idle); },
 			[&]() {AnimePlay(ANIME_TYPE::Roll); },
 			std::bind(&Player::IsAnimeEnd, this)
@@ -204,4 +232,32 @@ void Player::SubUpdate(void)
 		case 1: { CreateShader(new RimLightShader()); break; }
 		}
 	}*/
+}
+
+void Player::AnimeMoveControl(void)
+{
+	// フレーム番号をフレーム名で取得する
+	int frnNo = MV1SearchFrame(trans.model, "smartrig:Hips");
+
+	// 対象フレームのローカル行列を初期値にリセットする
+	MV1ResetFrameUserLocalMatrix(trans.model, frnNo);
+	// 対象フレームのローカル行列(大きさ、回転、位置)を取得する
+	auto mat = MV1GetFrameLocalMatrix(trans.model, frnNo);
+	auto scl = MGetSize(mat);
+	// 行列から大きさを取り出す
+	auto rot = MGetRotElem(mat);
+	auto pos = MGetTranslateElem(mat);
+
+	// 行列から回転を取り出す
+	// 行列から移動値を取り出す
+	// 大きさ、回転、位置をローカル行列に戻す
+	MATRIX mix = MGetIdent();
+	mix = MMult(mix, MGetScale(scl)); // 大きさ
+	mix = MMult(mix, rot); // 回転
+	// ここでローカル座標を行列に、そのまま戻さず、
+	// 調整したローカル座標を設定する
+	mix = MMult(mix, MGetTranslate({ 0.0f, 79.0f, 0.0f }));
+	// 合成した行列を対象フレームにセットし直して、
+	// アニメーションの移動値を無効化
+	MV1SetFrameUserLocalMatrix(trans.model, frnNo, mix);
 }

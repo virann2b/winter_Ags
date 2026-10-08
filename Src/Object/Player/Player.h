@@ -127,4 +127,7 @@ private:
 	}
 
 	void SubUpdate(void)override;
+
+	//アニメーション移動値無効
+	void AnimeMoveControl(void);
 };

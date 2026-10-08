@@ -59,6 +59,7 @@ private:
 
 #pragma endregion
 
+	//生成アニメーション関数テーブル
 	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX]
 	{
 		playAnimeNormalAttack_1,	//normalAttack1
@@ -67,8 +68,8 @@ private:
 	};
 
 	// 現在のコンボ段階 (0始まり)
-	int  comboIndex_;      // 現在のコンボ段階 (0始まり)
-	bool nextInput_;  // 次段への先行入力
+	int  comboIndex_;		// 現在のコンボ段階 (0始まり)
+	bool nextInput_;		// 次段への先行入力
 
 	//次回コンボ入力受付(再生比率で判断)
 	const bool IsComboInputWindow(void);
