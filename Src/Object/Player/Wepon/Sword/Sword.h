@@ -43,6 +43,7 @@ private:
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
+	Vector3 justPos;
 
 	void SubUpdate(void) override;
 };
