@@ -64,6 +64,7 @@
     <ClCompile Include="Src\Manager\Camera\Gun\GunCamera.cpp" />
     <ClCompile Include="Src\Manager\Camera\Game\GameCamera.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerNormalAttackState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerGunState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Src\Manager\Camera\Gun\GunCamera.h" />
     <ClInclude Include="Src\Manager\Camera\Game\GameCamera.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerNormalAttackState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerGunState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

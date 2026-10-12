@@ -25,10 +25,11 @@ private:
 		Idle,
 		Move,
 		Jump,
+		Roll,
 
 		NormalAttack,
 
-		Roll,
+		Gun,
 
 		Max
 	};
@@ -44,6 +45,8 @@ private:
 
 		Run,
 
+		Roll,
+
 		JumpStart,
 		JumpIdle,
 		JumpEnd,
@@ -52,7 +55,7 @@ private:
 		NormalAttack_2,
 		NormalAttack_3,
 
-		Roll,
+		Gun,
 
 		Max
 	};
@@ -64,6 +67,8 @@ private:
 
 		0.8f,	// Run
 
+		1.0f,   // Roll
+
 		1.0f,	// JumpStart
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
@@ -72,7 +77,8 @@ private:
 		1.0f,	// NormalAttack2
 		1.0f,	// NormalAttack3
 
-		1.0f,   // Roll
+		1.5f,	// Gun
+
 	};
 
 	// アニメーションループ再生フラグテーブル
@@ -82,6 +88,8 @@ private:
 
 		true,	// Run
 
+		false,  // Roll
+
 		false,  //JumpStart
 		true,	//JumpIdle
 		false,  //JumpEnd
@@ -90,7 +98,8 @@ private:
 		false,	// NormalAttack2
 		false,	// NormalAttack3
 
-		false,  // Roll
+		false,	// Gun
+
 	};
 
 	// アニメーションパステーブル
@@ -100,6 +109,8 @@ private:
 
 		"Data/Model/Player/Run.mv1",//Run
 
+		"Data/Model/Player/Roll.mv1",//Roll
+
 		"Data/Model/Player/Jump_Start.mv1",//JumpStart
 		"Data/Model/Player/Jump_Idle.mv1",//JumpIdle
 		"Data/Model/Player/Jump_End.mv1",//JumpEnd
@@ -108,7 +119,8 @@ private:
 		"Data/Model/Player/NormalAttack_2.mv1",//NomalAttack_2
 		"Data/Model/Player/NormalAttack_3.mv1",//NomalAttack_3
 
-		"Data/Model/Player/Roll.mv1",//Roll
+		"Data/Model/Player/Gun.mv1",//Gun
+
 	};
 #pragma endregion
 

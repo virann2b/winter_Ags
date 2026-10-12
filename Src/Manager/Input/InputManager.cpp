@@ -65,7 +65,6 @@ void InputManager::Init(void)
 
 	//回避
 	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
-
 	
 	//武器切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);

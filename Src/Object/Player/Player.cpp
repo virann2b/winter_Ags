@@ -16,6 +16,7 @@
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
 #include "State/PlayerNormalAttackState.h"
+#include "State/PlayerGunState.h"
 
 Player::Player() : CharacterBase()
 {
@@ -160,6 +161,15 @@ void Player::Load(void)
 			std::bind(&Player::GetAnimeRatio,this)
 		)
 	);
+
+	// GUNó‘Ô
+	AddState(
+		STATE::Gun,
+		new PlayerGunState(
+			[&]() { AnimePlay(ANIME_TYPE::Gun); },
+			[&]() { ChangeState(STATE::Idle); }
+			)
+	);
 	
 
 	// u‘Ò‹@ó‘Ôv->uˆÚ“®ó‘Ôv‚Ì©“®‘JˆÚ“o˜^
@@ -182,6 +192,11 @@ void Player::Load(void)
 	// uˆÚ“®ó‘Ôv->u‰ñ”ğó‘Ôv‚Ì©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::NormalAttack);
 
+
+	// u‘Ò‹@ó‘Ôv->ueó‘Ôv‚Ì©“®‘JˆÚ“o˜^
+	RegisterStateTransition(STATE::Idle, STATE::Gun);
+	// uˆÚ“®ó‘Ôv->ueó‘Ôv‚Ì©“®‘JˆÚ“o˜^
+	RegisterStateTransition(STATE::Move, STATE::Gun);
 
 #pragma endregion
 }
