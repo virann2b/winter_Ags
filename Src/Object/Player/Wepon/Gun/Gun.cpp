@@ -3,10 +3,15 @@
 #include "../../../../Utility/Utility.h"
 #include "../../../Common/Collider/CapsuleCollider.h"
 
-Gun::Gun(const Transform& playerTrans)
+#include "../../Player.h"
+
+
+
+Gun::Gun(const Transform& playerTrans, bool isActive)
 	:
 	ActorBase(),
-	playerTrans(playerTrans)
+	playerTrans(playerTrans),
+	isActive(isActive)
 {
 }
 
@@ -25,8 +30,9 @@ void Gun::Load(void)
 	//サイズ設定
 	trans.scale = 0.3f;
 
+	isActive = false;
 	//描画ON
-	SetIsDraw(true);
+	SetIsDraw(isActive);
 	//判定オフ
 	SetJudgeFlg(false);
 }
@@ -37,6 +43,9 @@ void Gun::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const Coll
 
 void Gun::SubUpdate(void)
 {
+
+	SetIsDraw(isActive);
+
 	// ボーンは名前で検索(名前はモデルに合わせて変更)
 	const int handFrame = MV1SearchFrame(playerTrans.model, "smartrig:RightHand");
 	if (handFrame < 0) { return; }

@@ -29,6 +29,7 @@ void PlayerGunState::Enter(void)
 
 void PlayerGunState::Update(void)
 {
-	//“ü—Í
 	
+	if (Input::GetIns().GetInfo(KEY_TYPE::Test).down) { ChangeStateIdle(); }
+	return;
 }

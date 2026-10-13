@@ -25,6 +25,8 @@ private:
 
 		Run,
 
+		Hit,
+
 		Max
 	};
 
@@ -39,6 +41,8 @@ private:
 
 		Run,
 
+		Hit,
+
 		Max
 	};
 
@@ -48,6 +52,8 @@ private:
 		1.0f,	// Idle
 
 		0.8f,	// Run
+
+		1.0f
 	};
 
 	// アニメーションループ再生フラグテーブル
@@ -56,6 +62,8 @@ private:
 		true,	// Idle
 
 		true,	// Run
+
+		false,	//Hit
 
 	};
 
@@ -66,6 +74,7 @@ private:
 
 		"Data/Model/Enemy/Chilbi/Run.mv1",//Run
 
+		"Data/Model/Enemy/Chilbi/Hit.mv1",//Hit
 	};
 #pragma endregion
 

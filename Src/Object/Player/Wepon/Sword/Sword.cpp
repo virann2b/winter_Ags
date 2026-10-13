@@ -4,10 +4,11 @@
 #include "../../../Common/Collider/CapsuleCollider.h"
 
 
-Sword::Sword(
-	const Transform& playerTrans)
-	:ActorBase("Data/Parameter/Wepon/"),
-	playerTrans(playerTrans)
+Sword::Sword(const Transform& playerTrans, bool isActive)
+	:
+	ActorBase("Data/Parameter/Wepon/"),
+	playerTrans(playerTrans),
+	isActive(isActive)
 {
 }
 
@@ -23,19 +24,24 @@ void Sword::Load(void)
 			Vector3::Yonly(-40.0f),
 			40.0f));
 
+	//角度の調整
+	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));
+
 	//サイズ設定
 	trans.scale = 0.7f;
 
 	//描画ON
-	SetIsDraw(true);
+	SetIsDraw(isActive);
 	//判定オフ
-	SetJudgeFlg(false);
+	SetJudgeFlg(isActive);
 
 	// その回のパラメーター名
 	std::string parameterName = "JustPos";
 	// そのパラメータが存在するかどうか
 	if (!IsParameterExist("SwordPos", parameterName)) { return; }
 	justPos =  GetParameterToVector3("SwordPos", parameterName);
+
+	SetJudgeFlg(false);
 
 }
 
@@ -44,8 +50,13 @@ void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const Co
 }
 
 void Sword::SubUpdate(void)
+{	
+	//描画ON
+	SetIsDraw(isActive);
+	//判定オフ
+	//SetJudgeFlg(isActive);
 
-{	// ボーンは名前で検索(名前はモデルに合わせて変更)
+	// ボーンは名前で検索(名前はモデルに合わせて変更)
 	const int handFrame = MV1SearchFrame(playerTrans.model, "smartrig:RightHand");
 	if (handFrame < 0) { return; }
 
@@ -73,9 +84,17 @@ void Sword::SubUpdate(void)
 	const Vector3 handPos =
 		Vector3(MGetTranslateElem(hand));
 
-	trans.pos = trans.pos + justPos;
+	// OFFSETは「回転だけ」で変換する
+	const Vector3 offset =
+		Vector3(
+			VTransform(
+				justPos.ToVECTOR(),
+				handRotationMat
+			)
+		);
 
-	trans.pos = handPos;
+
+	trans.pos = handPos + offset;
 	
 
 	// ========================================
@@ -86,5 +105,76 @@ void Sword::SubUpdate(void)
 		Quaternion::FromMatrix(
 			handRotationMat
 		)
+	);
+}
+
+void Sword::SubDraw(void)
+{
+	// 右手のボーンを取得
+	int frameIndex = MV1SearchFrame(
+		playerTrans.model,
+		"mixamorig:RightHand"
+	);
+
+	if (frameIndex == -1)
+	{
+		return;
+	}
+
+	// 右手のワールド行列
+	MATRIX handMatrix =
+		MV1GetFrameLocalWorldMatrix(
+			playerTrans.model,
+			frameIndex
+		);
+
+	// 右手の位置
+	VECTOR handPos = VGet(
+		handMatrix.m[3][0],
+		handMatrix.m[3][1],
+		handMatrix.m[3][2]
+	);
+
+	// XYZの回転軸を取得
+	VECTOR xAxis = VGet(
+		handMatrix.m[0][0],
+		handMatrix.m[0][1],
+		handMatrix.m[0][2]
+	);
+
+	VECTOR yAxis = VGet(
+		handMatrix.m[1][0],
+		handMatrix.m[1][1],
+		handMatrix.m[1][2]
+	);
+
+	VECTOR zAxis = VGet(
+		handMatrix.m[2][0],
+		handMatrix.m[2][1],
+		handMatrix.m[2][2]
+	);
+
+	// 軸の長さ
+	float axisLength = 30.0f;
+
+	// X軸：赤
+	DrawLine3D(
+		handPos,
+		VAdd(handPos, VScale(xAxis, axisLength)),
+		GetColor(255, 0, 0)
+	);
+
+	// Y軸：緑
+	DrawLine3D(
+		handPos,
+		VAdd(handPos, VScale(yAxis, axisLength)),
+		GetColor(0, 255, 0)
+	);
+
+	// Z軸：青
+	DrawLine3D(
+		handPos,
+		VAdd(handPos, VScale(zAxis, axisLength)),
+		GetColor(0, 0, 255)
 	);
 }

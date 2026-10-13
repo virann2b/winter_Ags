@@ -2,10 +2,25 @@
 
 #include "../Common/CharacterBase/CharacterBase.h"
 
+#include "Wepon/Sword/Sword.h"
+#include "Wepon/Gun/Gun.h"
+
 
 class Player : public CharacterBase
 {
 public:
+
+	//•ŠíØ‚è‘Ö‚¦—p
+	enum class  BATTLE_MODE
+	{
+		None = -1,
+
+		Sword,
+		Gun,
+
+		Max
+	};
+
 	Player();
 	~Player()override = default;
 
@@ -16,6 +31,7 @@ public:
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;
 
 private:
+
 
 	// ó‘Ô’è‹`
 	enum class STATE
@@ -130,6 +146,18 @@ private:
 	static constexpr float PLAYER_SCALE = 1.3f;
 
 #pragma endregion
+
+#pragma region •Ï”
+
+	Sword* sword;
+	Gun* gun;
+
+	bool gunIsActive;
+	bool swordIsActive;
+	
+
+#pragma endregion
+
 
 	// ‰Šú‰»ˆ—
 	void SubInit(void)override {

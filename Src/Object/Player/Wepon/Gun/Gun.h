@@ -1,12 +1,11 @@
 #pragma once
 #include "../../../Common/ActorBase/ActorBase.h"
 
-
 class Gun :public ActorBase
 {
 public:
 
-	Gun(const Transform& playerTrans);
+	Gun(const Transform& playerTrans,bool isAlive);
 
 	~Gun() override = default;
 
@@ -14,6 +13,7 @@ public:
 
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
 
+	void SetActive(bool active) {	isActive = active;	}
 
 private:
 
@@ -42,6 +42,7 @@ private:
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
+	bool isActive;
 
 	void SubUpdate(void) override;
 };

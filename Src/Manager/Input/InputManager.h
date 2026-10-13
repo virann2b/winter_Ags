@@ -61,6 +61,7 @@ public:
 
 		// ƒKƒ“ƒ‚[ƒh
 		PlayerGunMode,
+		Test,
 
 		//‰ñ”ğ
 		PlayerRoll,

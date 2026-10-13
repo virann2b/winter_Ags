@@ -18,7 +18,11 @@
 #include "State/PlayerNormalAttackState.h"
 #include "State/PlayerGunState.h"
 
-Player::Player() : CharacterBase()
+Player::Player()
+	:
+	CharacterBase(),
+	gunIsActive(false),
+	swordIsActive(true)
 {
 }
 
@@ -96,10 +100,14 @@ void Player::Load(void)
 
 #pragma region 下位アクターの生成
 
-	Sword* sword = new Sword(trans);
-	AddChildActor(sword);
+	//swordIsActive = true;
+	//gunIsActive = false;
 
-	Gun* gun = new Gun(trans);
+	//剣の生成
+	sword = new Sword(trans,swordIsActive);
+	AddChildActor(sword);
+	//銃の生成
+	gun = new Gun(trans,gunIsActive);
 	AddChildActor(gun);
 
 #pragma endregion
@@ -166,8 +174,22 @@ void Player::Load(void)
 	AddState(
 		STATE::Gun,
 		new PlayerGunState(
-			[&]() { AnimePlay(ANIME_TYPE::Gun); },
-			[&]() { ChangeState(STATE::Idle); }
+			[&]()
+			{ 
+				//武器の切り替え
+				sword->SetActive(false);
+				gun->SetActive(true);
+
+				AnimePlay(ANIME_TYPE::Gun);
+			},
+			[&]()
+			{ 
+				//武器の切り替え
+				gun->SetActive(false);
+				sword->SetActive(true);
+
+				ChangeState(STATE::Idle); 
+			}
 			)
 	);
 	
@@ -222,6 +244,8 @@ void Player::SubUpdate(void)
 		case 1: { CreateShader(new RimLightShader()); break; }
 		}
 	}*/
+
+
 }
 
 void Player::AnimeMoveControl(void)
@@ -251,3 +275,4 @@ void Player::AnimeMoveControl(void)
 	// アニメーションの移動値を無効化
 	MV1SetFrameUserLocalMatrix(trans.model, frnNo, mix);
 }
+

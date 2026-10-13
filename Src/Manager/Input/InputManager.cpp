@@ -68,6 +68,7 @@ void InputManager::Init(void)
 	
 	//武器切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);
+	SET_KEYBOARD(KEY_TYPE::Test, KEY_INPUT_I);
 
 #pragma endregion
 

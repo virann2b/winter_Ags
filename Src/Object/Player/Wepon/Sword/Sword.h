@@ -7,7 +7,7 @@ class Sword
 {
 public:
 
-	Sword(const Transform& playerTrans);
+	Sword(const Transform& playerTrans, bool isActive);
 
 	~Sword() override = default;
 
@@ -15,6 +15,7 @@ public:
 
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
 
+	void SetActive(bool active) { isActive = active; }
 
 private:
 
@@ -43,8 +44,12 @@ private:
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
+	//調整座標パラメータ
 	Vector3 justPos;
 
+	bool isActive;
+
 	void SubUpdate(void) override;
+	void SubDraw(void)override;
 };
 

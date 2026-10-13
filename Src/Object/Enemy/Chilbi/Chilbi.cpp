@@ -5,6 +5,7 @@
 #include "../../Common/Collider/CapsuleCollider.h"
 
 #include "State/ChilbiIdleState.h"
+#include "State//ChilbiHitState.h"
 
 
 
@@ -91,6 +92,16 @@ void Chilbi::Load(void)
 		)
 
 	);
+
+	//ë“ã@èÛë‘
+	AddState(
+		STATE::Idle,
+		new ChilbiHitState(
+			[&]() { AnimePlay((int)ANIME_TYPE::Hit); }
+		)
+	);
+
+
 
 #pragma endregion
 
