@@ -72,8 +72,8 @@ void Sword::SubUpdate(void)
 	{
 
 	case Sword::SWORD_POSITION::Hand: {
-		// ボーンは名前で検索(名前はモデルに合わせて変更)
 
+		// ボーンは名前で検索(名前はモデルに合わせて変更)
 		const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
 		if (handFrame < 0) { return; }
 

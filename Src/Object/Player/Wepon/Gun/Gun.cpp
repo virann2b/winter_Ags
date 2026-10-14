@@ -47,43 +47,15 @@ void Gun::SubUpdate(void)
 	SetIsDraw(isActive);
 
 	// ボーンは名前で検索(名前はモデルに合わせて変更)
-	const int handFrame = MV1SearchFrame(playerTrans.model, "smartrig:RightHand");
+	const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
 	if (handFrame < 0) { return; }
 
 	MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
 
-	// ========================================
-	// 回転行列を取得
-	// ========================================
+	trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
+	trans.rotation = Quaternion::FromMatrix(hand);
+	//trans.AddAngleYDeg(50.0f);
+	trans.AddAngleXDeg(50.0f);
+	trans.AddAngleZDeg(50.0f);
 
-	const VECTOR handScale = MGetSize(hand);
-
-	MATRIX handRotationMat = MGetRotElem(hand);
-
-	// スケールを除去
-	handRotationMat =
-		MMult(
-			handRotationMat,
-			MGetScale(VGet(1.0f / handScale.x, 1.0f / handScale.y, 1.0f / handScale.z)));
-
-
-	// ========================================
-	// 座標
-	// ========================================
-
-	const Vector3 handPos =
-		Vector3(MGetTranslateElem(hand));
-
-	trans.pos = handPos;
-
-
-	// ========================================
-	// 回転
-	// ========================================
-
-	trans.SetRotation(
-		Quaternion::FromMatrix(
-			handRotationMat
-		)
-	);
 }
