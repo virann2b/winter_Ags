@@ -66,6 +66,7 @@
     <ClCompile Include="Src\Object\Player\State\PlayerNormalAttackState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerGunState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAirAttackState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Src\Object\Player\State\PlayerNormalAttackState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerGunState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAirAttackState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

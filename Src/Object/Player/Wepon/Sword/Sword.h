@@ -7,6 +7,22 @@ class Sword
 {
 public:
 
+	enum class SWORD_POSITION
+	{
+		None = -1,
+
+		Hand,	//手
+
+		Back,	//背中
+
+		//手から背中の間
+		HandtoBack,
+		//背中から手の間
+		BacktoHand,
+		
+		MAX
+	};
+
 	Sword(const Transform& playerTrans, bool isActive);
 
 	~Sword() override = default;
@@ -40,6 +56,8 @@ private:
 
 #pragma endregion
 
+	//剣の待機位置
+	SWORD_POSITION swordPosition;
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;

@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\State\PlayerAirAttackState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerGunState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerNormalAttackState.cpp" />
@@ -215,6 +216,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\State\PlayerAirAttackState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerGunState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerNormalAttackState.h" />

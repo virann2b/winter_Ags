@@ -11,7 +11,7 @@ PlayerMoveState::PlayerMoveState(
 	std::function<void(const Vector3&)> moveAccel,
 
 	float& accelMax,
-
+	
 	std::function<void(void)> playAnimeWalk,
 	std::function<void(void)> playAnimeRun
 ) :

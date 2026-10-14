@@ -44,6 +44,7 @@ private:
 		Roll,
 
 		NormalAttack,
+		AirAttack,
 
 		Gun,
 
@@ -71,6 +72,8 @@ private:
 		NormalAttack_2,
 		NormalAttack_3,
 
+		AirAttack,
+
 		Gun,
 
 		Max
@@ -89,9 +92,11 @@ private:
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
 
-		1.0f,	// NormalAttack1
-		1.0f,	// NormalAttack2
-		1.0f,	// NormalAttack3
+		0.8f,	// NormalAttack1
+		0.8f,	// NormalAttack2
+		0.8f,	// NormalAttack3
+
+		1.0f,	// AirAttack
 
 		1.5f,	// Gun
 
@@ -114,6 +119,8 @@ private:
 		false,	// NormalAttack2
 		false,	// NormalAttack3
 
+		false,	// AirAttack
+
 		false,	// Gun
 
 	};
@@ -134,6 +141,8 @@ private:
 		"Data/Model/Player/NormalAttack_1.mv1",//NomalAttack_1
 		"Data/Model/Player/NormalAttack_2.mv1",//NomalAttack_2
 		"Data/Model/Player/NormalAttack_3.mv1",//NomalAttack_3
+
+		"Data/Model/Player/NormalAttack_1.mv1",//AirAttack
 
 		"Data/Model/Player/Gun.mv1",//Gun
 

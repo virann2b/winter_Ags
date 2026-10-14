@@ -55,7 +55,7 @@ void Player::Load(void)
 	trans.scale = PLAYER_SCALE;
 
 	// モデルの中心点のズレの補正
-	trans.centerDiff = Vector3(0.0f, -102.81f, 0.0f) * trans.scale;
+	trans.centerDiff = Vector3(0.0f, -82.775f, 0.0f) * trans.scale;
 
 	// モデルの角度のズレの補正
 	trans.SetLocalRotation(Quaternion::FromRotationY(Deg2Rad(180.0f)));
@@ -89,9 +89,9 @@ void Player::Load(void)
 	AddCollider(
 		new CapsuleCollider(
 			COLLIDER_TAG::Player,
-			Vector3::Yonly(60.0f) * trans.scale,
-			Vector3::Yonly(-60.0f) * trans.scale,
-			60.0f * trans.scale.MaxElementF()
+			Vector3::Yonly(55.0f) * trans.scale,
+			Vector3::Yonly(-55.0f) * trans.scale,
+			25.0f * trans.scale.MaxElementF()
 		)
 	);
 
@@ -100,12 +100,11 @@ void Player::Load(void)
 
 #pragma region 下位アクターの生成
 
-	//swordIsActive = true;
-	//gunIsActive = false;
-
 	//剣の生成
 	sword = new Sword(trans,swordIsActive);
 	AddChildActor(sword);
+
+
 	//銃の生成
 	gun = new Gun(trans,gunIsActive);
 	AddChildActor(gun);

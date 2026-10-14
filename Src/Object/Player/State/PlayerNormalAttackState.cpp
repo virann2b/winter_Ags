@@ -15,9 +15,11 @@ PlayerNormalAttack::PlayerNormalAttack(
 	std::function<float(void)> animRate)
 	:
 	ChangeStateIdle(ChangeStateIdle),
-	playAnimeNormalAttack_1(playAnimeNormalAttack_1),
-	playAnimeNormalAttack_2(playAnimeNormalAttack_2),
-	playAnimeNormalAttack_3(playAnimeNormalAttack_3),
+	PLAY_ANIM_TABLE{
+		playAnimeNormalAttack_1,
+		playAnimeNormalAttack_2,
+		playAnimeNormalAttack_3
+	},
 	isAnimeEnd(isAnimeEnd),
 	animRate(animRate),
 	comboIndex_(0),
@@ -39,7 +41,8 @@ void PlayerNormalAttack::Enter(void)
 	nextInput_ = false;
 
 	//í èÌçUåÇ1çƒê∂
-	playAnimeNormalAttack_1();
+	//playAnimeNormalAttack_1();
+	PLAY_ANIM_TABLE[comboIndex_]();
 }
 
 void PlayerNormalAttack::Update(void)

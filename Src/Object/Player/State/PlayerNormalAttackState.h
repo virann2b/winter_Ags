@@ -41,14 +41,6 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 通常攻撃_1アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeNormalAttack_1;
-	// 通常攻撃_1アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeNormalAttack_2;
-	// 通常攻撃_1アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeNormalAttack_3;
-
-
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
@@ -60,12 +52,7 @@ private:
 #pragma endregion
 
 	//生成アニメーション関数テーブル
-	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX]
-	{
-		playAnimeNormalAttack_1,	//normalAttack1
-		playAnimeNormalAttack_2,	//normalAttack2
-		playAnimeNormalAttack_3		//normalAttack3
-	};
+	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX];
 
 	// 現在のコンボ段階 (0始まり)
 	int  comboIndex_;		// 現在のコンボ段階 (0始まり)
@@ -73,5 +60,4 @@ private:
 
 	//次回コンボ入力受付(再生比率で判断)
 	const bool IsComboInputWindow(void);
-	
 };

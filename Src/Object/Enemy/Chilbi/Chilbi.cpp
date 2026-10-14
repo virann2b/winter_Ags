@@ -109,6 +109,17 @@ void Chilbi::Load(void)
 
 void Chilbi::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	switch (other.GetTag())
+	{
+
+	case COLLIDER_TAG::Sword:
+
+		ChangeState(STATE::Hit);
+
+		break;
+	default:
+		break;
+	}
 }
 
 void Chilbi::SubInit(void)
