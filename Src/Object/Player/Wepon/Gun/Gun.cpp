@@ -54,6 +54,8 @@ void Gun::SubUpdate(void)
 
 	trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
 	trans.rotation = Quaternion::FromMatrix(hand);
+
+	//í≤êÆäpìx
 	//trans.AddAngleYDeg(50.0f);
 	trans.AddAngleXDeg(50.0f);
 	trans.AddAngleZDeg(50.0f);

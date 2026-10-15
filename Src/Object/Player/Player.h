@@ -132,7 +132,7 @@ private:
 
 		"Data/Model/Player/Run.mv1",//Run
 
-		"Data/Model/Player/lRoll_Test.mv1",
+		"Data/Model/Player/Roll_Test.mv1",
 
 		"Data/Model/Player/Jump_Start.mv1",//JumpStart
 		"Data/Model/Player/Jump_Idle.mv1",//JumpIdle
