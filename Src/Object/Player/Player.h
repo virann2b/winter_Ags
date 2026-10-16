@@ -132,7 +132,7 @@ private:
 
 		"Data/Model/Player/Run.mv1",//Run
 
-		"Data/Model/Player/Roll_Test.mv1",
+		"Data/Model/Player/Roll.mv1",
 
 		"Data/Model/Player/Jump_Start.mv1",//JumpStart
 		"Data/Model/Player/Jump_Idle.mv1",//JumpIdle
@@ -176,6 +176,8 @@ private:
 	}
 
 	void SubUpdate(void)override;
+
+	void SubDraw(void)override;
 
 	//アニメーション移動値無効
 	void AnimeMoveControl(void);

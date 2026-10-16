@@ -59,6 +59,11 @@ void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const Co
 {
 }
 
+void Sword::ChangePosition(SWORD_POSITION nextPostion)
+{
+	swordPosition = nextPostion;
+}
+
 void Sword::SubUpdate(void)
 {	
 	//•`‰æON

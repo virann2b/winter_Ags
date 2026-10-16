@@ -33,6 +33,8 @@ public:
 
 	void SetActive(bool active) { isActive = active; }
 
+	void ChangePosition(SWORD_POSITION nextPostion);
+
 private:
 
 #pragma region íËêî

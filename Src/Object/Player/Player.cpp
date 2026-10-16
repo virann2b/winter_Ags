@@ -117,7 +117,11 @@ void Player::Load(void)
 	// ‘Ò‹@ó‘Ô
 	AddState(
 		STATE::Idle,
-		new PlayerIdleState([&]() { AnimePlay(ANIME_TYPE::Idle); })
+		new PlayerIdleState([&]() 
+			{ 
+				sword->ChangePosition(Sword::SWORD_POSITION::Back);
+				AnimePlay(ANIME_TYPE::Idle); 
+			})
 	);
 
 	// ˆÚ“®ó‘Ô
@@ -152,7 +156,8 @@ void Player::Load(void)
 		new PlayerRollState(
 			[&]() {ChangeState(STATE::Idle); },
 			[&]() {AnimePlay(ANIME_TYPE::Roll); },
-			std::bind(&Player::IsAnimeEnd, this)
+			std::bind(&Player::IsAnimeEnd, this),
+			trans
 		)
 	);
 
@@ -161,7 +166,11 @@ void Player::Load(void)
 		STATE::NormalAttack,
 		new PlayerNormalAttack(
 			[&]() {ChangeState(STATE::Idle); },
-			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_1); },
+			[&]()
+			{
+				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
+				AnimePlay(ANIME_TYPE::NormalAttack_1);
+			},
 			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_2); },
 			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_3); },
 			std::bind(&Player::IsAnimeEnd, this),
@@ -228,23 +237,13 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 
 void Player::SubUpdate(void)
 {
-	/*static char type = 0;
-	static bool prev = false, now = false;
-
-	prev = now;
-	now = CheckHitKey(KEY_INPUT_SPACE) == 1;
-
-	if (!prev && now) {
-
-		if (++type > 1) { type = 0; }
-
-		switch (type){
-		case 0: { CreateShader(new DefaultShader()); break; }
-		case 1: { CreateShader(new RimLightShader()); break; }
-		}
-	}*/
 
 
+}
+
+void Player::SubDraw(void)
+{
+	DrawFormatString(0, 100, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 }
 
 void Player::AnimeMoveControl(void)
