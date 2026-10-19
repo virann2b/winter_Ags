@@ -1,11 +1,22 @@
 #pragma once
 #include "../../../Common/ActorBase/ActorBase.h"
 
+#include <vector>
+
 class Gun :public ActorBase
 {
 public:
 
-	Gun(const Transform& playerTrans,bool isAlive);
+	// 仮の弾
+	struct BulletObj
+	{
+		Vector3 pos;        // 現在位置
+		Vector3 dir;        // 進行方向(正規化済み)
+		float   moved;      // 移動した距離
+	};
+
+	Gun(const Transform& playerTrans,
+		bool isAlive, int& bullet);
 
 	~Gun() override = default;
 
@@ -13,12 +24,26 @@ public:
 
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
 
-	void SetActive(bool active) {	isActive = active;	}
+	//武器切り替え
+	void SetActive(bool active) {isActive = active;	}
+
+	//弾発射処理
+	void Shot(int useBullet);
+
+	//弾数取得
+	int GetBullet(void) const { return bullet; }
+
+	//弾情報の更新
+	void BulletUpdate(void);
+
+	void BulletMoveUpdate(void);   // 弾の移動・消去
+	void BulletDraw(void);         // 弾の描画
+
+	Vector3 GetShotDirection(void) const;
 
 private:
 
 #pragma region 定数
-
 
 	// モデル表示倍率
 	const float MODEL_SCALE = 1.3f;
@@ -36,13 +61,33 @@ private:
 	//右手のフレーム番号
 	static constexpr int RIGHT_HAND_FLAME_INDEX = 17;
 
-#pragma endregion
+	//最大弾所持数
+	static constexpr int  MAX_POSSESSION_BULLET = 48;
 
+	//弾回復時間
+	static constexpr float MAX_RECOVER_TIME = 30.0f;
+
+	static constexpr float BULLET_SPEED = 30.0f;     // 1フレームの移動量
+	static constexpr float BULLET_RANGE = 1500.0f;   // この距離で消える
+	static constexpr float BULLET_RADIUS = 8.0f;
+
+	std::vector<BulletObj> bullets;
+
+#pragma endregion
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
+	//武器切り替えフラグ
 	bool isActive;
+	//弾
+	int& bullet;
+	//弾クールタイム
+	float recoverTimer;
 
+	//派生クラス更新
 	void SubUpdate(void) override;
+
+	Vector3 GetRandomOffset(void) const;
+	static constexpr float SHOT_OFFSET_RANGE = 30.0f;   // ずらす最大幅(±)
 };

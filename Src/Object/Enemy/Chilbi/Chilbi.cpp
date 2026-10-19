@@ -2,6 +2,9 @@
 
 #include "../../../Utility/Utility.h"
 
+#include "../../../Manager/TimeScale/TimeScale.h"
+#include "../../../Scene/SceneManager.h"
+
 #include "../../Common/Collider/CapsuleCollider.h"
 
 #include "State/ChilbiIdleState.h"
@@ -29,9 +32,11 @@ void Chilbi::Load(void)
 
 	// 当たり判定による押し出しを有効にする
 	SetPushFlg(true);
-
 	// 押し出しだしによる重みを設定
 	SetPushWeight(60);
+
+	//当たり判定有効にする
+	SetJudgeFlg(true);
 
 #pragma endregion
 
@@ -73,10 +78,10 @@ void Chilbi::Load(void)
 
 	AddCollider(
 		new CapsuleCollider(
-			COLLIDER_TAG::Player,
+			COLLIDER_TAG::Enemy,
 			Vector3::Yonly(60.0f) * trans.scale,
 			Vector3::Yonly(-60.0f) * trans.scale,
-			60.0f * trans.scale.MaxElementF()
+			40.0f * trans.scale.MaxElementF()
 		)
 	);
 
@@ -90,14 +95,15 @@ void Chilbi::Load(void)
 		new ChilbiIdleState(
 			[&]() { AnimePlay((int)ANIME_TYPE::Idle); }
 		)
-
 	);
 
-	//待機状態
+	//HIT状態
 	AddState(
-		STATE::Idle,
+		STATE::Hit,
 		new ChilbiHitState(
-			[&]() { AnimePlay((int)ANIME_TYPE::Hit); }
+			[&]() { AnimePlay((int)ANIME_TYPE::Hit); },
+			[&]() { ChangeState(STATE::Idle); },
+			std::bind(&Chilbi::IsAnimeEnd, this)
 		)
 	);
 
@@ -109,13 +115,17 @@ void Chilbi::Load(void)
 
 void Chilbi::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	if (invincibleCounter > 0) { return; }
+
 	switch (other.GetTag())
 	{
 
 	case COLLIDER_TAG::Sword:
-
+	{
 		ChangeState(STATE::Hit);
 
+		invincibleCounter = 60;
+	}
 		break;
 	default:
 		break;
@@ -126,8 +136,12 @@ void Chilbi::SubInit(void)
 {
 	//初期状態
 	ChangeState(STATE::Idle);
+
+	invincibleCounter = 0.0f;
 }
 
 void Chilbi::SubUpdate(void)
 {
+	if (invincibleCounter > 0.0f) { invincibleCounter -= TimeScale::Get(); }
+	else { invincibleCounter = 0.0f; }
 }

@@ -8,15 +8,27 @@ Sword::Sword(const Transform& playerTrans, bool isActive)
 	:
 	ActorBase("Data/Parameter/Wepon/"),
 	playerTrans(playerTrans),
-	isActive(isActive)
+	isActive(isActive),
+	swordPosition(SWORD_POSITION::None)
 {
 }
 
 void Sword::Load(void)
 {
+#pragma region オブジェクト設定
+
 	SetDynamicFlg(true);
+	//衝突設定
 	SetGravityFlg(false);
+	//当たり判定による押し出し
 	SetPushFlg(false);
+
+	//描画ON
+	SetIsDraw(isActive);
+	//判定オフ
+	SetJudgeFlg(isActive);
+
+#pragma endregion
 
 	// モデルをロード
 	trans.LoadModel("Sword/Sword");
@@ -38,19 +50,11 @@ void Sword::Load(void)
 	//角度の調整
 	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));
 
-
-	//描画ON
-	SetIsDraw(isActive);
-	//判定オフ
-	SetJudgeFlg(isActive);
-
 	// その回のパラメーター名
 	std::string parameterName = "JustPos";
 	// そのパラメータが存在するかどうか
 	if (!IsParameterExist("SwordPos", parameterName)) { return; }
 	justPos =  GetParameterToVector3("SwordPos", parameterName);
-
-	SetJudgeFlg(true);
 
 	swordPosition = SWORD_POSITION::Hand;
 }
@@ -69,9 +73,9 @@ void Sword::SubUpdate(void)
 	//描画ON
 	SetIsDraw(isActive);
 	//判定オフ
-	//SetJudgeFlg(isActive);
+	SetJudgeFlg(isActive);
 
-	
+
 	//剣の位置変更
 	switch (swordPosition)
 	{

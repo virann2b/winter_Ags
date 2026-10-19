@@ -34,7 +34,7 @@ private:
 	//最大コンボ回数
 	static constexpr int COMBO_MAX = 3;
 	//受付開始入力比率
-	static constexpr float INPUT_RATIO_START = 0.4;
+	static constexpr float INPUT_RATIO_START = 0.4f;
 
 #pragma endregion
 

@@ -53,7 +53,7 @@ private:
 
 		0.8f,	// Run
 
-		1.0f
+		1.0f	// Hit
 	};
 
 	// アニメーションループ再生フラグテーブル
@@ -70,18 +70,19 @@ private:
 	// アニメーションパステーブル
 	const char* ANIME_PATH_TABLE[(int)ANIME_TYPE::Max] =
 	{
-		"Data/Model/Enemy/Chilbi/Idle.mv1",//Idle
+		"Data/Model/Enemy/Chilbi/Idle.mv1",	//Idle
 
-		"Data/Model/Enemy/Chilbi/Run.mv1",//Run
+		"Data/Model/Enemy/Chilbi/Run.mv1",	//Run
 
-		"Data/Model/Enemy/Chilbi/Hit.mv1",//Hit
+		"Data/Model/Enemy/Chilbi/Hit.mv1",	//Hit
 	};
+
 #pragma endregion
 
+	//初期読み込み
 	void SubInit(void)override;
+	//更新
 	void SubUpdate(void)override;
-
-
 
 #pragma region 参照する変数
 
@@ -89,6 +90,10 @@ private:
 	const Vector3& initPos;
 
 #pragma endregion
+	
+
+	// 無敵カウンター
+	float invincibleCounter;
 
 };
 

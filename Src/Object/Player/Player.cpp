@@ -16,13 +16,19 @@
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
 #include "State/PlayerNormalAttackState.h"
-#include "State/PlayerGunState.h"
+#include "State/PlayerGunState.h"	
 
 Player::Player()
 	:
 	CharacterBase(),
 	gunIsActive(false),
-	swordIsActive(true)
+	swordIsActive(true),
+	gun(nullptr),
+	sword(nullptr),
+	targetTime(0.0f),
+	bulletShotCount(0),
+	bullet(0),
+	isGunState(false)
 {
 }
 
@@ -104,10 +110,11 @@ void Player::Load(void)
 	sword = new Sword(trans,swordIsActive);
 	AddChildActor(sword);
 
-
 	//銃の生成
-	gun = new Gun(trans,gunIsActive);
+	gun = new Gun(trans,gunIsActive,bullet);
 	AddChildActor(gun);
+
+	sword->SetActive(true);
 
 #pragma endregion
 
@@ -187,6 +194,7 @@ void Player::Load(void)
 				//武器の切り替え
 				sword->SetActive(false);
 				gun->SetActive(true);
+				isGunState = true;
 
 				AnimePlay(ANIME_TYPE::Gun);
 			},
@@ -195,8 +203,16 @@ void Player::Load(void)
 				//武器の切り替え
 				gun->SetActive(false);
 				sword->SetActive(true);
+				isGunState = false;
+
 
 				ChangeState(STATE::Idle); 
+			},
+			targetTime,
+			bulletShotCount,
+			[&]()
+			{
+				gun->Shot(1);
 			}
 			)
 	);
@@ -237,40 +253,27 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 
 void Player::SubUpdate(void)
 {
+	if (!isGunState)
+	{
+		gun->BulletUpdate();
+	}
 
-
+	gun->BulletMoveUpdate();
 }
 
 void Player::SubDraw(void)
 {
 	DrawFormatString(0, 100, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
+	DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
+	DrawFormatString(0, 180, 0xffffff, "Bullet : %d", bulletShotCount);
+	DrawFormatString(0, 200, 0xffffff, "BulletCount : %d", bullet);
+
+	gun->BulletDraw();
+
 }
 
 void Player::AnimeMoveControl(void)
 {
-	//// フレーム番号をフレーム名で取得する
-	//int frnNo = MV1SearchFrame(trans.model, "smartrig:Hips");
-
-	//// 対象フレームのローカル行列を初期値にリセットする
-	//MV1ResetFrameUserLocalMatrix(trans.model, frnNo);
-	//// 対象フレームのローカル行列(大きさ、回転、位置)を取得する
-	//auto mat = MV1GetFrameLocalMatrix(trans.model, frnNo);
-	//auto scl = MGetSize(mat);
-	//// 行列から大きさを取り出す
-	//auto rot = MGetRotElem(mat);
-	//auto pos = MGetTranslateElem(mat);
-
-	//// 行列から回転を取り出す
-	//// 行列から移動値を取り出す
-	//// 大きさ、回転、位置をローカル行列に戻す
-	//MATRIX mix = MGetIdent();
-	//mix = MMult(mix, MGetScale(scl)); // 大きさ
-	//mix = MMult(mix, rot); // 回転
-	//// ここでローカル座標を行列に、そのまま戻さず、
-	//// 調整したローカル座標を設定する
-	//mix = MMult(mix, MGetTranslate({ 0.0f, 79.0f, 0.0f }));
-	//// 合成した行列を対象フレームにセットし直して、
-	//// アニメーションの移動値を無効化
-	//MV1SetFrameUserLocalMatrix(trans.model, frnNo, mix);
+	
 }
 

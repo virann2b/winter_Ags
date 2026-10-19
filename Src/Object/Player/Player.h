@@ -92,9 +92,9 @@ private:
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
 
-		0.8f,	// NormalAttack1
-		0.8f,	// NormalAttack2
-		0.8f,	// NormalAttack3
+		0.7f,	// NormalAttack1
+		0.7f,	// NormalAttack2
+		0.7f,	// NormalAttack3
 
 		1.0f,	// AirAttack
 
@@ -161,15 +161,25 @@ private:
 	Sword* sword;
 	Gun* gun;
 
+	//•ŠíØ‚è‘Ö‚¦
 	bool gunIsActive;
 	bool swordIsActive;
+
+	bool isGunState;
+
+	float targetTime;
+	//˜A‘±”­Ë”
+	int bulletShotCount;
+	//Œ»İŠ’i”
+	int bullet;
 	
 
 #pragma endregion
 
 
 	// ‰Šú‰»ˆ—
-	void SubInit(void)override {
+	void SubInit(void)override 
+	{
 
 		// ‘Ò‹@ó‘Ô‚É‘JˆÚ
 		ChangeState(STATE::Idle);
