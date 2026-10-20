@@ -17,7 +17,9 @@
 #include "State/PlayerMoveState.h"
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
+
 #include "State/PlayerNormalAttackState.h"
+#include "State/PlayerAirAttackState.h"
 #include "State/PlayerGunState.h"	
 
 Player::Player()
@@ -118,6 +120,7 @@ void Player::Load(void)
 	AddChildActor(gun);
 
 	sword->SetActive(true);
+	sword->ChangePosition(Sword::SWORD_POSITION::Back);
 
 #pragma endregion
 
@@ -129,9 +132,9 @@ void Player::Load(void)
 		STATE::Idle,
 		new PlayerIdleState([&]() 
 			{ 
-				sword->ChangePosition(Sword::SWORD_POSITION::Back);
 				AnimePlay(ANIME_TYPE::Idle); 
-			})
+			}
+		)
 	);
 
 	// ˆÚ“®ó‘Ô
@@ -164,11 +167,11 @@ void Player::Load(void)
 	AddState(
 		STATE::Roll,
 		new PlayerRollState(
-			[&]() {ChangeState(STATE::Idle); },
 			[&]() {AnimePlay(ANIME_TYPE::Roll); },
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
-			trans
+			trans,
+			[&]() {ChangeState(STATE::Idle); }
 		)
 	);
 
@@ -176,7 +179,12 @@ void Player::Load(void)
 	AddState(
 		STATE::NormalAttack,
 		new PlayerNormalAttack(
-			[&]() {ChangeState(STATE::Idle); },
+			[&]() 
+			{
+				ChangeState(STATE::Idle);
+				sword->ChangePosition(Sword::SWORD_POSITION::Back);
+
+			},
 			[&]()
 			{
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
@@ -186,6 +194,28 @@ void Player::Load(void)
 			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_3); },
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::GetAnimeRatio,this)
+		)
+	);
+
+	//‹ó’†UŒ‚ó‘Ô
+	AddState(
+		STATE::AirAttack,
+		new PlayerAirAttackState(
+			isGround,
+			[&]()
+			{
+				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
+				AnimePlay(ANIME_TYPE::AirAttack_Start); 
+			},
+			[&]() {AnimePlay(ANIME_TYPE::AirAttack_End); },
+			std::bind(&Player::IsAnimeEnd, this),
+			[&]() 
+			{
+				ChangeState(STATE::Idle); 
+				sword->ChangePosition(Sword::SWORD_POSITION::Back);
+
+			}
+
 		)
 	);
 
@@ -248,6 +278,12 @@ void Player::Load(void)
 	// uˆÚ“®ó‘Ôv->ueó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::Gun);
 
+	RegisterStateTransition(STATE::Move, STATE::Gun);
+
+
+	RegisterStateTransition(STATE::Jump, STATE::AirAttack);
+
+
 #pragma endregion
 }
 
@@ -257,6 +293,8 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 
 void Player::SubUpdate(void)
 {
+
+	//’e‚ÌXV
 	if (!isGunState)
 	{
 		gun->BulletUpdate();
@@ -276,8 +314,5 @@ void Player::SubDraw(void)
 
 }
 
-void Player::AnimeMoveControl(void)
-{
-	
-}
+
 

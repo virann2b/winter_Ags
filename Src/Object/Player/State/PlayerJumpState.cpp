@@ -144,3 +144,15 @@ void PlayerJumpState::Update(void)
 
 	}
 }
+
+void PlayerJumpState::AlwaysUpdate(void)
+{
+	if (jumpCount == 0) return;
+
+	if (isGround)
+	{
+		//ジャンプカウントリセット
+		jumpCount = 0;
+	}
+}
+

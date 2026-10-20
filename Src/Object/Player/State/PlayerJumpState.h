@@ -91,4 +91,6 @@ private:
 
 	// ジャンプカウント
 	int jumpCount;
+
+	void AlwaysUpdate(void)override;
 };

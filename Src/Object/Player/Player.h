@@ -72,7 +72,8 @@ private:
 		NormalAttack_2,
 		NormalAttack_3,
 
-		AirAttack,
+		AirAttack_Start,
+		AirAttack_End,
 
 		Gun,
 
@@ -96,7 +97,8 @@ private:
 		0.7f,	// NormalAttack2
 		0.7f,	// NormalAttack3
 
-		1.0f,	// AirAttack
+		1.0f,	// AirAttack_Start
+		1.0f,	// AirAttack_End
 
 		1.5f,	// Gun
 
@@ -119,7 +121,8 @@ private:
 		false,	// NormalAttack2
 		false,	// NormalAttack3
 
-		false,	// AirAttack
+		false,	// AirAttack_Start
+		false,	// AirAttack_End
 
 		false,	// Gun
 
@@ -134,15 +137,16 @@ private:
 
 		"Data/Model/Player/Roll.mv1",
 
-		"Data/Model/Player/Jump_Start.mv1",//JumpStart
-		"Data/Model/Player/Jump_Idle.mv1",//JumpIdle
-		"Data/Model/Player/Jump_End.mv1",//JumpEnd
+		"Data/Model/Player/Jump_Start.mv1",	//JumpStart
+		"Data/Model/Player/Jump_Idle.mv1",	//JumpIdle
+		"Data/Model/Player/Jump_End.mv1",	//JumpEnd
 
 		"Data/Model/Player/NormalAttack_1.mv1",//NomalAttack_1
 		"Data/Model/Player/NormalAttack_2.mv1",//NomalAttack_2
 		"Data/Model/Player/NormalAttack_3.mv1",//NomalAttack_3
 
-		"Data/Model/Player/NormalAttack_1.mv1",//AirAttack
+		"Data/Model/Player/JumpAttack_Start.mv1",	//AirAttack_Start
+		"Data/Model/Player/JumpAttack_End.mv1",		//AirAttack_End
 
 		"Data/Model/Player/Gun.mv1",//Gun
 
@@ -160,6 +164,8 @@ private:
 
 	Sword* sword;
 	Gun* gun;
+
+	STATE state;
 
 	//武器切り替え
 	bool gunIsActive;
@@ -189,6 +195,4 @@ private:
 
 	void SubDraw(void)override;
 
-	//アニメーション移動値無効
-	void AnimeMoveControl(void);
 };

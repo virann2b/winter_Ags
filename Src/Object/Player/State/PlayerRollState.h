@@ -8,11 +8,11 @@ class PlayerRollState : public CharacterStateBase
 public:
 
 	PlayerRollState(
-		std::function<void(void)> ChangeStateIdle,
 		std::function<void(void)> playAnimeRoll,
 		std::function<bool(void)> isAnimeEnd,
 		std::function<void(const Vector3&)> moveAccel,
-		const Transform& playerTrans
+		const Transform& playerTrans,
+		std::function<void(void)> ChangeStateIdle
 	);
 
 	~PlayerRollState()override = default;
