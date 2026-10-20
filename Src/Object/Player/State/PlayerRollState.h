@@ -11,6 +11,7 @@ public:
 		std::function<void(void)> ChangeStateIdle,
 		std::function<void(void)> playAnimeRoll,
 		std::function<bool(void)> isAnimeEnd,
+		std::function<void(const Vector3&)> moveAccel,
 		const Transform& playerTrans
 	);
 
@@ -38,13 +39,42 @@ private:
 
 	// アニメーション終了取得関数のポインタ
 	const std::function<bool(void)> isAnimeEnd;
+	// 移動関数のポインタ
+	const std::function<void(const Vector3&)> moveAccel;
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
 #pragma endregion
 
+#pragma region 定数
+
+	//回避で移動する距離
+	static constexpr float ROLL_DISTANCE = 500.0f;
+	// 転がる時間(秒)
+	static constexpr float ROLL_TIME = 0.6f;    
+
+	static constexpr float ARRIVE_RANGE = 10.0f;
+#pragma endregion
+
+	
+#pragma region 変数
+
+	//回避方向(始めの入力で確定させる)
+	Vector3 rollDir;
+
+	Vector3 rollMove;
+	Vector3 rollTargetPos;
+
+	//回避開始位置
+	Vector3 startPos;
+
+	// ここまでに転がった距離
+	float rollMoved = 0.0f;  
 
 
+#pragma endregion
 
+	// 移動方向入力取得
+	Vector3 InputVec(void)const;
 };

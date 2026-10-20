@@ -45,7 +45,6 @@ void GameScene::SubPostLoad(void)
 	//ìGê∂ê¨
 	AddActor(new Chilbi(Vector3(300,50, 200)));
 
-
 }
 
 void GameScene::SubPostInit(void)

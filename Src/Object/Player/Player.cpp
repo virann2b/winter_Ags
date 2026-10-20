@@ -4,6 +4,8 @@
 
 #include "../Common/Collider/CapsuleCollider.h"
 
+#include "../Common/AnimationController/AnimationController.h"
+
 #include "../Common/Shader/DefaultShader.h"
 #include "../Common/Shader/RimLightShader.h"
 #include "../Common/Shader/WaterShader.h"
@@ -86,7 +88,8 @@ void Player::Load(void)
 	
 	//AnimeMoveControl();
 
-
+	anime->SetPositionCorrectionFrame("smartrig:Hips");
+	anime->SetPositionCorrection(true);
 #pragma endregion
 
 
@@ -164,6 +167,7 @@ void Player::Load(void)
 			[&]() {ChangeState(STATE::Idle); },
 			[&]() {AnimePlay(ANIME_TYPE::Roll); },
 			std::bind(&Player::IsAnimeEnd, this),
+			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			trans
 		)
 	);
@@ -263,7 +267,7 @@ void Player::SubUpdate(void)
 
 void Player::SubDraw(void)
 {
-	DrawFormatString(0, 100, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
+	DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 	DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
 	DrawFormatString(0, 180, 0xffffff, "Bullet : %d", bulletShotCount);
 	DrawFormatString(0, 200, 0xffffff, "BulletCount : %d", bullet);
