@@ -52,6 +52,8 @@ public:
 
 	void ChangePosition(SWORD_POSITION nextPostion);
 
+	void ChangeActive(ACTIVE active);
+
 private:
 
 #pragma region íËêî

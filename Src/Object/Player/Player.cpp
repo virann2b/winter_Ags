@@ -122,7 +122,7 @@ void Player::Load(void)
 	gun = new Gun(trans,gunIsActive,bullet);
 	AddChildActor(gun);
 
-	sword->SetActive(true);
+	sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 	sword->ChangePosition(Sword::SWORD_POSITION::Back);
 
 #pragma endregion
@@ -227,15 +227,16 @@ void Player::Load(void)
 		new PlayerAttackChargeState(
 			[&]() 
 			{
-				sword->SetJudge(false);
+				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
 
 				AnimePlay(ANIME_TYPE::AttackCharge_Start);
 			},
 			[&]() 
 			{
-				sword->SetJudge(false);
 				AnimePlay(ANIME_TYPE::AttackCharge_End); 
+				sword->ChangeActive(Sword::ACTIVE::Active);
+
 			},
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]()
@@ -253,7 +254,7 @@ void Player::Load(void)
 			[&]()
 			{ 
 				//•Ší‚ÌØ‚è‘Ö‚¦
-				sword->SetActive(false);
+				sword->ChangeActive(Sword::ACTIVE::NotActive);
 				gun->SetActive(true);
 				isGunState = true;
 
@@ -263,7 +264,7 @@ void Player::Load(void)
 			{ 
 				//•Ší‚ÌØ‚è‘Ö‚¦
 				gun->SetActive(false);
-				sword->SetActive(true);
+				sword->ChangeActive(Sword::ACTIVE::Active);
 				isGunState = false;
 
 
