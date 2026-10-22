@@ -227,10 +227,16 @@ void Player::Load(void)
 		new PlayerAttackChargeState(
 			[&]() 
 			{
+				sword->SetJudge(false);
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
+
 				AnimePlay(ANIME_TYPE::AttackCharge_Start);
 			},
-			[&]() {AnimePlay(ANIME_TYPE::AttackCharge_End); },
+			[&]() 
+			{
+				sword->SetJudge(false);
+				AnimePlay(ANIME_TYPE::AttackCharge_End); 
+			},
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]()
 			{
@@ -302,6 +308,7 @@ void Player::Load(void)
 	RegisterStateTransition(STATE::Idle, STATE::Gun);
 	// u‘Ò‹@ó‘Ôv->ueó‘Ôv‚Ì©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::Gun);
+
 
 	RegisterStateTransition(STATE::Jump, STATE::AttackAir);
 

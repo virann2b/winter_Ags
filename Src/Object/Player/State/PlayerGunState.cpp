@@ -4,9 +4,7 @@
 
 #include "../../../Manager/Input/InputManager.h"
 #include "../../../Manager/Camera/CurrentCamera.h"
-
-
-
+#include "../../../Manager/Camera/Game/GameCamera.h"
 
 PlayerGunState::PlayerGunState(
 	std::function<void(void)> playAnimeGun, 
@@ -39,6 +37,9 @@ void PlayerGunState::Enter(void)
 
 	//ターゲットタイムリセット
 	targetTime = 0.0f;
+
+	// カメラを専用のモードに変える
+	dynamic_cast<GameCamera*>(&CurrentCamera::Get())->SetMode(GameCamera::Mode::Gun);
 }
 
 void PlayerGunState::Update(void)
@@ -95,6 +96,12 @@ void PlayerGunState::Update(void)
 		}
 	}
 	
+}
+
+void PlayerGunState::Exit(void)
+{
+	// カメラを専用のモードに変える
+	dynamic_cast<GameCamera*>(&CurrentCamera::Get())->SetMode(GameCamera::Mode::Auto);
 }
 
 void PlayerGunState::ChangeState(STATE state_)

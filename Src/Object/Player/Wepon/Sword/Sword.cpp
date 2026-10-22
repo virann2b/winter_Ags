@@ -26,7 +26,7 @@ void Sword::Load(void)
 	//描画ON
 	SetIsDraw(isActive);
 	//判定オフ
-	SetJudgeFlg(isActive);
+	SetJudgeFlg(isJudge);
 
 #pragma endregion
 
@@ -70,81 +70,10 @@ void Sword::ChangePosition(SWORD_POSITION nextPostion)
 
 void Sword::SubUpdate(void)
 {	
-	//描画ON
-	SetIsDraw(isActive);
-	//判定オフ
-	SetJudgeFlg(isActive);
+	
+	ActiveUpdate();
 
-
-	//剣の位置変更
-	switch (swordPosition)
-	{
-
-	case Sword::SWORD_POSITION::Hand: {
-
-		// ボーンは名前で検索(名前はモデルに合わせて変更)
-		const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
-		if (handFrame < 0) { return; }
-
-		MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
-
-		trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
-		trans.rotation = Quaternion::FromMatrix(hand);
-		trans.AddAngleYDeg(90.0f);
-
-		break;
-	}
-
-	case Sword::SWORD_POSITION::Back: {
-
-
-		static float workCounter = 0.0f;
-		workCounter += 0.5f;
-
-		Vector3 goalPos = playerTrans.pos + playerTrans.rotation.Rotate(Vector3(-10, 60, -30));
-
-		trans.pos = trans.pos * 0.5f + goalPos * 0.5f;
-		trans.pos.y += sinf(workCounter / 8.0f) * 1.0f;
-
-		trans.rotation = Quaternion::FromRotationZ(Deg2Rad(-90.0f));
-		trans.AddAngleXDeg(5.0f);
-		trans.AddAngleYDeg(workCounter);
-
-
-
-		/*const int neckFrame = MV1SearchFrame(playerTrans.model, "smartrig:Neck");
-		if (neckFrame < 0) { return; }
-
-		MATRIX neck = MV1GetFrameLocalWorldMatrix(playerTrans.model, neckFrame);
-
-		Vector3 goalPos = Vector3(neck.m[3][0], neck.m[3][1], neck.m[3][2]);
-
-		trans.rotation = Quaternion::FromMatrix(neck);
-		goalPos += playerTrans.rotation.Rotate(Vector3(10, 50, -30));
-		trans.AddAngleZDeg(90.0f);
-
-		static float workCounter = 0.0f;
-		workCounter += 0.5f;
-
-		trans.pos = trans.pos * 0.5f + goalPos * 0.5f;
-		trans.pos.y += sinf(workCounter / 8.0f) * 1.0f;*/
-
-
-		break;
-	}
-
-	case Sword::SWORD_POSITION::HandtoBack: {
-
-		break;
-	}
-
-	case Sword::SWORD_POSITION::BacktoHand: {
-		break;
-	}
-
-	default:
-		break;
-	}
+	SwordUpdate();
 	
 }
 
@@ -217,4 +146,89 @@ void Sword::SubDraw(void)
 		VAdd(handPos, VScale(zAxis, axisLength)),
 		GetColor(0, 0, 255)
 	);
+}
+
+void Sword::SwordUpdate(void)
+{
+	//剣の位置変更
+	switch (swordPosition)
+	{
+
+	case Sword::SWORD_POSITION::Hand: {
+
+		// ボーンは名前で検索(名前はモデルに合わせて変更)
+		const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
+		if (handFrame < 0) { return; }
+
+		MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
+
+		trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
+		trans.rotation = Quaternion::FromMatrix(hand);
+		trans.AddAngleYDeg(90.0f);
+
+		break;
+	}
+
+	case Sword::SWORD_POSITION::Back: {
+
+
+		static float workCounter = 0.0f;
+		workCounter += 0.5f;
+
+		Vector3 goalPos = playerTrans.pos + playerTrans.rotation.Rotate(Vector3(-10, 60, -30));
+
+		trans.pos = trans.pos * 0.5f + goalPos * 0.5f;
+		trans.pos.y += sinf(workCounter / 8.0f) * 1.0f;
+
+		trans.rotation = Quaternion::FromRotationZ(Deg2Rad(-90.0f));
+		trans.AddAngleXDeg(5.0f);
+		trans.AddAngleYDeg(workCounter);
+
+		break;
+	}
+
+	case Sword::SWORD_POSITION::HandtoBack: {
+
+		break;
+	}
+
+	case Sword::SWORD_POSITION::BacktoHand: {
+		break;
+	}
+
+	default:
+		break;
+	}
+}
+
+void Sword::ActiveUpdate(void)
+{
+	switch (active)
+	{
+	case Sword::ACTIVE::Active:
+	{
+		//描画ON
+		SetIsDraw(true);
+		//判定オフ
+		SetJudgeFlg(true);
+
+		break;
+	}
+	case Sword::ACTIVE::DrawOnly:
+	{
+		//描画ON
+		SetIsDraw(true);
+		//判定オフ
+		SetJudgeFlg(false);
+		break;
+	}
+	case Sword::ACTIVE::NotActive:
+	{
+		//描画ON
+		SetIsDraw(false);
+		//判定オフ
+		SetJudgeFlg(false);
+		break;
+	}
+	}
 }

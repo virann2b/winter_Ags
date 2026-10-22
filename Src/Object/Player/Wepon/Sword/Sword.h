@@ -23,6 +23,20 @@ public:
 		MAX
 	};
 
+	enum class ACTIVE
+	{
+		None = -1,
+
+		//判定と描画
+		Active,
+		//描画のみ
+		DrawOnly,
+		//両方OFF
+		NotActive,
+
+		MAX
+	};
+
 	Sword(const Transform& playerTrans, bool isActive);
 
 	~Sword() override = default;
@@ -32,6 +46,9 @@ public:
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
 
 	void SetActive(bool active) { isActive = active; }
+
+	void SetJudge(bool isjugge) { isJudge = isjugge; }
+	
 
 	void ChangePosition(SWORD_POSITION nextPostion);
 
@@ -61,6 +78,8 @@ private:
 	//剣の待機位置
 	SWORD_POSITION swordPosition;
 
+	ACTIVE active;
+
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
@@ -68,8 +87,13 @@ private:
 	Vector3 justPos;
 
 	bool isActive;
+	bool isJudge;
 
 	void SubUpdate(void) override;
 	void SubDraw(void)override;
-};
 
+	//剣の位置更新
+	void SwordUpdate(void);
+	//剣の判定更新
+	void ActiveUpdate(void);
+};

@@ -38,6 +38,8 @@ public:
 	// 更新処理
 	void Update(void)override;
 
+	void Exit(void)override;
+
 private:
 
 	// 銃アニメーションの再生関数のポインタ

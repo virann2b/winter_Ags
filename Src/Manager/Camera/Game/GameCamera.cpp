@@ -58,7 +58,7 @@ bool GameCamera::SetMode(Mode m)
 	// Auto / Gun は対象がいないと成立しない
 	if ((m == Mode::Auto || m == Mode::Gun) && focusPos == nullptr) { return false; }
 
-	// Gun は Auto からのみ入れる
+	// Gun は Remote からのみ入れる
 	if (m == Mode::Gun && mode != Mode::Auto) { return false; }
 
 	// Remote から出るときはマウス固定を戻す
@@ -109,9 +109,9 @@ void GameCamera::NormalUpdate(void)
 		SetMode(Mode::Remote);
 	}
 
-	// 入力（カメライベント中は NormalUpdate 自体が呼ばれないので受け付けない）
+	//// 入力（カメライベント中は NormalUpdate 自体が呼ばれないので受け付けない）
 	if (Input::GetIns().GetInfo(toggleKey).down) { ToggleTarget(); }
-	if (Input::GetIns().GetInfo(gunKey).down) { ToggleGun(); }
+	//if (Input::GetIns().GetInfo(gunKey).down) { ToggleGun(); }
 
 	// 視野角：Gun中は絞り、それ以外は通常へ戻す
 	const float targetFov = (mode == Mode::Gun) ? GUN_FOV : baseFov;
