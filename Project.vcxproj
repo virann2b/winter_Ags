@@ -148,10 +148,11 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\Player\State\PlayerAirAttackState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackChargeState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackAirState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerGunState.cpp" />
-    <ClCompile Include="Src\Object\Player\State\PlayerNormalAttackState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackNormalState.cpp" />
     <ClCompile Include="Src\Manager\Camera\Game\GameCamera.cpp" />
     <ClCompile Include="Src\Manager\Camera\Gun\GunCamera.cpp" />
     <ClCompile Include="Src\Common\Quaternion.cpp" />
@@ -216,10 +217,11 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\Player\State\PlayerAirAttackState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackChargeState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackAirState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerGunState.h" />
-    <ClInclude Include="Src\Object\Player\State\PlayerNormalAttackState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackNormalState.h" />
     <ClInclude Include="Src\Manager\Camera\Game\GameCamera.h" />
     <ClInclude Include="Src\Manager\Camera\Gun\GunCamera.h" />
     <ClInclude Include="Src\Common\Quaternion.h" />

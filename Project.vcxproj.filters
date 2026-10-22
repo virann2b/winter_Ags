@@ -63,10 +63,11 @@
     <ClCompile Include="Src\Common\Quaternion.cpp" />
     <ClCompile Include="Src\Manager\Camera\Gun\GunCamera.cpp" />
     <ClCompile Include="Src\Manager\Camera\Game\GameCamera.cpp" />
-    <ClCompile Include="Src\Object\Player\State\PlayerNormalAttackState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackNormalState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerGunState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.cpp" />
-    <ClCompile Include="Src\Object\Player\State\PlayerAirAttackState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackAirState.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerAttackChargeState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -155,10 +156,11 @@
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Manager\Camera\Gun\GunCamera.h" />
     <ClInclude Include="Src\Manager\Camera\Game\GameCamera.h" />
-    <ClInclude Include="Src\Object\Player\State\PlayerNormalAttackState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackNormalState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerGunState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiHitState.h" />
-    <ClInclude Include="Src\Object\Player\State\PlayerAirAttackState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackAirState.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerAttackChargeState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

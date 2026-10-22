@@ -10,9 +10,9 @@ public:
 	// 仮の弾
 	struct BulletObj
 	{
-		Vector3 pos;        // 現在位置
-		Vector3 dir;        // 進行方向(正規化済み)
-		float   moved;      // 移動した距離
+		Vector3 pos{ 0,0,0 };        // 現在位置
+		Vector3 dir{ 0,0,0 };        // 進行方向(正規化済み)
+		float  moved = 0.0f;      // 移動した距離
 	};
 
 	Gun(const Transform& playerTrans,

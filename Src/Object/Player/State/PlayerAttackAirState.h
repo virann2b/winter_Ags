@@ -1,7 +1,7 @@
 #pragma once
 #include "../../Common/CharacterBase/CharacterStateBase.h"
 
-class PlayerAirAttackState : public CharacterStateBase
+class PlayerAttackAirState : public CharacterStateBase
 {
 public:
 
@@ -16,14 +16,15 @@ public:
 		Max
 	};
 
-	PlayerAirAttackState(
+	PlayerAttackAirState(
 		const bool& isGround,
+		bool& isMaxJump,
 		std::function<void(void)> playAnimAirAttackStart,
 		std::function<void(void)> playAnimAirAttackEnd,
 		std::function<bool(void)> isAnimeEnd,
 		std::function<void(void)> ChangeStateIdle);
 
-	~PlayerAirAttackState()override = default;
+	~PlayerAttackAirState()override = default;
 
 	// 自分の状態に遷移する条件関数
 	void OwnStateConditionUpdate(void);
@@ -48,6 +49,8 @@ private:
 
 	// 地面と設置しているか
 	const bool& isGround;
+	// 最大ジャンプ数に達しているか
+	bool& isMaxJump;
 
 
 	STEP step;

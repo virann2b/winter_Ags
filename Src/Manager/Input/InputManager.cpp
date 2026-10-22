@@ -62,6 +62,8 @@ void InputManager::Init(void)
 
 	//攻撃
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerAttack, MOUSE_INPUT_LEFT);
+	SET_KEYBOARD(KEY_TYPE::PlayerAttackStrong, KEY_INPUT_F);
+
 
 	//回避
 	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
@@ -69,6 +71,8 @@ void InputManager::Init(void)
 	//武器切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunShot, MOUSE_INPUT_LEFT);
+
+	SET_KEYBOARD(KEY_TYPE::PlayerLockOn, KEY_INPUT_E);
 
 
 #pragma endregion

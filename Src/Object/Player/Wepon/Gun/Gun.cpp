@@ -1,6 +1,7 @@
 #include "Gun.h"
 
 #include "../../../../Utility/Utility.h"
+
 #include "../../../Common/Collider/CapsuleCollider.h"
 
 #include "../../Player.h"
@@ -14,7 +15,8 @@ Gun::Gun(const Transform& playerTrans,
 	ActorBase(),
 	playerTrans(playerTrans),
 	isActive(false),
-	bullet(bullet)
+	bullet(bullet),
+	recoverTimer(0.0f)
 {
 }
 

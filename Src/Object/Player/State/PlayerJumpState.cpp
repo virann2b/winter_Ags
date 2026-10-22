@@ -10,6 +10,7 @@ PlayerJumpState::PlayerJumpState(
 
 	float& velocityY,
 	const bool& isGround,
+	bool& isMaxJump,
 
 	std::function<void(const Vector3&)> moveAccel,
 
@@ -20,11 +21,12 @@ PlayerJumpState::PlayerJumpState(
 	std::function<bool(void)> isAnimeEnd,
 
 	std::function<void(void)> changeStateIdle
-):
+) :
 	JUMP_POWER(JUMP_POWER),
 
 	velocityY(velocityY),
 	isGround(isGround),
+	isMaxJump(isMaxJump),
 
 	moveAccel(moveAccel),
 
@@ -38,7 +40,8 @@ PlayerJumpState::PlayerJumpState(
 
 	step(STEP::Start),
 
-	jumpCount(0)
+	jumpCount(0),
+	isAirborne(false)
 {
 }
 
@@ -100,6 +103,11 @@ void PlayerJumpState::Update(void)
 
 		OwnStateConditionUpdate();
 
+		if (jumpCount >= 1)
+		{
+			isMaxJump = true;
+		}
+
 		// 最終的に入力があれば移動させる
 		if (vec != 0.0f) {
 
@@ -149,10 +157,13 @@ void PlayerJumpState::AlwaysUpdate(void)
 {
 	if (jumpCount == 0) return;
 
+
+	//ジャンプから空中攻撃に遷移した際のリセット
 	if (isGround)
 	{
 		//ジャンプカウントリセット
 		jumpCount = 0;
 	}
+
 }
 

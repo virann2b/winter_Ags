@@ -76,6 +76,8 @@ private:
 	//”­Ë”
 	int& bulletCount;
 
+	bool gunState;
+
 #pragma endregion
 
 	//ó‘Ô‘JˆÚ

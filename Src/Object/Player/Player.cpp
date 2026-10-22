@@ -18,8 +18,10 @@
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
 
-#include "State/PlayerNormalAttackState.h"
-#include "State/PlayerAirAttackState.h"
+#include "State/PlayerAttackNormalState.h"
+#include "State/PlayerAttackAirState.h"
+#include "State/PlayerAttackChargeState.h"
+
 #include "State/PlayerGunState.h"	
 
 Player::Player()
@@ -32,7 +34,8 @@ Player::Player()
 	targetTime(0.0f),
 	bulletShotCount(0),
 	bullet(0),
-	isGunState(false)
+	isGunState(false),
+	state(STATE::None)
 {
 }
 
@@ -153,7 +156,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Jump,
 		new PlayerJumpState(
-			24.0f, velocity.y, isGround,
+			24.0f, velocity.y, isGround,isMaxJump,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
 			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
@@ -177,8 +180,8 @@ void Player::Load(void)
 
 	//UŒ‚ó‘Ô
 	AddState(
-		STATE::NormalAttack,
-		new PlayerNormalAttack(
+		STATE::AttackNormal,
+		new PlayerAttackNormalState(
 			[&]() 
 			{
 				ChangeState(STATE::Idle);
@@ -188,10 +191,10 @@ void Player::Load(void)
 			[&]()
 			{
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
-				AnimePlay(ANIME_TYPE::NormalAttack_1);
+				AnimePlay(ANIME_TYPE::AttackNormal_1);
 			},
-			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_2); },
-			[&]() {AnimePlay(ANIME_TYPE::NormalAttack_3); },
+			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_2); },
+			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_3); },
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::GetAnimeRatio,this)
 		)
@@ -199,15 +202,15 @@ void Player::Load(void)
 
 	//‹ó’†UŒ‚ó‘Ô
 	AddState(
-		STATE::AirAttack,
-		new PlayerAirAttackState(
-			isGround,
+		STATE::AttackAir,
+		new PlayerAttackAirState(
+			isGround,isMaxJump,
 			[&]()
 			{
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
-				AnimePlay(ANIME_TYPE::AirAttack_Start); 
+				AnimePlay(ANIME_TYPE::AttackAir_Start); 
 			},
-			[&]() {AnimePlay(ANIME_TYPE::AirAttack_End); },
+			[&]() {AnimePlay(ANIME_TYPE::AttackAir_End); },
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]() 
 			{
@@ -216,6 +219,24 @@ void Player::Load(void)
 
 			}
 
+		)
+	);
+	
+	AddState(
+		STATE::AttackCharge,
+		new PlayerAttackChargeState(
+			[&]() 
+			{
+				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
+				AnimePlay(ANIME_TYPE::AttackCharge_Start);
+			},
+			[&]() {AnimePlay(ANIME_TYPE::AttackCharge_End); },
+			std::bind(&Player::IsAnimeEnd, this),
+			[&]()
+			{
+				ChangeState(STATE::Idle);
+				sword->ChangePosition(Sword::SWORD_POSITION::Back);
+			}
 		)
 	);
 
@@ -268,20 +289,21 @@ void Player::Load(void)
 	RegisterStateTransition(STATE::Move, STATE::Roll);
 
 	// u‘Ò‹@ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
-	RegisterStateTransition(STATE::Idle, STATE::NormalAttack);
+	RegisterStateTransition(STATE::Idle, STATE::AttackNormal);
 	// uˆÚ“®ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
-	RegisterStateTransition(STATE::Move, STATE::NormalAttack);
+	RegisterStateTransition(STATE::Move, STATE::AttackNormal);
 
+	// u‘Ò‹@ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	RegisterStateTransition(STATE::Idle, STATE::AttackCharge);
+	// uˆÚ“®ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	RegisterStateTransition(STATE::Move, STATE::AttackCharge);
 
 	// u‘Ò‹@ó‘Ôv->ueó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Idle, STATE::Gun);
-	// uˆÚ“®ó‘Ôv->ueó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	// u‘Ò‹@ó‘Ôv->ueó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::Gun);
 
-	RegisterStateTransition(STATE::Move, STATE::Gun);
-
-
-	RegisterStateTransition(STATE::Jump, STATE::AirAttack);
+	RegisterStateTransition(STATE::Jump, STATE::AttackAir);
 
 
 #pragma endregion
@@ -293,6 +315,19 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 
 void Player::SubUpdate(void)
 {
+	if (isGround)
+	{
+		isMaxJump = false;
+	}
+
+	if (state == STATE::Gun)
+	{
+		isGunState = true;
+	}
+	else
+	{
+		isGunState = false;
+	}
 
 	//’e‚ÌXV
 	if (!isGunState)
@@ -309,6 +344,10 @@ void Player::SubDraw(void)
 	DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
 	DrawFormatString(0, 180, 0xffffff, "Bullet : %d", bulletShotCount);
 	DrawFormatString(0, 200, 0xffffff, "BulletCount : %d", bullet);
+
+	DrawFormatString(0, 220, 0xffffff, "isMaxJump : %d", isMaxJump);
+	DrawFormatString(0, 240, 0xffffff, "isGround : %d", isGround);
+
 
 	gun->BulletDraw();
 

@@ -40,11 +40,14 @@ private:
 
 		Idle,
 		Move,
+
 		Jump,
+
 		Roll,
 
-		NormalAttack,
-		AirAttack,
+		AttackNormal,
+		AttackAir,
+		AttackCharge,
 
 		Gun,
 
@@ -68,12 +71,15 @@ private:
 		JumpIdle,
 		JumpEnd,
 
-		NormalAttack_1,
-		NormalAttack_2,
-		NormalAttack_3,
+		AttackNormal_1,
+		AttackNormal_2,
+		AttackNormal_3,
 
-		AirAttack_Start,
-		AirAttack_End,
+		AttackAir_Start,
+		AttackAir_End,
+
+		AttackCharge_Start,
+		AttackCharge_End,
 
 		Gun,
 
@@ -93,12 +99,15 @@ private:
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
 
-		0.7f,	// NormalAttack1
-		0.7f,	// NormalAttack2
-		0.7f,	// NormalAttack3
+		0.7f,	// AttackNormal_1
+		0.7f,	// AttackNormal_2
+		0.7f,	// AttackNormal_3
 
-		1.0f,	// AirAttack_Start
-		1.0f,	// AirAttack_End
+		1.0f,	// AttackAir_Start
+		1.0f,	// AttackAir_End
+
+		1.0f,	// AttackCharge_Start
+		1.0f,	// AttackCharge_End
 
 		1.5f,	// Gun
 
@@ -117,12 +126,12 @@ private:
 		true,	//JumpIdle
 		false,  //JumpEnd
 
-		false,	// NormalAttack1
-		false,	// NormalAttack2
-		false,	// NormalAttack3
+		false,	// AttackNormal_1
+		false,	// AttackNormal_2
+		false,	// AttackNormal_3
 
-		false,	// AirAttack_Start
-		false,	// AirAttack_End
+		false,	// AttackCharge_Start
+		false,	// AttackCharge_End
 
 		false,	// Gun
 
@@ -141,12 +150,15 @@ private:
 		"Data/Model/Player/Jump_Idle.mv1",	//JumpIdle
 		"Data/Model/Player/Jump_End.mv1",	//JumpEnd
 
-		"Data/Model/Player/NormalAttack_1.mv1",//NomalAttack_1
-		"Data/Model/Player/NormalAttack_2.mv1",//NomalAttack_2
-		"Data/Model/Player/NormalAttack_3.mv1",//NomalAttack_3
+		"Data/Model/Player/AttackNormal_1.mv1",// AttackNormal_1
+		"Data/Model/Player/AttackNormal_2.mv1",// AttackNormal_2
+		"Data/Model/Player/AttackNormal_3.mv1",// AttackNormal_3
 
-		"Data/Model/Player/JumpAttack_Start.mv1",	//AirAttack_Start
-		"Data/Model/Player/JumpAttack_End.mv1",		//AirAttack_End
+		"Data/Model/Player/AttackJump_1.mv1",	// AttackAir_Start
+		"Data/Model/Player/AttackJump_2.mv1",	// AttackAir_End
+
+		"Data/Model/Player/AttackCharge_1.mv1",	// AttackCharge_Start
+		"Data/Model/Player/AttackCharge_2.mv1",	// AttackCharge_End
 
 		"Data/Model/Player/Gun.mv1",//Gun
 
@@ -170,6 +182,9 @@ private:
 	//武器切り替え
 	bool gunIsActive;
 	bool swordIsActive;
+
+	//ジャンプ回数最大フラグ
+	bool isMaxJump;
 
 	bool isGunState;
 

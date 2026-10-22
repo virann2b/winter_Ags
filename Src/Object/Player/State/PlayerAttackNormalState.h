@@ -2,11 +2,11 @@
 #include "../../Common/CharacterBase/CharacterStateBase.h"
 struct Vector3;
 
-class PlayerNormalAttack : public CharacterStateBase
+class PlayerAttackNormalState : public CharacterStateBase
 {
 public:
 
-	PlayerNormalAttack(
+	PlayerAttackNormalState(
 		std::function<void(void)> ChangeStateIdle,
 		std::function<void(void)> playAnimeNormalAttack_1,
 		std::function<void(void)> playAnimeNormalAttack_2,
@@ -16,7 +16,7 @@ public:
 
 	);
 
-	~PlayerNormalAttack()override = default;
+	~PlayerAttackNormalState()override = default;
 
 	// ©•ª‚Ìó‘Ô‚É‘JˆÚ‚·‚éğŒŠÖ”
 	void OwnStateConditionUpdate(void);

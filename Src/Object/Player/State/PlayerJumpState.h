@@ -13,6 +13,7 @@ public:
 
 		float& velocityY,
 		const bool& isGround,
+		bool& isMaxJump,
 
 		std::function<void(const Vector3&)> moveAccel,
 
@@ -55,6 +56,9 @@ private:
 	// 地面と設置しているか
 	const bool& isGround;
 
+	// ジャンプカウント最大フラグ
+	bool& isMaxJump;
+
 	// 移動関数のポインタ
 	const std::function<void(const Vector3&)> moveAccel;
 
@@ -91,6 +95,7 @@ private:
 
 	// ジャンプカウント
 	int jumpCount;
+	bool isAirborne;
 
 	void AlwaysUpdate(void)override;
 };

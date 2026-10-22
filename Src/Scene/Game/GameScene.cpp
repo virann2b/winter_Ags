@@ -67,7 +67,7 @@ void GameScene::SubPostUpdate(void)
 
 void GameScene::SubUiDraw(void)
 {
-	DrawStringToHandle(0, 0, "ゲーム", 0xffffff, Font::GetIns().GetFont(FontKinds::Marumiya40));
+	DrawStringToHandle(0, 0, "ゲームシーンってやつ", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
 }
 
 void GameScene::CreateCamera(void)

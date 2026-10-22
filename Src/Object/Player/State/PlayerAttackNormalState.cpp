@@ -1,4 +1,4 @@
-#include "PlayerNormalAttackState.h"
+#include "PlayerAttackNormalState.h"
 
 #include "../../../Common/Vector3.h"
 
@@ -6,7 +6,7 @@
 
 
 
-PlayerNormalAttack::PlayerNormalAttack(
+PlayerAttackNormalState::PlayerAttackNormalState(
 	std::function<void(void)> ChangeStateIdle,
 	std::function<void(void)> playAnimeNormalAttack_1,
 	std::function<void(void)> playAnimeNormalAttack_2,
@@ -27,13 +27,13 @@ PlayerNormalAttack::PlayerNormalAttack(
 {
 }
 
-void PlayerNormalAttack::OwnStateConditionUpdate(void)
+void PlayerAttackNormalState::OwnStateConditionUpdate(void)
 {
 	//入力
 	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttack).down) { OwnChangeState(); }
 }
 
-void PlayerNormalAttack::Enter(void)
+void PlayerAttackNormalState::Enter(void)
 {
 	//コンボ回数リセット
 	comboIndex_ = 0;
@@ -45,7 +45,7 @@ void PlayerNormalAttack::Enter(void)
 	PLAY_ANIM_TABLE[comboIndex_]();
 }
 
-void PlayerNormalAttack::Update(void)
+void PlayerAttackNormalState::Update(void)
 {
 	
 	// 入力受付(先に判定する)
@@ -75,7 +75,7 @@ void PlayerNormalAttack::Update(void)
 	}
 }
 
-const bool PlayerNormalAttack::IsComboInputWindow(void)
+const bool PlayerAttackNormalState::IsComboInputWindow(void)
 {
 	//アニメーション再生比率
 	float rate = animRate();   // 0.0~1.0

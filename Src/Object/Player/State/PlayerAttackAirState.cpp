@@ -1,18 +1,20 @@
-#include "PlayerAirAttackState.h"
+#include "PlayerAttackAirState.h"
 
 #include "../../../Common/Vector3.h"
 
 #include "../../../Manager/Input/InputManager.h"
 
 
-PlayerAirAttackState::PlayerAirAttackState(
+PlayerAttackAirState::PlayerAttackAirState(
 	const bool& isGround, 
+	bool& isMaxJump,
 	std::function<void(void)> playAnimAirAttackStart, 
 	std::function<void(void)> playAnimAirAttackEnd, 
 	std::function<bool(void)> isAnimeEnd,
 	std::function<void(void)> ChangeStateIdle)
 	:
 	isGround(isGround),
+	isMaxJump(isMaxJump),
 	playAnimAirAttackStart(playAnimAirAttackStart),
 	playAnimAirAttackEnd(playAnimAirAttackEnd),
 	isAnimeEnd(isAnimeEnd),
@@ -21,21 +23,22 @@ PlayerAirAttackState::PlayerAirAttackState(
 {
 }
 
-void PlayerAirAttackState::Enter(void)
+void PlayerAttackAirState::Enter(void)
 {
-	playAnimAirAttackStart();
-	//isChangeAnim = false;
+   	playAnimAirAttackStart();
 
 	step = STEP::Start;
 }
 
-void PlayerAirAttackState::OwnStateConditionUpdate(void)
+void PlayerAttackAirState::OwnStateConditionUpdate(void)
 {
 	//“ü—Í
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttack).down ) { OwnChangeState(); }
+
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttack).down && isMaxJump) { OwnChangeState(); }
+	
 }
 
-void PlayerAirAttackState::Update(void)
+void PlayerAttackAirState::Update(void)
 {
 	switch (step)
 	{

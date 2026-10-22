@@ -55,9 +55,15 @@ public:
 
 		// ロックオン
 		PlayerLockOn,
+		//次の敵
+		PlayerNextLockOn,
+		//前の敵
+		PlayerBeforeLockOn,
 
 		// 攻撃
 		PlayerAttack,
+		PlayerAttackAir,
+		PlayerAttackStrong,
 
 		// ガンモード
 		PlayerGunMode,
