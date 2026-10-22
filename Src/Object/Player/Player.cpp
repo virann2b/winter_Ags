@@ -133,10 +133,9 @@ void Player::Load(void)
 	// ‘Ò‹@ó‘Ô
 	AddState(
 		STATE::Idle,
-		new PlayerIdleState([&]() 
-			{ 
-				AnimePlay(ANIME_TYPE::Idle); 
-			}
+		new PlayerIdleState(
+			[&]() { AnimePlay(ANIME_TYPE::Idle); },
+			[&]() { sword->ChangeActive(Sword::ACTIVE::DrawOnly); }
 		)
 	);
 
@@ -188,6 +187,7 @@ void Player::Load(void)
 				sword->ChangePosition(Sword::SWORD_POSITION::Back);
 
 			},
+			[&]() {sword->ChangeActive(Sword::ACTIVE::Active); },
 			[&]()
 			{
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
@@ -319,6 +319,7 @@ void Player::Load(void)
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	
 }
 
 void Player::SubUpdate(void)

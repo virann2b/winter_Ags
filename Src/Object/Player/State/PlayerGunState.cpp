@@ -11,8 +11,8 @@ PlayerGunState::PlayerGunState(
 	std::function<void(void)> ChangeStateIdle,
 	float& targetTime,
 	int& bulletCount,
-	std::function<void(void)> playShot)
-	:
+	std::function<void(void)> playShot
+):
 	playAnimeGun(playAnimeGun),
 	ChangeStateIdle(ChangeStateIdle),
 	targetTime(targetTime),

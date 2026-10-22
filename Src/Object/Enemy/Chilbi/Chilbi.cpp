@@ -8,7 +8,8 @@
 #include "../../Common/Collider/CapsuleCollider.h"
 
 #include "State/ChilbiIdleState.h"
-#include "State//ChilbiHitState.h"
+#include "State/ChilbiHitState.h"
+#include "State/ChilbiDieState.h"
 
 
 
@@ -58,6 +59,7 @@ void Chilbi::Load(void)
 	//‰ŠúÀ•W“o˜^
 	trans.pos = initPos;
 
+	hp = 10;
 
 #pragma endregion
 
@@ -107,6 +109,17 @@ void Chilbi::Load(void)
 		)
 	);
 
+	//€–Só‘Ô
+	AddState(
+		STATE::Die,
+		new ChilbiDieState(
+			[&]() { AnimePlay((int)ANIME_TYPE::Die); },
+			std::bind(&Chilbi::GetAlive, this),
+			std::bind(&Chilbi::IsAnimeEnd, this)
+
+		)
+	);
+
 
 
 #pragma endregion
@@ -122,7 +135,8 @@ void Chilbi::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 
 	case COLLIDER_TAG::Sword:
 	{
-		ChangeState(STATE::Hit);
+		TakeDamage(1);
+		ChangeState(GetAlive() ? STATE::Die : STATE::Hit);
 
 		invincibleCounter = 60;
 	}
@@ -138,10 +152,25 @@ void Chilbi::SubInit(void)
 	ChangeState(STATE::Idle);
 
 	invincibleCounter = 0.0f;
+
+	isClearRequested = false;
 }
 
 void Chilbi::SubUpdate(void)
 {
 	if (invincibleCounter > 0.0f) { invincibleCounter -= TimeScale::Get(); }
 	else { invincibleCounter = 0.0f; }
+
+	// €–SƒAƒjƒ‚ªI‚í‚Á‚½‚çƒQ[ƒ€ƒNƒŠƒA
+	if (GetAlive() && GetState() == (int)STATE::Die && IsAnimeEnd() && !isClearRequested)
+	{
+		isClearRequested = true;
+		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
+	}
+}
+
+void Chilbi::SubDraw(void)
+{
+	DrawFormatString(0, 300, 0xffffff, "hp : %d", hp);
+
 }

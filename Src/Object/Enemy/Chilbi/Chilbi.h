@@ -27,6 +27,8 @@ private:
 
 		Hit,
 
+		Die,
+
 		Max
 	};
 
@@ -43,6 +45,8 @@ private:
 
 		Hit,
 
+		Die,
+
 		Max
 	};
 
@@ -53,7 +57,9 @@ private:
 
 		0.8f,	// Run
 
-		1.0f	// Hit
+		1.0f,	// Hit
+		
+		0.8f	//Die
 	};
 
 	// アニメーションループ再生フラグテーブル
@@ -65,6 +71,9 @@ private:
 
 		false,	//Hit
 
+		false,	//Die
+
+
 	};
 
 	// アニメーションパステーブル
@@ -75,6 +84,9 @@ private:
 		"Data/Model/Enemy/Chilbi/Run.mv1",	//Run
 
 		"Data/Model/Enemy/Chilbi/Hit.mv1",	//Hit
+
+		"Data/Model/Enemy/Chilbi/Die.mv1",	//Die
+
 	};
 
 #pragma endregion
@@ -84,6 +96,8 @@ private:
 	//更新
 	void SubUpdate(void)override;
 
+	void SubDraw(void)override;
+
 #pragma region 参照する変数
 
 	//初期座標
@@ -91,6 +105,7 @@ private:
 
 #pragma endregion
 	
+	bool isClearRequested = false;
 
 	// 無敵カウンター
 	float invincibleCounter;

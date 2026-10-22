@@ -6,7 +6,10 @@ class PlayerIdleState : public CharacterStateBase
 {
 public:
 
-	PlayerIdleState(std::function<void(void)> playAnimeIdle);
+	PlayerIdleState(
+		std::function<void(void)> playAnimeIdle,
+		const std::function<void(void)> ChangeSwordActive
+	);
 
 	~PlayerIdleState()override = default;
 
@@ -20,4 +23,7 @@ private:
 
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimeIdle;
+	// 剣の判定変更関数ポインタ
+	const std::function<void(void)> ChangeSwordActive;
+
 };

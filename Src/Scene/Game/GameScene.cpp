@@ -30,7 +30,10 @@
 
 #include "../../Object/Water.h"
 
-GameScene::GameScene() : SceneBase()
+GameScene::GameScene()
+	: SceneBase(),
+	elapsedSec(0.0f),
+	isChanging(false)
 {
 }
 
@@ -50,24 +53,48 @@ void GameScene::SubPostLoad(void)
 void GameScene::SubPostInit(void)
 {
 	//AddPostEffect(new FocusLinesPostEffect(1.5f, 18.0f, 100.0f));
+
+	elapsedSec = 0.0f;
+	isChanging = false;
 }
 
 void GameScene::SubPostUpdate(void)
 {
-	// ゲーム終了処理
+	 //ゲーム終了処理
 	if (Input::GetIns().GetInfo(KEY_TYPE::End).down) {
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::Title);
 	}
 
-	// 決定
-	if (CheckHitKey(KEY_INPUT_RSHIFT) == 1) {
+	// 制限時間の更新
+	if (!isChanging)
+	{
+		elapsedSec += 1.0f / 60.0f * TimeScale::Get();
+
+		if (elapsedSec >= TIME_LIMIT_SEC)
+		{
+			isChanging = true;
+			SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameOver);
+			return;
+		}
+	}
+
+	auto* chilbi = ActorSerch<Chilbi>(actors);
+	if (chilbi && chilbi->GetAlive() && !isChanging)
+	{
+		isChanging = true;
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
+		return;
 	}
 }
 
 void GameScene::SubUiDraw(void)
 {
 	DrawStringToHandle(0, 0, "ゲームシーンってやつ", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
+
+	int remain = (int)(TIME_LIMIT_SEC - elapsedSec);
+	if (remain < 0) { remain = 0; }
+	DrawFormatString(0, 50, 0xffffff, "残り %d:%02d", remain / 60, remain % 60);
+
 }
 
 void GameScene::CreateCamera(void)

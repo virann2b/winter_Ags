@@ -11,15 +11,16 @@ PlayerAttackAirState::PlayerAttackAirState(
 	std::function<void(void)> playAnimAirAttackStart, 
 	std::function<void(void)> playAnimAirAttackEnd, 
 	std::function<bool(void)> isAnimeEnd,
-	std::function<void(void)> ChangeStateIdle)
-	:
+	std::function<void(void)> ChangeStateIdle
+):
 	isGround(isGround),
 	isMaxJump(isMaxJump),
 	playAnimAirAttackStart(playAnimAirAttackStart),
 	playAnimAirAttackEnd(playAnimAirAttackEnd),
 	isAnimeEnd(isAnimeEnd),
 	ChangeStateIdle(ChangeStateIdle),
-	isChangeAnim(false)
+	isChangeAnim(false),
+	step(STEP::None)
 {
 }
 

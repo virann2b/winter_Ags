@@ -8,12 +8,12 @@ PlayerAttackChargeState::PlayerAttackChargeState(
 	std::function<void(void)> PlayerAttackChargeEnd,
 	std::function<bool(void)> isAnimeEnd,
 	std::function<void(void)> ChangeStateIdle
-	)
-	:
+	):
 	PlayerAttackChargeStart(PlayerAttackChargeStart),
 	PlayerAttackChargeEnd(PlayerAttackChargeEnd),
 	isAnimeEnd(isAnimeEnd),
-	ChangeStateIdle(ChangeStateIdle)
+	ChangeStateIdle(ChangeStateIdle),
+	step(STEP::None)
 {
 }
 

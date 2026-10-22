@@ -61,11 +61,23 @@ void Sword::Load(void)
 
 void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	switch (other.GetTag())
+	{
+	case COLLIDER_TAG::Enemy:
+	{
+		TakeDamage(1);
+	}
+	}
 }
 
 void Sword::ChangePosition(SWORD_POSITION nextPostion)
 {
 	swordPosition = nextPostion;
+}
+
+void Sword::ChangeActive(ACTIVE active_)
+{
+	active = active_;
 }
 
 void Sword::SubUpdate(void)
@@ -126,26 +138,6 @@ void Sword::SubDraw(void)
 	// é≤ÇÃí∑Ç≥
 	float axisLength = 30.0f;
 
-	// Xé≤ÅFê‘
-	DrawLine3D(
-		handPos,
-		VAdd(handPos, VScale(xAxis, axisLength)),
-		GetColor(255, 0, 0)
-	);
-
-	// Yé≤ÅFóŒ
-	DrawLine3D(
-		handPos,
-		VAdd(handPos, VScale(yAxis, axisLength)),
-		GetColor(0, 255, 0)
-	);
-
-	// Zé≤ÅFê¬
-	DrawLine3D(
-		handPos,
-		VAdd(handPos, VScale(zAxis, axisLength)),
-		GetColor(0, 0, 255)
-	);
 }
 
 void Sword::SwordUpdate(void)

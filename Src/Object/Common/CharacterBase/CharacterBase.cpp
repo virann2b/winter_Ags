@@ -28,6 +28,13 @@ CharacterBase::CharacterBase(const std::string& parameterPath):
 {
 }
 
+bool CharacterBase::TakeDamage(int damage)
+{
+	if (!GetJudgeFlg()) { return false; }
+	hp -= damage;
+	return true;
+}
+
 void CharacterBase::BaseUpdate(void)
 {
 	// ステートの更新

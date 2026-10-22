@@ -35,5 +35,5 @@ void TitleScene::SubPostUpdate(void)
 
 void TitleScene::SubUiDraw(void)
 {
-	DrawStringToHandle(0, 0, "タイトル", 0xffffff, Font::GetIns().GetFont(FontKinds::Marumiya40));
+	DrawStringToHandle(0, 0, "タイトルってやつ", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
 }

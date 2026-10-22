@@ -8,6 +8,7 @@
 
 PlayerAttackNormalState::PlayerAttackNormalState(
 	std::function<void(void)> ChangeStateIdle,
+	std::function<void(void)> ChangeSwordActive,
 	std::function<void(void)> playAnimeNormalAttack_1,
 	std::function<void(void)> playAnimeNormalAttack_2,
 	std::function<void(void)> playAnimeNormalAttack_3,
@@ -15,6 +16,7 @@ PlayerAttackNormalState::PlayerAttackNormalState(
 	std::function<float(void)> animRate)
 	:
 	ChangeStateIdle(ChangeStateIdle),
+	ChangeSwordActive(ChangeSwordActive),
 	PLAY_ANIM_TABLE{
 		playAnimeNormalAttack_1,
 		playAnimeNormalAttack_2,
@@ -40,8 +42,9 @@ void PlayerAttackNormalState::Enter(void)
 	//入力フラグリセット
 	nextInput_ = false;
 
-	//通常攻撃1再生
-	//playAnimeNormalAttack_1();
+	ChangeSwordActive();
+
+	//通常攻撃再生
 	PLAY_ANIM_TABLE[comboIndex_]();
 }
 

@@ -65,6 +65,9 @@ public:
 	// コライダーすべてを取得
 	virtual std::vector<ColliderBase*> GetColliders(void)const;
 
+	//ダメージ窓口・デフォルトはダメージを受けない
+	virtual bool TakeDamage(int damage) { return false; };
+
 	// コライダーのデバッグ描画
 	void DrawColliderDebug(void)const;
 

@@ -26,5 +26,16 @@ private:
 
 #pragma endregion
 
+	// ゲームオーバーまでの制限時間(秒)
+	static constexpr float TIME_LIMIT_SEC = 60.0f;
+
+	// 経過時間(秒)
+	float elapsedSec;
+
+	// 遷移済みフラグ(毎フレーム遷移を呼ばないため)
+	bool isChanging;
+
 	void CreateCamera(void)override;
+
+
 };

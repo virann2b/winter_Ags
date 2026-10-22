@@ -20,6 +20,22 @@ public:
 	// ステートの取得
 	int GetState(void)const { return state; }
 
+#pragma region 体力関連
+
+	//ダメージ処理
+	bool TakeDamage(int damage)override;
+
+	//MAXHPの設定
+	void SetMaxHp(int HP) { hp = HP; };
+
+	//現在体力の取得
+	int GetHp(void) const { return hp; };
+
+	//死亡判定の取得
+	bool GetAlive(void) const { return hp <= 0; };
+
+#pragma endregion
+
 private:
 
 
@@ -50,6 +66,12 @@ private:
 protected:
 	// アニメーションコントローラーのインスタンス
 	AnimationController* anime;
+
+	int hp;
+
+	//被弾後の無敵時間
+	float invincibleTimer;
+
 #pragma region ステート管理関数
 
 	// ステートの追加

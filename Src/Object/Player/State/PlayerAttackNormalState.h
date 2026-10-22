@@ -8,6 +8,7 @@ public:
 
 	PlayerAttackNormalState(
 		std::function<void(void)> ChangeStateIdle,
+		std::function<void(void)> ChangeSwordActive,
 		std::function<void(void)> playAnimeNormalAttack_1,
 		std::function<void(void)> playAnimeNormalAttack_2,
 		std::function<void(void)> playAnimeNormalAttack_3,
@@ -43,6 +44,9 @@ private:
 
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
+
+	//剣の判定切り替え
+	const std::function<void(void)> ChangeSwordActive;
 
 	// 通常攻撃ごとのアニメーション終了取得関数のポインタ
 	const std::function<bool(void)> isAnimeEnd;
