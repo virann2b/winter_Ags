@@ -36,4 +36,12 @@ void TitleScene::SubPostUpdate(void)
 void TitleScene::SubUiDraw(void)
 {
 	DrawStringToHandle(0, 0, "タイトルってやつ", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
+
+	DrawStringToHandle(400, 300, "せいげんじかんで【　ゲームオーバー　】", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
+	DrawStringToHandle(400, 400, "てきをたおすと【　ゲームクリア　】", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
+
+
+	DrawStringToHandle(600, 700, "スペースでスタート", 0xffffff, Font::GetIns().GetFont(FontKinds::Gokusyou32));
+
+
 }

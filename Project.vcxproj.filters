@@ -69,6 +69,7 @@
     <ClCompile Include="Src\Object\Player\State\PlayerAttackAirState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerAttackChargeState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiDieState.cpp" />
+    <ClCompile Include="Src\Object\Player\Wepon\RangeAttack\RangeAttack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Src\Object\Player\State\PlayerAttackAirState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerAttackChargeState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiDieState.h" />
+    <ClInclude Include="Src\Object\Player\Wepon\RangeAttack\RangeAttack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

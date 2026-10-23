@@ -27,7 +27,7 @@ private:
 #pragma endregion
 
 	// ゲームオーバーまでの制限時間(秒)
-	static constexpr float TIME_LIMIT_SEC = 60.0f;
+	static constexpr float TIME_LIMIT_SEC = 120.0f;
 
 	// 経過時間(秒)
 	float elapsedSec;

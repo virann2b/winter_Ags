@@ -171,6 +171,6 @@ void Chilbi::SubUpdate(void)
 
 void Chilbi::SubDraw(void)
 {
-	DrawFormatString(0, 300, 0xffffff, "hp : %d", hp);
+	DrawFormatString(0, 80, 0xffffff, "EnemyHp : %d", hp);
 
 }

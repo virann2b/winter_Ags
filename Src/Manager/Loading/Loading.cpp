@@ -68,7 +68,7 @@ void Loading::Draw(void)
 	int y = yy / 2;
 
 	DrawBox(0, 0, xx, yy, 0x000000, true);
-	std::string st = "Loading";
+	std::string st = "“Ç‚İ‚İ’†c";
 	for (int i = 0; i < animCounter; i++) { st += "."; }
 	int fontSize = 45;
 	SetFontSize(fontSize);

@@ -91,7 +91,6 @@ void Player::Load(void)
 		AddAnimation(i, ANIME_SPEED_TABLE[i], ANIME_LOOP_TABLE[i], ANIME_PATH_TABLE[i]);
 	}
 	
-	//AnimeMoveControl();
 
 	anime->SetPositionCorrectionFrame("smartrig:Hips");
 	anime->SetPositionCorrection(true);
@@ -105,7 +104,7 @@ void Player::Load(void)
 			COLLIDER_TAG::Player,
 			Vector3::Yonly(55.0f) * trans.scale,
 			Vector3::Yonly(-55.0f) * trans.scale,
-			25.0f * trans.scale.MaxElementF()
+			20.0f * trans.scale.MaxElementF()
 		)
 	);
 
@@ -210,7 +209,11 @@ void Player::Load(void)
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
 				AnimePlay(ANIME_TYPE::AttackAir_Start); 
 			},
-			[&]() {AnimePlay(ANIME_TYPE::AttackAir_End); },
+			[&]() 
+			{
+				sword->ChangeActive(Sword::ACTIVE::Active);
+				AnimePlay(ANIME_TYPE::AttackAir_End); 
+			},
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]() 
 			{
@@ -254,7 +257,7 @@ void Player::Load(void)
 			[&]()
 			{ 
 				//武器の切り替え
-				sword->ChangeActive(Sword::ACTIVE::NotActive);
+				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				gun->SetActive(true);
 				isGunState = true;
 
@@ -310,9 +313,8 @@ void Player::Load(void)
 	// 「待機状態」->「銃状態」の自動遷移登録
 	RegisterStateTransition(STATE::Move, STATE::Gun);
 
-
+	// 「ジャンプ状態」->「空中攻撃状態」の自動遷移登録
 	RegisterStateTransition(STATE::Jump, STATE::AttackAir);
-
 
 #pragma endregion
 }
@@ -349,16 +351,27 @@ void Player::SubUpdate(void)
 
 void Player::SubDraw(void)
 {
-	DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
-	DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
-	DrawFormatString(0, 180, 0xffffff, "Bullet : %d", bulletShotCount);
-	DrawFormatString(0, 200, 0xffffff, "BulletCount : %d", bullet);
-
-	DrawFormatString(0, 220, 0xffffff, "isMaxJump : %d", isMaxJump);
-	DrawFormatString(0, 240, 0xffffff, "isGround : %d", isGround);
-
 
 	gun->BulletDraw();
+
+	//DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
+	//DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
+	/*DrawFormatString(0, 220, 0xffffff, "isMaxJump : %d", isMaxJump);
+	DrawFormatString(0, 240, 0xffffff, "isGround : %d", isGround);*/
+
+	DrawString(0, 120, "操作：WASD", 0xffffff);
+	DrawString(0, 140, "ジャンプ：スペース【最大２回】", 0xffffff);
+	DrawString(0, 160, "回避：Rキー", 0xffffff);
+	DrawString(0, 180, "ロックオン：Eキー", 0xffffff);
+	DrawString(0, 200, "通常攻撃：左クリック", 0xffffff);
+
+	DrawString(0, 240, "【 銃モード 】構え：右クリック長押し", 0xffffff);
+	DrawString(0, 260, "【 銃モード 】発射：左クリック (弾に当たり判定はないです）", 0xffffff);
+	DrawFormatString(0, 280, 0xffffff, "【 銃モード 】残弾数(右クリック長押しで増加最大6発) : %d", bulletShotCount);
+	DrawFormatString(0, 300, 0xffffff, "【 銃モード 】弾所持数 : %d", bullet);
+
+	DrawString(0, 340, "タメ攻撃：Fキー長押し【タメ】離すと【攻撃】", 0xffffff);
+	DrawString(0, 360, "空中攻撃：ジャンプ２回目中に通常攻撃　", 0xffffff);
 
 }
 

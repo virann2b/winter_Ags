@@ -103,7 +103,7 @@ void PlayerJumpState::Update(void)
 
 		OwnStateConditionUpdate();
 
-		if (jumpCount >= 1)
+		if (jumpCount >= 2)
 		{
 			isMaxJump = true;
 		}
@@ -123,10 +123,9 @@ void PlayerJumpState::Update(void)
 
 			//ジャンプカウントリセット
 			jumpCount = 0;
-
+			isAirborne = false;
 			// 着地のアニメーションを再生
 			playAnimeStamp();
-
 			// 次のステップへ
 			step = STEP::Stamp;
 		}
@@ -135,6 +134,7 @@ void PlayerJumpState::Update(void)
 	}
 
 	case PlayerJumpState::STEP::Stamp: {
+		
 		// 着地
 
 		// この時点から入力によって再度ジャンプが可能にしておく
@@ -157,12 +157,14 @@ void PlayerJumpState::AlwaysUpdate(void)
 {
 	if (jumpCount == 0) return;
 
+	// 空中に出たかどうかを記録
+	if (!isGround) { isAirborne = true; }
 
-	//ジャンプから空中攻撃に遷移した際のリセット
-	if (isGround)
+	// 一度空中に出てから着地したらリセット
+	if (isAirborne && isGround)
 	{
-		//ジャンプカウントリセット
 		jumpCount = 0;
+		isAirborne = false;
 	}
 
 }

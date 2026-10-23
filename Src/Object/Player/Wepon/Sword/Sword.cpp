@@ -43,7 +43,7 @@ void Sword::Load(void)
 			COLLIDER_TAG::Sword,
 			Vector3::Xonly(15.0f) * trans.scale,
 			Vector3::Xonly(160.0f) * trans.scale,
-			6.0f * trans.scale.MaxElementF()
+			60.0f * trans.scale.MaxElementF()
 		)
 	);
 
