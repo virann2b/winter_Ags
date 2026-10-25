@@ -27,7 +27,7 @@ void Gun::Load(void)
 
 
 	AddCollider(
-		new CapsuleCollider(COLLIDER_TAG::Sword,
+		new CapsuleCollider(COLLIDER_TAG::PlayerSword,
 			Vector3::Yonly(40.0f),
 			Vector3::Yonly(-40.0f),
 			40.0f));

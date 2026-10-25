@@ -2,8 +2,7 @@
 #include "../../../Common/ActorBase/ActorBase.h"
 
 
-class Sword
-	:public ActorBase
+class Sword:public ActorBase
 {
 public:
 
@@ -87,6 +86,9 @@ private:
 
 	//調整座標パラメータ
 	Vector3 justPos;
+
+	//右手のフレームインデックス
+	int handIndex;
 
 	bool isActive;
 	bool isJudge;

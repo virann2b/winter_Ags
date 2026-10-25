@@ -74,7 +74,7 @@ private:
 
 		// プレイヤー系
 		{ COLLIDER_TAG::Player,	COLLIDER_GROUP::Player },
-		{ COLLIDER_TAG::Sword,	COLLIDER_GROUP::Player },
+		{ COLLIDER_TAG::PlayerSword,	COLLIDER_GROUP::Player },
 
 		// エネミー系
 		{ COLLIDER_TAG::Enemy,	COLLIDER_GROUP::Enemy },

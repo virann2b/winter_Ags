@@ -40,7 +40,7 @@ void Sword::Load(void)
 
 	AddCollider(
 		new CapsuleCollider(
-			COLLIDER_TAG::Sword,
+			COLLIDER_TAG::PlayerSword,
 			Vector3::Xonly(15.0f) * trans.scale,
 			Vector3::Xonly(160.0f) * trans.scale,
 			60.0f * trans.scale.MaxElementF()
@@ -49,12 +49,6 @@ void Sword::Load(void)
 
 	//角度の調整
 	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));
-
-	// その回のパラメーター名
-	std::string parameterName = "JustPos";
-	// そのパラメータが存在するかどうか
-	if (!IsParameterExist("SwordPos", parameterName)) { return; }
-	justPos =  GetParameterToVector3("SwordPos", parameterName);
 
 	swordPosition = SWORD_POSITION::Hand;
 }
@@ -92,12 +86,12 @@ void Sword::SubUpdate(void)
 void Sword::SubDraw(void)
 {
 	// 右手のボーンを取得
-	int frameIndex = MV1SearchFrame(
+	handIndex = MV1SearchFrame(
 		playerTrans.model,
 		"mixamorig:RightHand"
 	);
 
-	if (frameIndex == -1)
+	if (handIndex == -1)
 	{
 		return;
 	}
@@ -106,7 +100,7 @@ void Sword::SubDraw(void)
 	MATRIX handMatrix =
 		MV1GetFrameLocalWorldMatrix(
 			playerTrans.model,
-			frameIndex
+			handIndex
 		);
 
 	// 右手の位置

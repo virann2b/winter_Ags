@@ -133,7 +133,7 @@ void Chilbi::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 	switch (other.GetTag())
 	{
 
-	case COLLIDER_TAG::Sword:
+	case COLLIDER_TAG::PlayerSword:
 	{
 		TakeDamage(1);
 		ChangeState(GetAlive() ? STATE::Die : STATE::Hit);
