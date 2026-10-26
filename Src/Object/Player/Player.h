@@ -4,6 +4,7 @@
 
 #include "Wepon/Sword/Sword.h"
 #include "Wepon/Gun/Gun.h"
+#include "Wepon/RangeAttack/RangeAttack.h"
 
 
 class Player : public CharacterBase
@@ -176,6 +177,7 @@ private:
 
 	Sword* sword;
 	Gun* gun;
+	RangeAttack* rangeAttack;
 
 	STATE state;
 

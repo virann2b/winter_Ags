@@ -92,8 +92,8 @@ void Gun::SubUpdate(void)
 
 	//í≤êÆäpìx
 	//trans.AddAngleYDeg(50.0f);
-	trans.AddAngleXDeg(50.0f);
-	trans.AddAngleZDeg(50.0f);
+	/*trans.AddAngleXDeg(50.0f);
+	trans.AddAngleZDeg(50.0f);*/
 
 }
 

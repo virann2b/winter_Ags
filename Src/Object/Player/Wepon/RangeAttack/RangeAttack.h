@@ -10,19 +10,16 @@ public:
 	{
 		None = -1,
 
-		//小
-		Min,
+		Min,//小
 
-		//中
-		Normal,
+		Normal,//中
 
-		//大
-		Big,
+		Big,//大
 
 		Max
 	};
 
-	RangeAttack();
+	RangeAttack(const Transform& playerTrans);
 
 	~RangeAttack() override = default;
 
@@ -46,13 +43,14 @@ private:
 
 #pragma endregion
 
-
+	//サイズ
 	SCALE scale;
 
+	//当たり判定の大きさ
 	float scaleSize;
 
 	// プレイヤーのモデル制御情報の参照
-	//const Transform& playerTrans;
+	const Transform& playerTrans;
 
 	void SubUpdate(void) override;
 	void SubDraw(void)override;

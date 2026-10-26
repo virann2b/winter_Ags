@@ -4,8 +4,12 @@
 
 #include "../../../Common/Collider/SphereCollider.h"
 
-RangeAttack::RangeAttack()
-	:ActorBase("Data/Parameter/Wepon/")
+
+RangeAttack::RangeAttack
+(const Transform& playerTrans)
+	:
+	ActorBase("Data/Parameter/Wepon/"),
+	playerTrans(playerTrans)
 {
 }
 
@@ -40,7 +44,7 @@ void RangeAttack::Load(void)
 	AddCollider(new SphereCollider
 	(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos));
 
-	SetJudgeFlg(false);
+	SetJudgeFlg(true);
 
 }
 
@@ -85,6 +89,16 @@ void RangeAttack::End(void)
 
 void RangeAttack::SubUpdate(void)
 {
+
+	// ボーンは名前で検索(名前はモデルに合わせて変更)
+	const int Frame = MV1SearchFrame(playerTrans.model, "SmartRigArmature");
+	if (Frame < 0) { return; }
+
+	MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, Frame);
+
+	trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
+	trans.rotation = Quaternion::FromMatrix(hand);
+
 }
 
 void RangeAttack::SubDraw(void)

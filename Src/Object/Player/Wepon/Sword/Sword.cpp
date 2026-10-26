@@ -1,6 +1,7 @@
 #include "Sword.h"
 
 #include "../../../../Utility/Utility.h"
+
 #include "../../../Common/Collider/CapsuleCollider.h"
 
 
@@ -157,12 +158,14 @@ void Sword::SwordUpdate(void)
 
 	case Sword::SWORD_POSITION::Back: {
 
-
+		//剣のずれの大きさ
 		static float workCounter = 0.0f;
 		workCounter += 0.5f;
 
+		//最終座標位置
 		Vector3 goalPos = playerTrans.pos + playerTrans.rotation.Rotate(Vector3(-10, 60, -30));
 
+		//剣の移動・揺れ
 		trans.pos = trans.pos * 0.5f + goalPos * 0.5f;
 		trans.pos.y += sinf(workCounter / 8.0f) * 1.0f;
 

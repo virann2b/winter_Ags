@@ -12,6 +12,7 @@
 
 #include "Wepon/Sword/Sword.h"
 #include "Wepon/Gun/Gun.h"
+#include "Wepon/RangeAttack/RangeAttack.h"
 
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
@@ -31,6 +32,7 @@ Player::Player()
 	swordIsActive(true),
 	gun(nullptr),
 	sword(nullptr),
+	rangeAttack(nullptr),
 	targetTime(0.0f),
 	bulletShotCount(0),
 	bullet(0),
@@ -120,6 +122,10 @@ void Player::Load(void)
 	//e‚Ì¶¬
 	gun = new Gun(trans,gunIsActive,bullet);
 	AddChildActor(gun);
+
+	//”ÍˆÍUŒ‚‚Ì¶¬
+	rangeAttack = new RangeAttack(trans);
+	AddChildActor(rangeAttack);
 
 	sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 	sword->ChangePosition(Sword::SWORD_POSITION::Back);
