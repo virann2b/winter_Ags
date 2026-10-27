@@ -19,8 +19,9 @@ void RangeAttack::Load(void)
 	SetDynamicFlg(true);
 	//重力OFF
 	SetGravityFlg(false);
-	//当たり判定ON
-	//SetJudgeFlg(true);
+	//コライダー同士の押し出しOFF
+	SetPushFlg(false);
+
 
 #pragma region 外部読み込み
 
@@ -44,16 +45,25 @@ void RangeAttack::Load(void)
 
 #pragma endregion
 
-	//初期セットサイズ
-	Start(SCALE::Big);
+	//初期設定サイズ
+	scaleSize = scaleSizeBig;
 
 	AddCollider(new SphereCollider
 	(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos));
+
+	SetJudgeFlg(false);
 
 }
 
 void RangeAttack::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	switch (other.GetTag())
+	{
+	case COLLIDER_TAG::Enemy:
+	{
+		TakeDamage(1);
+	}
+	}
 }
 
 void RangeAttack::Start(SCALE setScale)
@@ -80,6 +90,8 @@ void RangeAttack::Start(SCALE setScale)
 	}
 	}
 
+	//ここで半径変更
+
 	//当たり判定ON
 	SetJudgeFlg(true);
 }
@@ -93,23 +105,12 @@ void RangeAttack::End(void)
 
 void RangeAttack::SubUpdate(void)
 {
-
-	//// ボーンは名前で検索(名前はモデルに合わせて変更)
-	//const int Frame = MV1SearchFrame(playerTrans.model, "smartrig:LeftToeBase"); //smartrig:LeftToeBase
-	//if (Frame < 0) { return; }
-
-	//MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, Frame);
-
-	//trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
-	//trans.rotation = Quaternion::FromMatrix(hand);
-	//trans.AddAngleXDeg(-15.0f);
-
+	if (!GetJudgeFlg()) return;
+	
 	trans.pos.x = playerTrans.pos.x;
 	trans.pos.z = playerTrans.pos.z;
-	trans.pos.y = 0;
+	trans.pos.y = 40;
 
-
-	//Start(SCALE::Big);
 }
 
 void RangeAttack::SubDraw(void)

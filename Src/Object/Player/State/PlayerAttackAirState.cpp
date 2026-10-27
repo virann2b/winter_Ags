@@ -10,6 +10,8 @@ PlayerAttackAirState::PlayerAttackAirState(
 	bool& isMaxJump,
 	std::function<void(void)> playAnimAirAttackStart, 
 	std::function<void(void)> playAnimAirAttackEnd, 
+	std::function<void(void)> arriveAttackRange,
+	std::function<float(void)> animRate,
 	std::function<bool(void)> isAnimeEnd,
 	std::function<void(void)> ChangeStateIdle
 ):
@@ -17,9 +19,10 @@ PlayerAttackAirState::PlayerAttackAirState(
 	isMaxJump(isMaxJump),
 	playAnimAirAttackStart(playAnimAirAttackStart),
 	playAnimAirAttackEnd(playAnimAirAttackEnd),
+	arriveAttackRange(arriveAttackRange),
+	animRate(animRate),
 	isAnimeEnd(isAnimeEnd),
 	ChangeStateIdle(ChangeStateIdle),
-	isChangeAnim(false),
 	step(STEP::None)
 {
 }
@@ -34,7 +37,6 @@ void PlayerAttackAirState::Enter(void)
 void PlayerAttackAirState::OwnStateConditionUpdate(void)
 {
 	//入力
-
 	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttack).down && isMaxJump) { OwnChangeState(); }
 	
 }
@@ -71,6 +73,12 @@ void PlayerAttackAirState::Update(void)
 	}
 	case STEP::End:
 	{
+		if (animRate() >= RANGEATTACK_RAITE)
+		{
+			//範囲攻撃発生
+			arriveAttackRange();
+		}
+
 		// 着地モーションが終わったら Idle へ
 		if (isAnimeEnd())
 		{

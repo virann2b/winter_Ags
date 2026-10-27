@@ -217,12 +217,19 @@ void Player::Load(void)
 			},
 			[&]() 
 			{
-				sword->ChangeActive(Sword::ACTIVE::Active);
+				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				AnimePlay(ANIME_TYPE::AttackAir_End); 
 			},
+			[&]()
+			{
+				//”ÍˆÍUŒ‚”­¶
+				rangeAttack->Start(RangeAttack::SCALE::Big); 
+			},
+			std::bind(&Player::GetAnimeRatio, this),
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]() 
 			{
+				rangeAttack->End();
 				ChangeState(STATE::Idle); 
 				sword->ChangePosition(Sword::SWORD_POSITION::Back);
 

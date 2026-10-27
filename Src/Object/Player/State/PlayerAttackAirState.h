@@ -21,6 +21,8 @@ public:
 		bool& isMaxJump,
 		std::function<void(void)> playAnimAirAttackStart,
 		std::function<void(void)> playAnimAirAttackEnd,
+		std::function<void(void)> arriveAttackRange,
+		std::function<float(void)> animRate,
 		std::function<bool(void)> isAnimeEnd,
 		std::function<void(void)> ChangeStateIdle);
 
@@ -37,10 +39,20 @@ public:
 
 private:
 
+	//範囲攻撃発生比率
+	static constexpr float RANGEATTACK_RAITE = 0.2f;
+
+
+#pragma region 受け取る参照変数・関数
+
 	// 空中攻撃開始アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimAirAttackStart;
 	// 空中攻撃終了アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimAirAttackEnd;
+	// 範囲攻撃発生ポインタ
+	const std::function<void(void)> arriveAttackRange;
+	// アニメーション再生
+	const std::function<float(void)> animRate;
 
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
@@ -52,9 +64,10 @@ private:
 	// 最大ジャンプ数に達しているか
 	bool& isMaxJump;
 
+#pragma endregion
 
+
+	//アニメーション状態
 	STEP step;
-
-	bool isChangeAnim;
 };
 

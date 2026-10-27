@@ -48,6 +48,8 @@ private:
 		// その他(例外)
 		Other,
 
+		AttackRange,
+
 		// 種類数
 		Max
 	};
@@ -75,7 +77,7 @@ private:
 		// プレイヤー系
 		{ COLLIDER_TAG::Player,	COLLIDER_GROUP::Player },
 		{ COLLIDER_TAG::PlayerSword,	COLLIDER_GROUP::Player },
-		{ COLLIDER_TAG::PlayerLargeAttack,	COLLIDER_GROUP::EnemyOnly },
+		{ COLLIDER_TAG::PlayerLargeAttack,	COLLIDER_GROUP::Player },
 
 
 		// エネミー系

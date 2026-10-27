@@ -444,6 +444,9 @@ void CollisionManager::Check(void)
 
 	// ‡I‚»‚Ì‘¼ ~ ‚»‚Ì‘¼
 	Matching(COLLIDER_GROUP::Other);
+
+
+
 }
 
 #pragma endregion
