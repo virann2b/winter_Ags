@@ -1,6 +1,5 @@
 #include "ChilbiHitState.h"
 
-#include "../../../../Manager/Input/InputManager.h"
 
 ChilbiHitState::ChilbiHitState(
 	std::function<void(void)> playAnimeHit,
@@ -15,8 +14,7 @@ ChilbiHitState::ChilbiHitState(
 
 void ChilbiHitState::OwnStateConditionUpdate(void)
 {
-	//“ü—Í
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).down) { OwnChangeState(); }
+	
 }
 
 void ChilbiHitState::Enter(void)

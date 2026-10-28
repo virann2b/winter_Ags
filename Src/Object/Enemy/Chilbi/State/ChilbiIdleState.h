@@ -4,7 +4,10 @@ class ChilbiIdleState : public CharacterStateBase
 {
 public:
 
-	ChilbiIdleState(std::function<void(void)> playAnimeIdle);
+	ChilbiIdleState(
+		std::function<void(void)> playAnimeIdle,
+		const std::function<void(void)> changeAttackState
+	);
 
 	~ChilbiIdleState()override = default;
 
@@ -14,9 +17,13 @@ public:
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
 
+	void Update(void) override;
+
 private:
 
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimeIdle;
+	const std::function<void(void)> changeAttackState;
+
 };
 

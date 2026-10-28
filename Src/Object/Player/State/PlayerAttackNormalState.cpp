@@ -17,7 +17,8 @@ PlayerAttackNormalState::PlayerAttackNormalState(
 	:
 	ChangeStateIdle(ChangeStateIdle),
 	ChangeSwordActive(ChangeSwordActive),
-	PLAY_ANIM_TABLE{
+	PLAY_ANIM_TABLE
+	{
 		playAnimeNormalAttack_1,
 		playAnimeNormalAttack_2,
 		playAnimeNormalAttack_3

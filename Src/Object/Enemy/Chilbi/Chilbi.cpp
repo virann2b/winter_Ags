@@ -10,6 +10,7 @@
 #include "State/ChilbiIdleState.h"
 #include "State/ChilbiHitState.h"
 #include "State/ChilbiDieState.h"
+#include "State/ChilbiAttackState.h"
 
 
 
@@ -95,7 +96,8 @@ void Chilbi::Load(void)
 	AddState(
 		STATE::Idle,
 		new ChilbiIdleState(
-			[&]() { AnimePlay((int)ANIME_TYPE::Idle); }
+			[&]() { AnimePlay((int)ANIME_TYPE::Idle);},
+			[&]() { ChangeState(STATE::Attack); }
 		)
 	);
 
@@ -104,6 +106,17 @@ void Chilbi::Load(void)
 		STATE::Hit,
 		new ChilbiHitState(
 			[&]() { AnimePlay((int)ANIME_TYPE::Hit); },
+			[&]() { ChangeState(STATE::Idle); },
+			std::bind(&Chilbi::IsAnimeEnd, this)
+		)
+	);
+
+	//攻撃状態
+	AddState(
+		STATE::Attack,
+		new ChilbiAttackState(
+			[&]() { AnimePlay((int)ANIME_TYPE::Attack_1); },
+			[&]() { AnimePlay((int)ANIME_TYPE::Attack_2); },
 			[&]() { ChangeState(STATE::Idle); },
 			std::bind(&Chilbi::IsAnimeEnd, this)
 		)
@@ -162,11 +175,12 @@ void Chilbi::SubUpdate(void)
 	else { invincibleCounter = 0.0f; }
 
 	// 死亡アニメが終わったらゲームクリア
-	if (GetAlive() && GetState() == (int)STATE::Die && IsAnimeEnd() && !isClearRequested)
+	/*if (GetAlive() && GetState() == (int)STATE::Die && IsAnimeEnd() && !isClearRequested)
 	{
 		isClearRequested = true;
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
-	}
+	}*/
+
 }
 
 void Chilbi::SubDraw(void)

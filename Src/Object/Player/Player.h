@@ -187,7 +187,7 @@ private:
 
 	//ジャンプ回数最大フラグ
 	bool isMaxJump;
-
+	//銃状態
 	bool isGunState;
 
 	float targetTime;
@@ -203,7 +203,6 @@ private:
 	// 初期化処理
 	void SubInit(void)override 
 	{
-
 		// 待機状態に遷移
 		ChangeState(STATE::Idle);
 	}

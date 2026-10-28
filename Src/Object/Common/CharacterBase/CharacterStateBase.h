@@ -55,5 +55,5 @@ private:
 	std::function<bool(void)> isOwnStatePtr;
 
 	// 他の状態に遷移する条件関数のポインタを格納するベクター
-	std::vector<std::function<void(void)>> OtherStateConditions;
+	std::vector<std::function<void(void)>> OtherStateConditions;		
 };

@@ -25,6 +25,8 @@ private:
 
 		Run,
 
+		Attack,
+
 		Hit,
 
 		Die,
@@ -43,6 +45,9 @@ private:
 
 		Run,
 
+		Attack_1,
+		Attack_2,
+
 		Hit,
 
 		Die,
@@ -57,17 +62,23 @@ private:
 
 		0.8f,	// Run
 
+		1.0f,	// Attack_1
+		1.0f,	// Attack_2
+
 		1.0f,	// Hit
 		
-		0.8f	//Die
+		0.8f	// Die
 	};
 
 	// アニメーションループ再生フラグテーブル
 	const bool ANIME_LOOP_TABLE[(int)ANIME_TYPE::Max] =
 	{
-		true,	// Idle
+		true,	//Idle
 
-		true,	// Run
+		true,	//Run
+
+		false,	//Attack_1
+		false,	//Attack_2
 
 		false,	//Hit
 
@@ -82,6 +93,9 @@ private:
 		"Data/Model/Enemy/Chilbi/Idle.mv1",	//Idle
 
 		"Data/Model/Enemy/Chilbi/Run.mv1",	//Run
+
+		"Data/Model/Enemy/Chilbi/Attack_1.mv1",	//Attack_1
+		"Data/Model/Enemy/Chilbi/Attack_2.mv1",	//Attack_1
 
 		"Data/Model/Enemy/Chilbi/Hit.mv1",	//Hit
 

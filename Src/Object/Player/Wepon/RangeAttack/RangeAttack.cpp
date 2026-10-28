@@ -9,7 +9,12 @@ RangeAttack::RangeAttack
 (const Transform& playerTrans)
 	:
 	ActorBase("Data/Parameter/Wepon/"),
-	playerTrans(playerTrans)
+	playerTrans(playerTrans),
+	scale(SCALE::None),
+	scaleSize(0.0f),
+	scaleSizeMin(0.0f),
+	scaleSizeNormal(0.0f),
+	scaleSizeBig(0.0f)
 {
 }
 
@@ -48,8 +53,11 @@ void RangeAttack::Load(void)
 	//初期設定サイズ
 	scaleSize = scaleSizeBig;
 
-	AddCollider(new SphereCollider
-	(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos));
+
+	// 生成、メンバ変数にポインタを保持
+	attackCollRef = new SphereCollider(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos);
+	// 生成したコライダーをアクター所有コライダーに追加
+	AddCollider(attackCollRef);
 
 	SetJudgeFlg(false);
 
@@ -90,7 +98,8 @@ void RangeAttack::Start(SCALE setScale)
 	}
 	}
 
-	//ここで半径変更
+	//半径変更
+	attackCollRef->SetRadius(scaleSize);
 
 	//当たり判定ON
 	SetJudgeFlg(true);

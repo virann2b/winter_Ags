@@ -1,6 +1,8 @@
 #pragma once
 #include "../../../Common/ActorBase/ActorBase.h"
 
+class SphereCollider;
+
 class RangeAttack : public ActorBase
 {
 public:
@@ -45,6 +47,9 @@ private:
 
 	//サイズ
 	SCALE scale;
+
+	// コライダーの参照
+	SphereCollider* attackCollRef;
 
 	//当たり判定の大きさ
 	float scaleSize;
