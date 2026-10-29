@@ -79,7 +79,7 @@ void GameScene::SubPostUpdate(void)
 	}
 
 	auto* chilbi = ActorSerch<Chilbi>(actors);
-	if (chilbi && chilbi->GetAlive() && !isChanging)
+	if (chilbi && chilbi->IsDead() && !isChanging)
 	{
 		isChanging = true;
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);

@@ -7,7 +7,7 @@ class PlayerIdleState : public CharacterStateBase
 public:
 
 	PlayerIdleState(
-		std::function<void(void)> playAnimeIdle,
+		std::function<void(void)> PlayAnimeIdle,
 		const std::function<void(void)> ChangeSwordActive
 	);
 
@@ -21,9 +21,15 @@ public:
 
 private:
 
+
+
+#pragma region 受け取る参照変数・関数
+
 	// 待機アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeIdle;
+	const std::function<void(void)> PlayAnimeIdle;
 	// 剣の判定変更関数ポインタ
 	const std::function<void(void)> ChangeSwordActive;
+
+#pragma endregion
 
 };

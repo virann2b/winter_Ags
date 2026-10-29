@@ -32,7 +32,7 @@ public:
 	int GetHp(void) const { return hp; };
 
 	//Ž€–S”»’è‚ÌŽæ“¾
-	bool GetAlive(void) const { return hp <= 0; };
+	bool IsDead(void) const { return hp <= 0; };
 
 #pragma endregion
 

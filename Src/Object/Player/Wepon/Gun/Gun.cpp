@@ -33,7 +33,9 @@ void Gun::Load(void)
 			40.0f));
 
 	//サイズ設定
-	trans.scale = 0.3f;
+	trans.scale = 0.2f;
+
+	trans.localRotation = Quaternion::FromRotationY(Deg2Rad(-90.0f));
 
 	isActive = false;
 	//描画ON
@@ -78,26 +80,45 @@ void Gun::Shot(int useBullet)
 
 void Gun::SubUpdate(void)
 {
-	//描画有効
 	SetIsDraw(isActive);
 
-	// ボーンは名前で検索(名前はモデルに合わせて変更)
-	const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
+	const int handFrame =
+		MV1SearchFrame(playerTrans.model, "smartrig:RightHand");
+
 	if (handFrame < 0) { return; }
-
-	MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
-
-	trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
-	trans.rotation = Quaternion::FromMatrix(hand);
-
-
-
-
-	//調整角度
-	//trans.AddAngleYDeg(50.0f);
-	trans.AddAngleXDeg(10.0f);
-	//trans.AddAngleZDeg(50.0f);
-
+	MATRIX hand =
+		MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
+	// 手のワールド座標
+	Vector3 handPos(
+		hand.m[3][0],
+		hand.m[3][1],
+		hand.m[3][2]
+	);
+	// 回転行列からスケールを除去
+	MATRIX rotationMat = hand;
+	for (int i = 0; i < 3; i++)
+	{
+		float length = sqrtf(
+			rotationMat.m[i][0] * rotationMat.m[i][0] +
+			rotationMat.m[i][1] * rotationMat.m[i][1] +
+			rotationMat.m[i][2] * rotationMat.m[i][2]
+		);
+		if (length > 0.00001f)
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				rotationMat.m[i][j] /= length;
+			}
+		}
+	}
+	// 手の回転を取得
+	Quaternion handRotation =
+		Quaternion::FromMatrix(rotationMat);
+	// 手の回転に銃の持ち方の補正を加える
+	trans.rotation = handRotation * gripRotation;
+	// 手のローカル座標系で位置を補正
+	trans.pos = handPos +
+		handRotation.Rotate(gripOffset);
 }
 
 void Gun::BulletUpdate(void)

@@ -1,5 +1,8 @@
 #pragma once
 #include "../../Common/CharacterBase/CharacterBase.h"
+
+#include "Wepon/Punch.h"
+
 class Chilbi: public CharacterBase
 {
 
@@ -62,10 +65,10 @@ private:
 
 		0.8f,	// Run
 
-		1.0f,	// Attack_1
-		1.0f,	// Attack_2
+		0.7f,	// Attack_1
+		0.7f,	// Attack_2
 
-		1.0f,	// Hit
+		0.6f,	// Hit
 		
 		0.8f	// Die
 	};
@@ -119,6 +122,11 @@ private:
 
 #pragma endregion
 	
+	//パンチ
+	Punch* punch;
+	//状態
+	STATE state;
+
 	bool isClearRequested = false;
 
 	// 無敵カウンター

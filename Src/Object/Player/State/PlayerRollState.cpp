@@ -8,16 +8,16 @@
 
 
 PlayerRollState::PlayerRollState(
-	std::function<void(void)> playAnimeRoll,
-	std::function<bool(void)> isAnimeEnd, 
-	std::function<void(const Vector3&)> moveAccel,
+	std::function<void(void)> PlayAnimeRoll,
+	std::function<bool(void)> IsAnimeEnd,
+	std::function<void(const Vector3&)> MoveAccel,
 	const Transform& playerTrans,
 	std::function<void(void)> ChangeStateIdle
 
 ):
-	playAnimeRoll(playAnimeRoll),
-	isAnimeEnd(isAnimeEnd),
-	moveAccel(moveAccel),
+	PlayAnimeRoll(PlayAnimeRoll),
+	IsAnimeEnd(IsAnimeEnd),
+	MoveAccel(MoveAccel),
 	playerTrans(playerTrans),
 	ChangeStateIdle(ChangeStateIdle)
 {
@@ -56,12 +56,7 @@ void PlayerRollState::Enter(void)
 	rollTargetPos = playerTrans.pos + rollMove;
 
 	//アニメーションの再生
-	playAnimeRoll();
-}
-
-void PlayerRollState::Exit(void)
-{
-
+	PlayAnimeRoll();
 }
 
 void PlayerRollState::Update(void)
@@ -72,7 +67,7 @@ void PlayerRollState::Update(void)
 	vec.y = 0.0f;
 
 	//巡回目標座標までの距離が近い場合
-	if (vec.Length() <= ARRIVE_RANGE || isAnimeEnd())
+	if (vec.Length() <= ARRIVE_RANGE || IsAnimeEnd())
 	{
 		ChangeStateIdle();
 		return;
@@ -80,7 +75,7 @@ void PlayerRollState::Update(void)
 
 	//巡回目標座標までのベクトルを正規化して加速移動する
 	vec.Normalize();
-	moveAccel(vec);
+	MoveAccel(vec);
 }
 
 

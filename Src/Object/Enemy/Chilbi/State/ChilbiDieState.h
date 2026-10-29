@@ -22,6 +22,10 @@ public:
 
 private:
 
+
+
+#pragma region 受け取る参照変数・関数
+
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimeDie;
 
@@ -30,5 +34,8 @@ private:
 
 	//アニメーション終了判定
 	const std::function<bool(void)> isAnimeEnd;
+
+#pragma endregion
+
 };
 

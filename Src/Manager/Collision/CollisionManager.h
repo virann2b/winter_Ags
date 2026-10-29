@@ -48,8 +48,6 @@ private:
 		// その他(例外)
 		Other,
 
-		AttackRange,
-
 		// 種類数
 		Max
 	};
@@ -82,6 +80,8 @@ private:
 
 		// エネミー系
 		{ COLLIDER_TAG::Enemy,	COLLIDER_GROUP::Enemy },
+		{ COLLIDER_TAG::Enemy_ChilbiPunch,	COLLIDER_GROUP::Enemy },
+
 
 		// ステージ系
 		{ COLLIDER_TAG::Stage,	COLLIDER_GROUP::Stage },

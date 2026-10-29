@@ -1,6 +1,8 @@
 #pragma once
 #include "../../../Common/ActorBase/ActorBase.h"
 
+#include "../../../../Utility/Utility.h"
+
 #include <vector>
 
 class Gun :public ActorBase
@@ -74,6 +76,12 @@ private:
 	std::vector<BulletObj> bullets;
 
 #pragma endregion
+
+	// 手のボーンからの位置補正（手のローカル座標系）
+	Vector3 gripOffset = Vector3(-5.0f, 20.0f, -5.0f);
+	// 手のボーンからの回転補正
+	Quaternion gripRotation =
+		Quaternion::FromEulerXZY(Vector3(Deg2Rad(90.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;

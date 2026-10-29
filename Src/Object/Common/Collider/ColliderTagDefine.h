@@ -25,6 +25,7 @@ enum class COLLIDER_TAG
 	PlayerLargeAttack,
 
 	Enemy,
+	Enemy_ChilbiPunch,
 
 	Stage,
 

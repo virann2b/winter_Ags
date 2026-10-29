@@ -5,10 +5,10 @@
 #include "../../../Manager/Input/InputManager.h"
 
 PlayerIdleState::PlayerIdleState(
-	std::function<void(void)> playAnimeIdle,
+	std::function<void(void)> PlayAnimeIdle,
 	std::function<void(void)> ChangeSwordActive
 ):
-	playAnimeIdle(playAnimeIdle),
+	PlayAnimeIdle(PlayAnimeIdle),
 	ChangeSwordActive(ChangeSwordActive)
 {
 }
@@ -35,5 +35,5 @@ void PlayerIdleState::OwnStateConditionUpdate(void)
 void PlayerIdleState::Enter(void)
 {
 	ChangeSwordActive();
-	playAnimeIdle();
+	PlayAnimeIdle();
 }

@@ -62,7 +62,7 @@ void ChilbiAttackState::Update(void)
 void ChilbiAttackState::SetPattern(PATTERN pattern)
 {
 	if (pattern == PATTERN::None || pattern == PATTERN::Max)
-	{
+	{	
 		return;
 	}
 	currentPattern_ = pattern;

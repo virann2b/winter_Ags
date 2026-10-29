@@ -18,6 +18,7 @@
 #include "State/PlayerMoveState.h"
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
+#include "State/PlayerHitState.h"
 
 #include "State/PlayerAttackNormalState.h"
 #include "State/PlayerAttackAirState.h"
@@ -135,6 +136,9 @@ void Player::Load(void)
 
 #pragma region 状態設定
 
+
+#pragma region 状態設定：基本操作
+
 	// 待機状態
 	AddState(
 		STATE::Idle,
@@ -160,7 +164,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Jump,
 		new PlayerJumpState(
-			24.0f, velocity.y, isGround,isMaxJump,
+			24.0f, velocity.y, isGround, isMaxJump,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
 			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
@@ -181,12 +185,16 @@ void Player::Load(void)
 			[&]() {ChangeState(STATE::Idle); }
 		)
 	);
+#pragma endregion
+
+
+#pragma region 状態設定：攻撃関連
 
 	//攻撃状態
 	AddState(
 		STATE::AttackNormal,
 		new PlayerAttackNormalState(
-			[&]() 
+			[&]()
 			{
 				ChangeState(STATE::Idle);
 				sword->ChangePosition(Sword::SWORD_POSITION::Back);
@@ -201,7 +209,7 @@ void Player::Load(void)
 			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_2); },
 			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_3); },
 			std::bind(&Player::IsAnimeEnd, this),
-			std::bind(&Player::GetAnimeRatio,this)
+			std::bind(&Player::GetAnimeRatio, this)
 		)
 	);
 
@@ -209,48 +217,48 @@ void Player::Load(void)
 	AddState(
 		STATE::AttackAir,
 		new PlayerAttackAirState(
-			isGround,isMaxJump,
+			isGround, isMaxJump,
 			[&]()
 			{
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
-				AnimePlay(ANIME_TYPE::AttackAir_Start); 
+				AnimePlay(ANIME_TYPE::AttackAir_Start);
 			},
-			[&]() 
+			[&]()
 			{
 				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
-				AnimePlay(ANIME_TYPE::AttackAir_End); 
+				AnimePlay(ANIME_TYPE::AttackAir_End);
 			},
 			[&]()
 			{
 				//範囲攻撃発生
-				rangeAttack->Start(RangeAttack::SCALE::Big); 
+				rangeAttack->Start(RangeAttack::SCALE::Big);
 			},
 			std::bind(&Player::GetAnimeRatio, this),
 			std::bind(&Player::IsAnimeEnd, this),
-			[&]() 
+			[&]()
 			{
 				rangeAttack->End();
-				ChangeState(STATE::Idle); 
+				ChangeState(STATE::Idle);
 				sword->ChangePosition(Sword::SWORD_POSITION::Back);
 
 			}
 
 		)
 	);
-	
+
 	AddState(
 		STATE::AttackCharge,
 		new PlayerAttackChargeState(
-			[&]() 
+			[&]()
 			{
 				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
 
 				AnimePlay(ANIME_TYPE::AttackCharge_Start);
 			},
-			[&]() 
+			[&]()
 			{
-				AnimePlay(ANIME_TYPE::AttackCharge_End); 
+				AnimePlay(ANIME_TYPE::AttackCharge_End);
 				sword->ChangeActive(Sword::ACTIVE::Active);
 
 			},
@@ -268,7 +276,7 @@ void Player::Load(void)
 		STATE::Gun,
 		new PlayerGunState(
 			[&]()
-			{ 
+			{
 				//武器の切り替え
 				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				gun->SetActive(true);
@@ -277,14 +285,14 @@ void Player::Load(void)
 				AnimePlay(ANIME_TYPE::Gun);
 			},
 			[&]()
-			{ 
+			{
 				//武器の切り替え
 				gun->SetActive(false);
 				sword->ChangeActive(Sword::ACTIVE::Active);
 				isGunState = false;
 
 
-				ChangeState(STATE::Idle); 
+				ChangeState(STATE::Idle);
 			},
 			targetTime,
 			bulletShotCount,
@@ -292,9 +300,24 @@ void Player::Load(void)
 			{
 				gun->Shot(1);
 			}
-			)
+		)
 	);
-	
+
+	//HIT状態
+	AddState(
+		STATE::Hit,
+		new PlayerHitState(
+			[&]() {AnimePlay(ANIME_TYPE::Hit); },
+			std::bind(&Player::IsAnimeEnd, this),
+			std::bind(&Player::IsDead, this),
+			[&]() {ChangeState(STATE::Idle); }
+		)
+	);
+
+#pragma endregion
+
+
+#pragma region 状態遷移制御登録
 
 	// 「待機状態」->「移動状態」の自動遷移登録
 	RegisterStateTransition(STATE::Idle, STATE::Move);
@@ -329,12 +352,39 @@ void Player::Load(void)
 	// 「ジャンプ状態」->「空中攻撃状態」の自動遷移登録
 	RegisterStateTransition(STATE::Jump, STATE::AttackAir);
 
+	// 「待機状態」->「HIT状態」の自動遷移登録
+	RegisterStateTransition(STATE::Idle, STATE::Hit);
+	// 「移動状態」->「HIT状態」の自動遷移登録
+	RegisterStateTransition(STATE::Move, STATE::Hit);
+	// 「ジャンプ状態」->「HIT状態」の自動遷移登録
+	RegisterStateTransition(STATE::Jump, STATE::Hit);
+	// 「通常攻撃状態」->「HIT状態」の自動遷移登録
+	RegisterStateTransition(STATE::AttackNormal, STATE::Hit);
+	// 「銃状態」->「HIT状態」の自動遷移登録
+	RegisterStateTransition(STATE::Gun, STATE::Hit);
+
 #pragma endregion
+
+#pragma endregion
+
+
+	hp = 100;
 }
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
-	
+	switch (other.GetTag())
+	{
+
+	case COLLIDER_TAG::Enemy_ChilbiPunch:
+	{
+		TakeDamage(1);
+		ChangeState(IsDead() ? STATE::Hit : STATE::Hit);
+
+		break;
+	}
+
+	}
 }
 
 void Player::SubUpdate(void)
@@ -368,9 +418,16 @@ void Player::SubDraw(void)
 	gun->BulletDraw();
 
 	DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
+
+	DrawFormatString(0, 220, 0xffffff, "HP : %d", hp);
+	
+
+
 	//DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
 	/*DrawFormatString(0, 220, 0xffffff, "isMaxJump : %d", isMaxJump);
 	DrawFormatString(0, 240, 0xffffff, "isGround : %d", isGround);*/
+
+#pragma region 操作デバッグ表示
 
 	//DrawString(0, 120, "操作：WASD", 0xffffff);
 	//DrawString(0, 140, "ジャンプ：スペース【最大２回】", 0xffffff);
@@ -383,6 +440,9 @@ void Player::SubDraw(void)
 	//DrawFormatString(0, 300, 0xffffff, "【 銃モード 】弾所持数 : %d", bullet);
 	//DrawString(0, 340, "タメ攻撃：Fキー長押し【タメ】離すと【攻撃】", 0xffffff);
 	//DrawString(0, 360, "空中攻撃：ジャンプ２回目中に通常攻撃　", 0xffffff);
+
+#pragma endregion
+
 
 }
 

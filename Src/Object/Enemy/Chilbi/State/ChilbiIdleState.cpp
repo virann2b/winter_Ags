@@ -22,7 +22,7 @@ void ChilbiIdleState::Enter(void)
 
 void ChilbiIdleState::Update(void)
 {
-	if (GetRand(100) >= 10)
+	if (GetRand(100) == 1)
 	{
 		changeAttackState();
 	}

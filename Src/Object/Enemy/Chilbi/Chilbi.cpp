@@ -23,7 +23,6 @@ Chilbi::Chilbi(Vector3 initPos)
 void Chilbi::Load(void)
 {
 
-
 #pragma region オブジェクト設定
 
 	// 動的オブジェクトとしての処理を有効にする
@@ -42,7 +41,6 @@ void Chilbi::Load(void)
 
 #pragma endregion
 
-
 #pragma region モデル設定
 
 	// モデルの読み込み
@@ -60,7 +58,7 @@ void Chilbi::Load(void)
 	//初期座標登録
 	trans.pos = initPos;
 
-	hp = 10;
+	hp = 100;
 
 #pragma endregion
 
@@ -82,9 +80,9 @@ void Chilbi::Load(void)
 	AddCollider(
 		new CapsuleCollider(
 			COLLIDER_TAG::Enemy,
-			Vector3::Yonly(60.0f) * trans.scale,
+			Vector3::Yonly(50.0f) * trans.scale,
 			Vector3::Yonly(-60.0f) * trans.scale,
-			40.0f * trans.scale.MaxElementF()
+			35.0f * trans.scale.MaxElementF()
 		)
 	);
 
@@ -105,7 +103,14 @@ void Chilbi::Load(void)
 	AddState(
 		STATE::Hit,
 		new ChilbiHitState(
-			[&]() { AnimePlay((int)ANIME_TYPE::Hit); },
+			[&]() 
+			{
+				//攻撃状態から遷移した場合の判定削除
+				punch->JudgeEnd();
+
+				AnimePlay((int)ANIME_TYPE::Hit);
+			},
+			std::bind(&Chilbi::IsDead, this),
 			[&]() { ChangeState(STATE::Idle); },
 			std::bind(&Chilbi::IsAnimeEnd, this)
 		)
@@ -115,9 +120,23 @@ void Chilbi::Load(void)
 	AddState(
 		STATE::Attack,
 		new ChilbiAttackState(
-			[&]() { AnimePlay((int)ANIME_TYPE::Attack_1); },
-			[&]() { AnimePlay((int)ANIME_TYPE::Attack_2); },
-			[&]() { ChangeState(STATE::Idle); },
+			[&]() 
+			{ 
+				AnimePlay((int)ANIME_TYPE::Attack_1); 
+				punch->JudgeStart();
+			},
+			[&]()
+			{ 
+				AnimePlay((int)ANIME_TYPE::Attack_2); 
+				punch->JudgeStart();
+
+			},
+			[&]() 
+			{ 
+				punch->JudgeEnd();
+				ChangeState(STATE::Idle); 
+
+			},
 			std::bind(&Chilbi::IsAnimeEnd, this)
 		)
 	);
@@ -126,14 +145,28 @@ void Chilbi::Load(void)
 	AddState(
 		STATE::Die,
 		new ChilbiDieState(
-			[&]() { AnimePlay((int)ANIME_TYPE::Die); },
-			std::bind(&Chilbi::GetAlive, this),
+			[&]() 
+			{ 
+				//攻撃状態から遷移した場合の判定削除
+				punch->JudgeEnd();
+
+				AnimePlay((int)ANIME_TYPE::Die); 
+			},
+			std::bind(&Chilbi::IsDead, this),
 			std::bind(&Chilbi::IsAnimeEnd, this)
 
 		)
 	);
 
 
+
+#pragma endregion
+
+#pragma region 子クラス生成
+
+	//パンチの生成
+	punch = new Punch(trans);
+	AddChildActor(punch);
 
 #pragma endregion
 
@@ -149,13 +182,23 @@ void Chilbi::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 	case COLLIDER_TAG::PlayerSword:
 	{
 		TakeDamage(1);
-		ChangeState(GetAlive() ? STATE::Die : STATE::Hit);
+		ChangeState(IsDead() ? STATE::Die : STATE::Hit);
 
 		invincibleCounter = 60;
+
+		break;
 	}
+
+	case COLLIDER_TAG::PlayerLargeAttack:
+	{
+		TakeDamage(1);
+		ChangeState(IsDead() ? STATE::Die : STATE::Hit);
+
+		invincibleCounter = 60;
+
 		break;
-	default:
-		break;
+	}
+
 	}
 }
 
@@ -163,10 +206,9 @@ void Chilbi::SubInit(void)
 {
 	//初期状態
 	ChangeState(STATE::Idle);
-
+	//無敵カウンターリセット
 	invincibleCounter = 0.0f;
 
-	isClearRequested = false;
 }
 
 void Chilbi::SubUpdate(void)
@@ -186,5 +228,8 @@ void Chilbi::SubUpdate(void)
 void Chilbi::SubDraw(void)
 {
 	DrawFormatString(0, 80, 0xffffff, "EnemyHp : %d", hp);
+
+	DrawFormatString(0, 100, 0xffffff, "State : %d", state);
+
 
 }

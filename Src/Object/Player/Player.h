@@ -40,11 +40,14 @@ private:
 		None = -1,
 
 		Idle,
+
 		Move,
 
 		Jump,
 
 		Roll,
+
+		Hit,
 
 		AttackNormal,
 		AttackAir,
@@ -67,6 +70,8 @@ private:
 		Run,
 
 		Roll,
+
+		Hit,
 
 		JumpStart,
 		JumpIdle,
@@ -96,6 +101,8 @@ private:
 
 		1.0f,   // Roll
 
+		0.5f,	// Hit
+
 		1.0f,	// JumpStart
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
@@ -123,6 +130,8 @@ private:
 
 		false,  // Roll
 
+		false,  // Hit
+
 		false,  //JumpStart
 		true,	//JumpIdle
 		false,  //JumpEnd
@@ -141,19 +150,21 @@ private:
 	// アニメーションパステーブル
 	const char* ANIME_PATH_TABLE[(int)ANIME_TYPE::Max] =
 	{
-		"Data/Model/Player/Idle.mv1",//Idle
+		"Data/Model/Player/Idle.mv1",	//Idle
 
-		"Data/Model/Player/Run.mv1",//Run
+		"Data/Model/Player/Run.mv1",	//Run
 
-		"Data/Model/Player/Roll.mv1",
+		"Data/Model/Player/Roll.mv1",	//Roll
 
-		"Data/Model/Player/Jump_Start.mv1",	//JumpStart
-		"Data/Model/Player/Jump_Idle.mv1",	//JumpIdle
-		"Data/Model/Player/Jump_End.mv1",	//JumpEnd
+		"Data/Model/Player/Hit.mv1",	//Hit
 
-		"Data/Model/Player/AttackNormal_1.mv1",// AttackNormal_1
-		"Data/Model/Player/AttackNormal_2.mv1",// AttackNormal_2
-		"Data/Model/Player/AttackNormal_3.mv1",// AttackNormal_3
+		"Data/Model/Player/Jump_Start.mv1",		//JumpStart
+		"Data/Model/Player/Jump_Idle.mv1",		//JumpIdle
+		"Data/Model/Player/Jump_End.mv1",		//JumpEnd
+
+		"Data/Model/Player/AttackNormal_1.mv1",	// AttackNormal_1
+		"Data/Model/Player/AttackNormal_2.mv1",	// AttackNormal_2
+		"Data/Model/Player/AttackNormal_3.mv1",	// AttackNormal_3
 
 		"Data/Model/Player/AttackJump_1.mv1",	// AttackAir_Start
 		"Data/Model/Player/AttackJump_2.mv1",	// AttackAir_End
@@ -161,9 +172,10 @@ private:
 		"Data/Model/Player/AttackCharge_1.mv1",	// AttackCharge_Start
 		"Data/Model/Player/AttackCharge_2.mv1",	// AttackCharge_End
 
-		"Data/Model/Player/Gun.mv1",//Gun
+		"Data/Model/Player/Gun.mv1",	//Gun
 
 	};
+
 #pragma endregion
 
 #pragma region 定数
@@ -195,6 +207,7 @@ private:
 	int bulletShotCount;
 	//現在所持段数
 	int bullet;
+	
 	
 
 #pragma endregion

@@ -59,19 +59,14 @@ void RangeAttack::Load(void)
 	// 生成したコライダーをアクター所有コライダーに追加
 	AddCollider(attackCollRef);
 
+	//当たり判定OFF
 	SetJudgeFlg(false);
 
 }
 
 void RangeAttack::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
-	switch (other.GetTag())
-	{
-	case COLLIDER_TAG::Enemy:
-	{
-		TakeDamage(1);
-	}
-	}
+
 }
 
 void RangeAttack::Start(SCALE setScale)
@@ -117,7 +112,7 @@ void RangeAttack::SubUpdate(void)
 	if (!GetJudgeFlg()) return;
 	
 	trans.pos.x = playerTrans.pos.x;
-	trans.pos.z = playerTrans.pos.z;
+	trans.pos.z = playerTrans.pos.z ;
 	trans.pos.y = 40;
 
 }

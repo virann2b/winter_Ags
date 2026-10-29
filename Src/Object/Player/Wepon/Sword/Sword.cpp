@@ -56,13 +56,7 @@ void Sword::Load(void)
 
 void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
-	switch (other.GetTag())
-	{
-	case COLLIDER_TAG::Enemy:
-	{
-		TakeDamage(1);
-	}
-	}
+
 }
 
 void Sword::ChangePosition(SWORD_POSITION nextPostion)

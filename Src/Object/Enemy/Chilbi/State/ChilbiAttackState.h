@@ -12,9 +12,9 @@ public:
 	{
 		None = -1,
 
-		Pattern_1,
+		Pattern_1,//攻撃パターン１
 
-		Pattern_2,
+		Pattern_2,//攻撃パターン２
 
 		Max
 	};
@@ -38,6 +38,7 @@ public:
 
 	// 使うパターンを指定する(Enterより前に呼ぶ)
 	void SetPattern(PATTERN pattern);
+
 private:
 
 #pragma region 受け取る参照変数・関数
@@ -54,8 +55,12 @@ private:
 
 #pragma endregion
 
+#pragma region 定数
+
 	//パターンの最大行動数
 	static constexpr int PATTERN_ACTION_MAX = 3;
+
+#pragma endregion
 
 	using ActionFunc = std::function<void(void)>;
 
@@ -63,6 +68,7 @@ private:
 
 	// 現在のパターンと、何手目か
 	PATTERN currentPattern_ = PATTERN::Pattern_1;
+
 	size_t actionIndex_ = 0;
 
 	// 現在の手順のアニメーションを再生

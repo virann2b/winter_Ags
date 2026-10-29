@@ -8,9 +8,9 @@ class PlayerRollState : public CharacterStateBase
 public:
 
 	PlayerRollState(
-		std::function<void(void)> playAnimeRoll,
-		std::function<bool(void)> isAnimeEnd,
-		std::function<void(const Vector3&)> moveAccel,
+		std::function<void(void)> PlayAnimeRoll,
+		std::function<bool(void)> IsAnimeEnd,
+		std::function<void(const Vector3&)> MoveAccel,
 		const Transform& playerTrans,
 		std::function<void(void)> ChangeStateIdle
 	);
@@ -23,24 +23,24 @@ public:
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
 
-	void Exit(void)override;
 	// 更新処理
 	void Update(void)override;
 
 private:
 
+	
 
 #pragma region 受け取る参照変数・関数
 
 	// 回避アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeRoll;
+	const std::function<void(void)> PlayAnimeRoll;
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
 	// アニメーション終了取得関数のポインタ
-	const std::function<bool(void)> isAnimeEnd;
+	const std::function<bool(void)> IsAnimeEnd;
 	// 移動関数のポインタ
-	const std::function<void(const Vector3&)> moveAccel;
+	const std::function<void(const Vector3&)> MoveAccel;
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
