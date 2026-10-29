@@ -7,17 +7,23 @@
 #include "../../../Manager/Camera/Game/GameCamera.h"
 
 PlayerGunState::PlayerGunState(
-	std::function<void(void)> playAnimeGun, 
+	std::function<void(void)> PlayAnimeGun,
 	std::function<void(void)> ChangeStateIdle,
+	std::function<void(const Vector3&)> MoveAccel,
+	float ACCEL_MAX,
+	float& accelMax,
 	float& targetTime,
 	int& bulletCount,
-	std::function<void(void)> playShot
+	std::function<void(void)> PlayShot
 ):
-	playAnimeGun(playAnimeGun),
+	PlayAnimeGun(PlayAnimeGun),
 	ChangeStateIdle(ChangeStateIdle),
+	MoveAccel(MoveAccel),
+	ACCEL_MAX(ACCEL_MAX),
+	accelMax(accelMax),
 	targetTime(targetTime),
 	bulletCount(bulletCount),
-	playShot(playShot),
+	PlayShot(PlayShot),
 	state(STATE::None)
 {
 }
@@ -25,12 +31,19 @@ PlayerGunState::PlayerGunState(
 void PlayerGunState::OwnStateConditionUpdate(void)
 {
 	//入力
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).down) { OwnChangeState(); }
+	auto camera = dynamic_cast<GameCamera*>(&CurrentCamera::Get())->GetMode();
+
+	//ロックオンをしている時のみ銃に遷移可能
+	if (camera == GameCamera::Mode::Auto)
+	{
+		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).down) { OwnChangeState(); }
+	}
 }
 
 void PlayerGunState::Enter(void)
 {
-	playAnimeGun();
+	//銃アニメーション再生
+	PlayAnimeGun();
 
 	//初期状態
 	state = STATE::Target;
@@ -45,13 +58,17 @@ void PlayerGunState::Enter(void)
 void PlayerGunState::Update(void)
 {
 	//待機状態に遷移
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).up) { ChangeStateIdle(); }
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).up) 
+	{ 
+		ChangeStateIdle();
+		return;
+	}
 
 	switch (state)
 	{
 		case PlayerGunState::STATE::Target:
 		{
-
+			//右クリックを押している時のみ
 			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunShot).down)
 			{
 				ChangeState(STATE::Shot);
@@ -77,7 +94,7 @@ void PlayerGunState::Update(void)
 			}
 
 			//弾の処理
-			playShot();
+			PlayShot();
 			bulletCount--;
 
 
@@ -95,11 +112,24 @@ void PlayerGunState::Update(void)
 			break;
 		}
 	}
+
+	Vector3 inputVec = InputVec();
+
+	// スティックの倒し具合で速度を変える(キーボードは長さ1なので最大速度)
+	accelMax = ACCEL_MAX * inputVec.Length();
+
+	if (inputVec != 0.0f) 
+	{
+		inputVec.TransMatOwn(MGetRotY(CurrentCamera::Get().GetAngle().y));
+		MoveAccel(inputVec);
+	}
 	
 }
 
 void PlayerGunState::Exit(void)
 {
+	accelMax = ACCEL_MAX;
+
 	// カメラを専用のモードに変える
 	dynamic_cast<GameCamera*>(&CurrentCamera::Get())->SetMode(GameCamera::Mode::Auto);
 }
@@ -108,3 +138,25 @@ void PlayerGunState::ChangeState(STATE state_)
 {
 	state = state_;
 }
+
+Vector3 PlayerGunState::InputVec(void) const
+{
+	// 返却用一時変数
+	Vector3 vec = Vector3();
+
+	// コントローラーの入力を取得
+	vec = Input::GetIns().GetLeftStickVec(false).ToVector3XZInvertY();
+
+	// 入力がなければ次にキーボードの入力を取得
+	if (vec == 0.0f) {
+		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveRight).now) { vec.x++; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveLeft).now) { vec.x--; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveFront).now) { vec.z++; }
+		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerMoveBack).now) { vec.z--; }
+		vec.Normalize();
+	}
+
+	return vec;
+}
+
+

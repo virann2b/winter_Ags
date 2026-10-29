@@ -22,6 +22,7 @@ public:
 
 	~Gun() override = default;
 
+	//読み込み
 	void Load(void) override;
 
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
@@ -38,8 +39,11 @@ public:
 	//弾情報の更新
 	void BulletUpdate(void);
 
-	void BulletMoveUpdate(void);   // 弾の移動・消去
-	void BulletDraw(void);         // 弾の描画
+	//仮の描画
+	// 弾の移動・消去
+	void BulletMoveUpdate(void); 
+	// 弾の描画
+	void BulletDraw(void);        
 
 	Vector3 GetShotDirection(void) const;
 
@@ -77,9 +81,10 @@ private:
 
 #pragma endregion
 
-	// 手のボーンからの位置補正（手のローカル座標系）
+	// 手のボーンからの位置補正（手のローカル座標系:位置の調整の倍はこの数値を）
 	Vector3 gripOffset = Vector3(-5.0f, 20.0f, -5.0f);
-	// 手のボーンからの回転補正
+
+	// 手のボーンからの回転補正(銃の回転の場合この数値を）
 	Quaternion gripRotation =
 		Quaternion::FromEulerXZY(Vector3(Deg2Rad(90.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
 

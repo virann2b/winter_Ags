@@ -294,6 +294,8 @@ void Player::Load(void)
 
 				ChangeState(STATE::Idle);
 			},
+			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
+			10.0f, ACCEL_MAX,
 			targetTime,
 			bulletShotCount,
 			[&]()
