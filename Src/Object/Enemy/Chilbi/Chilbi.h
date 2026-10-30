@@ -122,6 +122,9 @@ private:
 
 #pragma endregion
 	
+	//チルビーの重さ
+	static constexpr int CHILIBI_WEIGHT = 100;
+
 	//パンチ
 	Punch* punch;
 	//状態

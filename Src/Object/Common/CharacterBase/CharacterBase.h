@@ -38,8 +38,6 @@ public:
 
 private:
 
-
-
 	// ステート管理用変数
 	int state;
 
@@ -64,9 +62,11 @@ private:
 	void BaseRelease(void) override final;
 
 protected:
+
 	// アニメーションコントローラーのインスタンス
 	AnimationController* anime;
 
+	//体力
 	int hp;
 
 	//被弾後の無敵時間

@@ -389,6 +389,8 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 	}
 }
 
+
+
 void Player::SubUpdate(void)
 {
 	if (isGround)

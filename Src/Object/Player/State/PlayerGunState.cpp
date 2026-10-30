@@ -77,7 +77,9 @@ void PlayerGunState::Update(void)
 
 			if (targetTime < BULLET_COUNT_MAX_TIME)
 			{
+				//ターゲットカウンタ加算
 				targetTime++;
+				//ターゲットカウンタによって発射数を計算
 				int count = (int)(targetTime / BULLET_COUNT_TIME);
 				bulletCount = (count > MAX_BULLET) ? MAX_BULLET : count;
 			}

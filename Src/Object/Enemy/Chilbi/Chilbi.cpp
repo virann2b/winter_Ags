@@ -34,10 +34,10 @@ void Chilbi::Load(void)
 	// 当たり判定による押し出しを有効にする
 	SetPushFlg(true);
 	// 押し出しだしによる重みを設定
-	SetPushWeight(60);
+	SetPushWeight(CHILIBI_WEIGHT);
 
-	//当たり判定有効にする
-	SetJudgeFlg(true);
+	//当たり判定OFF
+	SetJudgeFlg(false);
 
 #pragma endregion
 

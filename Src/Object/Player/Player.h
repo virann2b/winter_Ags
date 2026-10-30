@@ -29,7 +29,7 @@ public:
 	void Load(void)override;
 
 	// “–‚½‚è”»’è‚Ì’Ê’m
-	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;
+	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;	
 
 private:
 
