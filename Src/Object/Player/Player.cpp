@@ -433,21 +433,25 @@ void Player::SubDraw(void)
 
 #pragma region 操作デバッグ表示
 
-	//DrawString(0, 120, "操作：WASD", 0xffffff);
-	//DrawString(0, 140, "ジャンプ：スペース【最大２回】", 0xffffff);
-	//DrawString(0, 160, "回避：Rキー", 0xffffff);
-	//DrawString(0, 180, "ロックオン：Eキー", 0xffffff);
-	//DrawString(0, 200, "通常攻撃：左クリック", 0xffffff);
-	//DrawString(0, 240, "【 銃モード 】構え：右クリック長押し", 0xffffff);
-	//DrawString(0, 260, "【 銃モード 】発射：左クリック (弾に当たり判定はないです）", 0xffffff);
+	//DrawString(0, 120, "操作：WASD・左スティック", 0xffffff);
+	//DrawString(0, 140, "ジャンプ：スペース・Aボタン【最大２回】", 0xffffff);
+	//DrawString(0, 160, "回避：Rキー・Bボタン", 0xffffff);
+	//DrawString(0, 180, "ロックオン：Eキー・右スティック押し込み", 0xffffff);
+	//DrawString(0, 200, "通常攻撃：左クリック・Xボタン", 0xffffff);
+	//DrawString(0, 240, "【 銃モード 】構え：右クリック・LT　長押し", 0xffffff);
+	//DrawString(0, 260, "【 銃モード 】発射：左クリック・RT (弾に当たり判定はないです）", 0xffffff);
 	//DrawFormatString(0, 280, 0xffffff, "【 銃モード 】残弾数(右クリック長押しで増加最大6発) : %d", bulletShotCount);
 	//DrawFormatString(0, 300, 0xffffff, "【 銃モード 】弾所持数 : %d", bullet);
-	//DrawString(0, 340, "タメ攻撃：Fキー長押し【タメ】離すと【攻撃】", 0xffffff);
-	//DrawString(0, 360, "空中攻撃：ジャンプ２回目中に通常攻撃　", 0xffffff);
+	//DrawString(0, 340, "タメ攻撃：Fキー ・ Yボタン　長押し【タメ】離すと【攻撃】", 0xffffff);
+	//DrawString(0, 360, "空中攻撃：ジャンプ２回目中に【 通常攻撃 】　", 0xffffff);
 
 #pragma endregion
 
 
+}
+
+void Player::DirectionUpdate(void)
+{
 }
 
 

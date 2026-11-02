@@ -36,7 +36,8 @@ void PlayerGunState::OwnStateConditionUpdate(void)
 	//ロックオンをしている時のみ銃に遷移可能
 	if (camera == GameCamera::Mode::Auto)
 	{
-		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).down) { OwnChangeState(); }
+		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).down
+			|| Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Left).down){ OwnChangeState(); }
 	}
 }
 
@@ -58,18 +59,21 @@ void PlayerGunState::Enter(void)
 void PlayerGunState::Update(void)
 {
 	//待機状態に遷移
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).up) 
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).up || Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Left).up)
 	{ 
 		ChangeStateIdle();
 		return;
 	}
+
+	
 
 	switch (state)
 	{
 		case PlayerGunState::STATE::Target:
 		{
 			//右クリックを押している時のみ
-			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunShot).down)
+			//コントローラの場合はRTが入力された時のみ
+			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunShot).down || Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Right).down)
 			{
 				ChangeState(STATE::Shot);
 				return;

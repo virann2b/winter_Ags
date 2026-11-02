@@ -2,10 +2,9 @@
 
 #include "../Common/CharacterBase/CharacterBase.h"
 
-#include "Wepon/Sword/Sword.h"
-#include "Wepon/Gun/Gun.h"
-#include "Wepon/RangeAttack/RangeAttack.h"
-
+class Sword;
+class Gun;
+class RangeAttack;
 
 class Player : public CharacterBase
 {
@@ -30,6 +29,7 @@ public:
 
 	// “–‚½‚è”»’è‚Ì’Ê’m
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;	
+
 
 private:
 
@@ -212,7 +212,6 @@ private:
 
 #pragma endregion
 
-
 	// ‰Šú‰»ˆ—
 	void SubInit(void)override 
 	{
@@ -223,5 +222,7 @@ private:
 	void SubUpdate(void)override;
 
 	void SubDraw(void)override;
+
+	void Direction(void);
 
 };

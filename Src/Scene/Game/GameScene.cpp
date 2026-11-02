@@ -25,7 +25,7 @@
 
 #include "../../Object/Player/Player.h"
 
-#include "../../Object/Enemy/Chilbi/Chilbi.h"
+#include "../../Object/Enemy/EnemyManager.h"
 
 
 #include "../../Object/Water.h"
@@ -46,7 +46,7 @@ void GameScene::SubPostLoad(void)
 	AddActor(new Player);
 
 	//ìGê∂ê¨
-	AddActor(new Chilbi(Vector3(300,50, 200)));
+	AddActor(new EnemyManager);
 
 }
 
@@ -78,13 +78,13 @@ void GameScene::SubPostUpdate(void)
 		}
 	}
 
-	auto* chilbi = ActorSerch<Chilbi>(actors);
+	/*auto* chilbi = ActorSerch<Chilbi>(actors);
 	if (chilbi && chilbi->IsDead() && !isChanging)
 	{
 		isChanging = true;
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
 		return;
-	}
+	}*/
 }
 
 void GameScene::SubUiDraw(void)

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include<string>
 #include<vector>
@@ -9,11 +9,11 @@ class InputManager
 {
 private:
 	
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^/ƒfƒXƒgƒ‰ƒNƒ^
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿/ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	InputManager();
 	~InputManager() = default;
 
-	// ƒRƒs[Eƒ€[ƒu‘€ì‚ğ‹Ö~
+	// ã‚³ãƒ”ãƒ¼ãƒ»ãƒ ãƒ¼ãƒ–æ“ä½œã‚’ç¦æ­¢
 	InputManager(const InputManager&) = delete;
 	InputManager& operator=(const InputManager&) = delete;
 	InputManager(InputManager&&) = delete;
@@ -23,63 +23,63 @@ private:
 
 public:
 
-#pragma region ƒVƒ“ƒOƒ‹ƒgƒ“’è‹`
-	// ¶¬/‰Šú‰»ˆ—
+#pragma region ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³å®šç¾©
+	// ç”Ÿæˆ/åˆæœŸåŒ–å‡¦ç†
 	static void CreateIns(void) { if (ins == nullptr) { ins = new InputManager(); ins->Init(); } }
-	// æ“¾
+	// å–å¾—
 	static InputManager& GetIns(void) { return *ins; }
-	// I—¹ˆ—/íœ
+	// çµ‚äº†å‡¦ç†/å‰Šé™¤
 	static void DeleteIns(void) { if (ins != nullptr) { ins->Release(); delete ins; ins = nullptr; } }
 #pragma endregion
 
 	void Update(void);
 
-	// ƒ{ƒ^ƒ“’è‹`
+	// ãƒœã‚¿ãƒ³å®šç¾©
 	enum class KEY_TYPE
 	{
 		None = -1,
 
-#pragma region ƒvƒŒƒCƒ„[‘€ì
+#pragma region ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ“ä½œ
 
-		// ˆÚ“®
+		// ç§»å‹•
 		PlayerMoveFront,
 		PlayerMoveBack,
 		PlayerMoveRight,
 		PlayerMoveLeft,
 
-		// ƒWƒƒƒ“ƒv
+		// ã‚¸ãƒ£ãƒ³ãƒ—
 		PlayerJump,
 
-		// ƒ_ƒbƒVƒ…
+		// ãƒ€ãƒƒã‚·ãƒ¥
 		PlayerDash,
 
-		// ƒƒbƒNƒIƒ“
+		// ãƒ­ãƒƒã‚¯ã‚ªãƒ³
 		PlayerLockOn,
-		//Ÿ‚Ì“G
+		//æ¬¡ã®æ•µ
 		PlayerNextLockOn,
-		//‘O‚Ì“G
+		//å‰ã®æ•µ
 		PlayerBeforeLockOn,
 
-		// UŒ‚
+		// æ”»æ’ƒ
 		PlayerAttack,
 		PlayerAttackAir,
 		PlayerAttackStrong,
 
-		// ƒKƒ“ƒ‚[ƒh
+		// ã‚¬ãƒ³ãƒ¢ãƒ¼ãƒ‰
 		PlayerGunMode,
-		//Œ‚‚Â
+		//æ’ƒã¤
 		PlayerGunShot,
 
-		//‰ñ”ğ
+		//å›é¿
 		PlayerRoll,
 
 
 
 #pragma endregion
 
-#pragma region ƒJƒƒ‰‘€ì
+#pragma region ã‚«ãƒ¡ãƒ©æ“ä½œ
 
-		// ˆÚ“®
+		// ç§»å‹•
 		CameraMoveFront,
 		CameraMoveBack,
 		CameraMoveRight,
@@ -87,7 +87,7 @@ public:
 		CameraMoveUp,
 		CameraMoveDown,
 
-		// ‰ñ“]
+		// å›è»¢
 		CameraRotUp,
 		CameraRotDown,
 		CameraRotRight,
@@ -95,83 +95,83 @@ public:
 
 #pragma endregion
 
-#pragma region ƒVƒXƒeƒ€‘€ì
+#pragma region ã‚·ã‚¹ãƒ†ãƒ æ“ä½œ
 
-		// ”Ä—pŒˆ’èƒL[
+		// æ±ç”¨æ±ºå®šã‚­ãƒ¼
 		Enter,
 
-		// ”Ä—pƒLƒƒƒ“ƒZƒ‹ƒL[
+		// æ±ç”¨ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã‚­ãƒ¼
 		Cancel,
 
-		// ”Ä—pƒ|[ƒYƒL[
+		// æ±ç”¨ãƒãƒ¼ã‚ºã‚­ãƒ¼
 		Pause,
 
-		// ”Ä—pI—¹ƒL[
+		// æ±ç”¨çµ‚äº†ã‚­ãƒ¼
 		End,
 
-		// ”Ä—p•ûŒüƒL[iãj
+		// æ±ç”¨æ–¹å‘ã‚­ãƒ¼ï¼ˆä¸Šï¼‰
 		Up,
-		// ”Ä—p•ûŒüƒL[i‰ºj
+		// æ±ç”¨æ–¹å‘ã‚­ãƒ¼ï¼ˆä¸‹ï¼‰
 		Down,
-		// ”Ä—p•ûŒüƒL[i¶j
+		// æ±ç”¨æ–¹å‘ã‚­ãƒ¼ï¼ˆå·¦ï¼‰
 		Left,
-		// ”Ä—p•ûŒüƒL[i‰Ej
+		// æ±ç”¨æ–¹å‘ã‚­ãƒ¼ï¼ˆå³ï¼‰
 		Right,
 
 #pragma endregion
 
-#pragma region ƒfƒoƒbƒOƒL[
-		// ƒfƒoƒbƒOƒIƒuƒWƒFƒNƒg‘€ìi‘Oj
+#pragma region ãƒ‡ãƒãƒƒã‚°ã‚­ãƒ¼
+		// ãƒ‡ãƒãƒƒã‚°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œï¼ˆå‰ï¼‰
 		DebugObjectFront,
-		// ƒfƒoƒbƒOƒIƒuƒWƒFƒNƒg‘€ìiŒãj
+		// ãƒ‡ãƒãƒƒã‚°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œï¼ˆå¾Œï¼‰
 		DebugObjectBack,
-		// ƒfƒoƒbƒOƒIƒuƒWƒFƒNƒg‘€ìi‰Ej
+		// ãƒ‡ãƒãƒƒã‚°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œï¼ˆå³ï¼‰
 		DebugObjectRight,
-		// ƒfƒoƒbƒOƒIƒuƒWƒFƒNƒg‘€ìi¶j
+		// ãƒ‡ãƒãƒƒã‚°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œï¼ˆå·¦ï¼‰
 		DebugObjectLeft,
-		// ƒfƒoƒbƒOƒIƒuƒWƒFƒNƒg‘€ìiãj
+		// ãƒ‡ãƒãƒƒã‚°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œï¼ˆä¸Šï¼‰
 		DebugObjectUp,
-		// ƒfƒoƒbƒOƒIƒuƒWƒFƒNƒg‘€ìi‰ºj
+		// ãƒ‡ãƒãƒƒã‚°ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ“ä½œï¼ˆä¸‹ï¼‰
 		DebugObjectDown,
 
-		// ƒfƒoƒbƒO•`‰æƒXƒCƒbƒ`
+		// ãƒ‡ãƒãƒƒã‚°æç”»ã‚¹ã‚¤ãƒƒãƒ
 		DebugDrawSwitch,
 
-		// ƒfƒoƒbƒOƒV[ƒ“‚ÌØ‚è‘Ö‚¦
+		// ãƒ‡ãƒãƒƒã‚°ã‚·ãƒ¼ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
 		DebugModeSwitch,
 
-		// ƒfƒoƒbƒOƒ‚[ƒhŒ³‚ÌƒV[ƒ“‚ÌXV
+		// ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰æ™‚å…ƒã®ã‚·ãƒ¼ãƒ³ã®æ›´æ–°
 		DebugModeToUpdate,
 
-		// ƒV[ƒ“‚ÌÄƒ[ƒh
+		// ã‚·ãƒ¼ãƒ³ã®å†ãƒ­ãƒ¼ãƒ‰
 		DebugReload,
 #pragma endregion
 
 		Max,
 	};
 
-	// ƒL[‚Ìó‘Ô•Û‘¶\‘¢‘Ì
+	// ã‚­ãƒ¼ã®çŠ¶æ…‹ä¿å­˜æ§‹é€ ä½“
 	struct KEY_INFO { bool prev = false, now = false, up = false, down = false; };
 
-	// ƒL[‚Ìó‘Ôæ“¾
+	// ã‚­ãƒ¼ã®çŠ¶æ…‹å–å¾—
 	const KEY_INFO GetInfo(KEY_TYPE k) { return keyInfo[(int)k]; }
 
-	// ƒRƒ“ƒgƒ[ƒ‰[‚ªÚ‘±‚³‚ê‚Ä‚¢‚é‚©‚Ç‚¤‚©itrue = Ú‘±‚³‚ê‚Ä‚¢‚éAfalse = Ú‘±‚³‚ê‚Ä‚¢‚È‚¢j
+	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ãŒæ¥ç¶šã•ã‚Œã¦ã„ã‚‹ã‹ã©ã†ã‹ï¼ˆtrue = æ¥ç¶šã•ã‚Œã¦ã„ã‚‹ã€false = æ¥ç¶šã•ã‚Œã¦ã„ãªã„ï¼‰
 	bool GetControllerConnect(void) const;
 
 	/// <summary>
-	/// ƒRƒ“ƒgƒ[ƒ‰[‚Ì‰EƒXƒeƒBƒbƒN‚Ì“ü—ÍƒxƒNƒgƒ‹‚ğæ“¾iÚ‘±‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Íƒ[ƒƒxƒNƒgƒ‹‚ª•Ô‚éj
+	/// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ï¼ˆæ¥ç¶šã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«ãŒè¿”ã‚‹ï¼‰
 	/// </summary>
-	/// <param name="normalize">true = –ß‚è’l‚ğ³‹K‰»‚·‚éAfalse = –ß‚è’l‚ğ³‹K‰»‚µ‚È‚¢</param>
+	/// <param name="normalize">true = æˆ»ã‚Šå€¤ã‚’æ­£è¦åŒ–ã™ã‚‹ã€false = æˆ»ã‚Šå€¤ã‚’æ­£è¦åŒ–ã—ãªã„</param>
 	Vector2 GetLeftStickVec(bool normalize = true) const;
 
 	/// <summary>
-	/// ƒRƒ“ƒgƒ[ƒ‰[‚Ì‰EƒXƒeƒBƒbƒN‚Ì“ü—ÍƒxƒNƒgƒ‹‚ğæ“¾iÚ‘±‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Íƒ[ƒƒxƒNƒgƒ‹‚ª•Ô‚éj
+	/// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—ï¼ˆæ¥ç¶šã•ã‚Œã¦ã„ãªã„å ´åˆã¯ã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«ãŒè¿”ã‚‹ï¼‰
 	/// </summary>
-	/// <param name="normalize">true = –ß‚è’l‚ğ³‹K‰»‚·‚éAfalse = –ß‚è’l‚ğ³‹K‰»‚µ‚È‚¢</param>
+	/// <param name="normalize">true = æˆ»ã‚Šå€¤ã‚’æ­£è¦åŒ–ã™ã‚‹ã€false = æˆ»ã‚Šå€¤ã‚’æ­£è¦åŒ–ã—ãªã„</param>
 	Vector2 GetRightStickVec(bool normalize = true) const;
 
-	// ƒ}ƒEƒXî•ñ•Û‘¶\‘¢‘Ì
+	// ãƒã‚¦ã‚¹æƒ…å ±ä¿å­˜æ§‹é€ ä½“
 	struct MOUSE_INFO
 	{
 		Vector2I now = {};
@@ -179,36 +179,57 @@ public:
 		Vector2 moveVec = {};
 	};
 
-	// ƒ}ƒEƒXî•ñ‚Ì\‘¢‘Ì‚ğæ“¾
+	// ãƒã‚¦ã‚¹æƒ…å ±ã®æ§‹é€ ä½“ã‚’å–å¾—
 	const MOUSE_INFO& GetMouseInfo(void)const { return mouseInfo; }
 
-	// ƒ}ƒEƒX‚ÌˆÚ“®ƒxƒNƒgƒ‹‚ğæ“¾
+	// ãƒã‚¦ã‚¹ã®ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—
 	const Vector2& GetMouseMoveVec(void)const { return mouseInfo.moveVec; }
 
 	/// <summary>
-	/// ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚ğ’†S‚ÉŒÅ’è‚·‚éİ’è
-	/// (ŒÅ’è‚µ‚½ê‡GetMouceMove()‚É‚Äƒ}ƒEƒX‚Ì’PˆÊƒxƒNƒgƒ‹‚ğó‚¯æ‚ê‚é)
+	/// ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã‚’ä¸­å¿ƒã«å›ºå®šã™ã‚‹è¨­å®š
+	/// (å›ºå®šã—ãŸå ´åˆGetMouceMove()ã«ã¦ãƒã‚¦ã‚¹ã®å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã‚’å—ã‘å–ã‚Œã‚‹)
 	/// </summary>
-	/// <param name="fixed">true=ŒÅ’è‚·‚éAfalse=ŒÅ’è‚µ‚È‚¢</param>
+	/// <param name="fixed">true=å›ºå®šã™ã‚‹ã€false=å›ºå®šã—ãªã„</param>
 	void SetMouseFixed(bool fixed);
 
-	// ÅŒã‚Ì“ü—Í‚Ìí—Ş(ƒL[ƒ{[ƒh,ƒ}ƒEƒXorƒRƒ“ƒgƒ[ƒ‰[)‚ğ”»•Ê‚·‚éƒtƒ‰ƒOitrue = ƒRƒ“ƒgƒ[ƒ‰[Afalse = ƒL[ƒ{[ƒh,ƒ}ƒEƒXj
+	// æœ€å¾Œã®å…¥åŠ›ã®ç¨®é¡(ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰,ãƒã‚¦ã‚¹orã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼)ã‚’åˆ¤åˆ¥ã™ã‚‹ãƒ•ãƒ©ã‚°ï¼ˆtrue = ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã€false = ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰,ãƒã‚¦ã‚¹ï¼‰
 	bool LastInputKinds(void)const { return lastInputKinds; }
+
+	// ãƒˆãƒªã‚¬ãƒ¼ã®ç¨®é¡
+	enum class TRIGGER_TYPE
+	{
+		Left,
+		Right,
+		Max,
+	};
+
+	// ãƒˆãƒªã‚¬ãƒ¼ã®çŠ¶æ…‹ä¿å­˜æ§‹é€ ä½“
+	struct TRIGGER_INFO
+	{
+		unsigned char value = 0;	// ãƒˆãƒªã‚¬ãƒ¼ã®æŠ¼ã—è¾¼ã¿é‡ï¼ˆ0ã€œ255ï¼‰
+		bool prev = false, now = false, up = false, down = false;
+	};
+
+	// RTãƒ»LTãƒˆãƒªã‚¬ãƒ¼ã®çŠ¶æ…‹å–å¾—
+	const TRIGGER_INFO& GetTriggerInfo(TRIGGER_TYPE t) const { return triggerInfo[(int)t]; }
+
+	// RTãƒ»LTãƒˆãƒªã‚¬ãƒ¼ã®æŠ¼ã—è¾¼ã¿é‡ã‚’ 0.0ã€œ1.0 ã§å–å¾—
+	float GetTriggerRate(TRIGGER_TYPE t) const { return triggerInfo[(int)t].value / 255.0f; }
 
 private:
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	void Init(void);
-	// I—¹ˆ—
+	// çµ‚äº†å‡¦ç†
 	void Release(void);
 
-	// ƒL[‚ÉŠÖ‚·‚éXV
+	// ã‚­ãƒ¼ã«é–¢ã™ã‚‹æ›´æ–°
 	void KeyUpdate(void);
 
-	// ƒL[‚Ìî•ñ
+	// ã‚­ãƒ¼ã®æƒ…å ±
 	KEY_INFO keyInfo[(int)KEY_TYPE::Max];
 
-	// ƒRƒ“ƒgƒ[ƒ‰[‚Ìƒ{ƒ^ƒ“ˆÈŠO‚ÌƒL[‚Ìí—Ş
+	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ãƒœã‚¿ãƒ³ä»¥å¤–ã®ã‚­ãƒ¼ã®ç¨®é¡
 	enum class CONTROLLER_OTHERS
 	{
 		LeftstickUp,
@@ -225,33 +246,44 @@ private:
 		RightTrigger,
 	};
 
-	// ƒL[ƒ{[ƒh‚Ì“o˜^î•ñ
+	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ç™»éŒ²æƒ…å ±
 	std::vector<int>keyboardFormat[(int)KEY_TYPE::Max];
-	// ƒRƒ“ƒgƒ[ƒ‰[‚Ìƒ{ƒ^ƒ“‚Ì“o˜^î•ñ
+	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ãƒœã‚¿ãƒ³ã®ç™»éŒ²æƒ…å ±
 	std::vector<int>controllerButtonFormat[(int)KEY_TYPE::Max];
-	// ƒ}ƒEƒX‚Ìƒ{ƒ^ƒ“‚Ì“o˜^î•ñ
+	// ãƒã‚¦ã‚¹ã®ãƒœã‚¿ãƒ³ã®ç™»éŒ²æƒ…å ±
 	std::vector<int>mouseButtonFormat[(int)KEY_TYPE::Max];
-	// ƒRƒ“ƒgƒ[ƒ‰[‚Ìƒ{ƒ^ƒ“ˆÈŠO‚Ì“o˜^î•ñ
+	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ãƒœã‚¿ãƒ³ä»¥å¤–ã®ç™»éŒ²æƒ…å ±
 	std::vector<CONTROLLER_OTHERS>controllerOthersFormat[(int)KEY_TYPE::Max];
 
-	// ƒRƒ“ƒgƒ[ƒ‰[‚Ìƒ{ƒ^ƒ“ˆÈŠO‚Ì“ü—Íî•ñ‚ÌXV
+	// ãƒˆãƒªã‚¬ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã¨ã¿ãªã™é–¾å€¤ï¼ˆ0ã€œ255ï¼‰
+	static constexpr unsigned char TRIGGER_THRESHOLD = 30;
+
+	// ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ãƒœã‚¿ãƒ³ä»¥å¤–ã®å…¥åŠ›æƒ…å ±ã®æ›´æ–°
 	bool ControllerOthersInput(const CONTROLLER_OTHERS& input);
 
-	// ƒ}ƒEƒX‚ÉŠÖ‚·‚éXV
+	// ãƒã‚¦ã‚¹ã«é–¢ã™ã‚‹æ›´æ–°
 	void MouseUpdate(void);
 
-	// ƒ}ƒEƒX‚Ìî•ñ
+	// ãƒã‚¦ã‚¹ã®æƒ…å ±
 	MOUSE_INFO mouseInfo;
 
-	// ƒ}ƒEƒX‚ÌÀ•W‚ğŒÅ’è‚·‚é‚©‚Ç‚¤‚©
+	// ãƒã‚¦ã‚¹ã®åº§æ¨™ã‚’å›ºå®šã™ã‚‹ã‹ã©ã†ã‹
 	bool mouseFixed;
 
-	// ƒ}ƒEƒX‚ÌˆÚ“®ƒxƒNƒgƒ‹‚ÌÅ’á‚µ‚«‚¢’l
+	// ãƒã‚¦ã‚¹ã®ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®æœ€ä½ã—ãã„å€¤
 	const float MOUSE_THRESHOLD = 1.0f;
 
-	// ÅŒã‚Ì“ü—Í‚Ìí—Ş(ƒL[ƒ{[ƒh,ƒ}ƒEƒXorƒRƒ“ƒgƒ[ƒ‰[)‚ğ”»•Ê‚·‚éƒtƒ‰ƒOitrue = ƒRƒ“ƒgƒ[ƒ‰[Afalse = ƒL[ƒ{[ƒh,ƒ}ƒEƒXj
+	// æœ€å¾Œã®å…¥åŠ›ã®ç¨®é¡(ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰,ãƒã‚¦ã‚¹orã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼)ã‚’åˆ¤åˆ¥ã™ã‚‹ãƒ•ãƒ©ã‚°ï¼ˆtrue = ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã€false = ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰,ãƒã‚¦ã‚¹ï¼‰
 	bool lastInputKinds;
+
+	// LTãƒ»RTãƒˆãƒªã‚¬ãƒ¼ã«é–¢ã™ã‚‹æ›´æ–°
+	void TriggerUpdate(void);
+
+	//  LTãƒ»RTãƒˆãƒªã‚¬ãƒ¼ã®æƒ…å ±
+	TRIGGER_INFO triggerInfo[(int)TRIGGER_TYPE::Max];
+
 };
 
 using Input = InputManager;
 using KEY_TYPE = Input::KEY_TYPE;
+using TRIGGER_TYPE = Input::TRIGGER_TYPE;

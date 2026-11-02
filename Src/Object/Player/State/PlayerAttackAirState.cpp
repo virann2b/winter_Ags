@@ -37,7 +37,7 @@ void PlayerAttackAirState::Enter(void)
 void PlayerAttackAirState::OwnStateConditionUpdate(void)
 {
 	//“ü—Í
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttack).down && isMaxJump) { OwnChangeState(); }
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttackStrong).down && isMaxJump) { OwnChangeState(); }
 	
 }
 

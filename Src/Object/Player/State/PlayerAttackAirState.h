@@ -42,7 +42,6 @@ private:
 	//範囲攻撃発生比率
 	static constexpr float RANGEATTACK_RAITE = 0.2f;
 
-
 #pragma region 受け取る参照変数・関数
 
 	// 空中攻撃開始アニメーションの再生関数のポインタ

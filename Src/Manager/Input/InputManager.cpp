@@ -8,6 +8,7 @@ InputManager* InputManager::ins = nullptr;
 InputManager::InputManager():
 	keyInfo(),
 	keyboardFormat(),
+	triggerInfo(),
 	mouseButtonFormat(),
 	controllerButtonFormat(),
 	mouseFixed(false),
@@ -60,19 +61,28 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerDash, KEY_INPUT_LSHIFT);
 	SET_C_BUTTON(KEY_TYPE::PlayerDash, XINPUT_BUTTON_A);
 
-	//攻撃
+	//通常攻撃
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerAttack, MOUSE_INPUT_LEFT);
+	SET_C_BUTTON(KEY_TYPE::PlayerAttack, XINPUT_BUTTON_X);
+
+	//強攻撃
 	SET_KEYBOARD(KEY_TYPE::PlayerAttackStrong, KEY_INPUT_F);
-
-
+	SET_C_BUTTON(KEY_TYPE::PlayerAttackStrong, XINPUT_BUTTON_Y);
+	
 	//回避
 	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
-	
-	//武器切り替え
+	SET_C_BUTTON(KEY_TYPE::PlayerRoll, XINPUT_BUTTON_B);
+
+	//コントローラーの登録はPlayerGunStateの中に
+	//武器から銃切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);
+	//銃の発射
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunShot, MOUSE_INPUT_LEFT);
 
+	//ロックオン
 	SET_KEYBOARD(KEY_TYPE::PlayerLockOn, KEY_INPUT_E);
+	SET_C_BUTTON(KEY_TYPE::PlayerLockOn, XINPUT_BUTTON_RIGHT_THUMB);
+
 
 
 #pragma endregion
@@ -117,7 +127,6 @@ void InputManager::Init(void)
 
 	// 回転（右）
 	SET_KEYBOARD(KEY_TYPE::CameraRotRight, KEY_INPUT_RIGHT);
-	SET_C_BUTTON(KEY_TYPE::CameraRotRight, XINPUT_BUTTON_RIGHT_SHOULDER);
 	SET_C_OTHERS(KEY_TYPE::CameraRotRight, CONTROLLER_OTHERS::RightstickRight);
 
 	// 回転（左）
@@ -212,6 +221,7 @@ void InputManager::Init(void)
 void InputManager::Update(void)
 {
 	KeyUpdate();
+	TriggerUpdate();
 	MouseUpdate();
 }
 
@@ -338,6 +348,28 @@ void InputManager::MouseUpdate(void)
 
 	// マウス座標固定のフラグが立っている場合はマウス座標を中心に移動させる
 	if (mouseFixed) { SetMousePoint(Application::SCREEN_SIZE_X_HALF, Application::SCREEN_SIZE_Y_HALF); }
+}
+
+void InputManager::TriggerUpdate(void)
+{
+	bool windowActive = GetWindowActiveFlag();
+
+	XINPUT_STATE state = {};
+	if (GetJoypadXInputState(DX_INPUT_PAD1, &state) != 0) { state = {}; }
+
+	const unsigned char values[(int)TRIGGER_TYPE::Max] = { state.LeftTrigger, state.RightTrigger };
+
+	for (int i = 0; i < (int)TRIGGER_TYPE::Max; i++)
+	{
+		TRIGGER_INFO& info = triggerInfo[i];
+
+		info.prev = info.now;
+		info.value = windowActive ? values[i] : 0;
+		info.now = (info.value > TRIGGER_THRESHOLD);
+
+		info.up = (info.prev && !info.now);
+		info.down = (!info.prev && info.now);
+	}
 }
 
 bool InputManager::GetControllerConnect(void) const
