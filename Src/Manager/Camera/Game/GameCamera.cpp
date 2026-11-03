@@ -90,6 +90,29 @@ void GameCamera::ToggleGun(void)
 	// Remote 中は何もしない（ターゲットON時のみ銃モード可）
 }
 
+void GameCamera::SetFocusProvider(FocusProvider provider)
+{
+	focusProvider = std::move(provider);
+	// セット直後に一度更新
+	UpdateFocus();         
+
+	if (mode == Mode::Auto)
+	{  
+
+		if (focusPos != nullptr)
+		{
+			// Auto 開始なら位置も合わせる
+			UpdateAuto();
+		}
+		else
+		{
+			// 敵がいないので Remote で開始
+			SetMode(Mode::Remote);       
+		}
+	
+	}
+}
+
 void GameCamera::SnapRemote(void)
 {
 	if (targetPos == nullptr) { return; }
@@ -104,14 +127,17 @@ void GameCamera::NormalUpdate(void)
 {
 	if (targetPos == nullptr) { return; }
 
+	UpdateFocus();
+
 	// ターゲット対象が消えていたら強制的に Remote へ
-	if (mode != Mode::Remote && focusPos == nullptr) {
+	if (mode != Mode::Remote && focusPos == nullptr)
+	{
 		SetMode(Mode::Remote);
 	}
 
-	//// 入力（カメライベント中は NormalUpdate 自体が呼ばれないので受け付けない）
+	// 入力（カメライベント中は NormalUpdate 自体が呼ばれないので受け付けない）
 	if (Input::GetIns().GetInfo(toggleKey).down) { ToggleTarget(); }
-	//if (Input::GetIns().GetInfo(gunKey).down) { ToggleGun(); }
+
 
 	// 視野角：Gun中は絞り、それ以外は通常へ戻す
 	const float targetFov = (mode == Mode::Gun) ? GUN_FOV : baseFov;
@@ -206,5 +232,21 @@ void GameCamera::SubRelease(void)
 	// Remote で固定したマウスを戻す（終了時）
 	if (mode == Mode::Remote && ROT_POWER != 0.0f) {
 		Input::GetIns().SetMouseFixed(false);
+	}
+}
+
+void GameCamera::UpdateFocus(void)
+{
+	if (!focusProvider) { return; }
+
+	Vector3 p;
+	if (focusProvider(p)) {
+		focusPosValue = p;
+		focusPos = &focusPosValue;   
+	}
+	else
+	{
+		// 敵がいない場合
+		focusPos = nullptr;         
 	}
 }

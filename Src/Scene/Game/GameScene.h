@@ -2,6 +2,8 @@
 
 #include"../SceneBase.h"
 
+class EnemyManager;
+
 class GameScene : public SceneBase
 {
 public:
@@ -25,6 +27,7 @@ private:
 	void SubUiDraw(void)override;
 
 #pragma endregion
+
 
 	// ゲームオーバーまでの制限時間(秒)
 	static constexpr float TIME_LIMIT_SEC = 120.0f;

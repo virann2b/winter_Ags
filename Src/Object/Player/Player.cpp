@@ -450,9 +450,7 @@ void Player::SubDraw(void)
 
 }
 
-void Player::DirectionUpdate(void)
-{
-}
+
 
 
 

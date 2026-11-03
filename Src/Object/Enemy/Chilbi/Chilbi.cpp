@@ -16,32 +16,18 @@
 
 Chilbi::Chilbi(Vector3 initPos)
 	:
-	initPos(initPos)
+	EnemyBase(initPos)
 {
 }
 
 void Chilbi::Load(void)
 {
 
-#pragma region オブジェクト設定
-
-	// 動的オブジェクトとしての処理を有効にする
-	SetDynamicFlg(true);
-
-	// 重力を有効にする
-	SetGravityFlg(true);
-
-	// 当たり判定による押し出しを有効にする
-	SetPushFlg(true);
-	// 押し出しだしによる重みを設定
-	SetPushWeight(CHILIBI_WEIGHT);
-
-	//当たり判定OFF
-	SetJudgeFlg(false);
-
-#pragma endregion
-
 #pragma region モデル設定
+
+	//オブジェクト初期設定
+	SetupEnemyObject(CHILIBI_WEIGHT);
+
 
 	// モデルの読み込み
 	trans.LoadModel("Enemy/Chilbi/Chilbi");
@@ -56,7 +42,7 @@ void Chilbi::Load(void)
 	trans.SetLocalRotation(Quaternion::FromRotationY(Deg2Rad(180.0f)));
 
 	//初期座標登録
-	trans.pos = initPos;
+	trans.pos = GetInitPos();
 
 	hp = 100;
 
@@ -172,64 +158,31 @@ void Chilbi::Load(void)
 
 }
 
-void Chilbi::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
-{
-	if (invincibleCounter > 0) { return; }
 
-	switch (other.GetTag())
-	{
-
-	case COLLIDER_TAG::PlayerSword:
-	{
-		TakeDamage(1);
-		ChangeState(IsDead() ? STATE::Die : STATE::Hit);
-
-		invincibleCounter = 60;
-
-		break;
-	}
-
-	case COLLIDER_TAG::PlayerLargeAttack:
-	{
-		TakeDamage(1);
-		ChangeState(IsDead() ? STATE::Die : STATE::Hit);
-
-		invincibleCounter = 60;
-
-		break;
-	}
-
-	}
-}
-
-void Chilbi::SubInit(void)
+void Chilbi::EnemyInit(void)
 {
 	//初期状態
 	ChangeState(STATE::Idle);
-	//無敵カウンターリセット
-	invincibleCounter = 0.0f;
 
 }
 
-void Chilbi::SubUpdate(void)
+void Chilbi::EnemyUpdate(void)
 {
-	if (invincibleCounter > 0.0f) { invincibleCounter -= TimeScale::Get(); }
-	else { invincibleCounter = 0.0f; }
-
-	// 死亡アニメが終わったらゲームクリア
-	/*if (GetAlive() && GetState() == (int)STATE::Die && IsAnimeEnd() && !isClearRequested)
-	{
-		isClearRequested = true;
-		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
-	}*/
 
 }
 
-void Chilbi::SubDraw(void)
+void Chilbi::EnemyDraw(void)
 {
 	DrawFormatString(0, 80, 0xffffff, "EnemyHp : %d", hp);
+}
 
-	DrawFormatString(0, 100, 0xffffff, "State : %d", state);
+void Chilbi::OnHit(void)
+{
+	ChangeState(STATE::Hit);
+}
 
+void Chilbi::OnDie(void)
+{
+	ChangeState(STATE::Die);
 
 }

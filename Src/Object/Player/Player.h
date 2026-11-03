@@ -223,6 +223,4 @@ private:
 
 	void SubDraw(void)override;
 
-	void Direction(void);
-
 };

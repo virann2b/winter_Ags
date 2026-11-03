@@ -26,6 +26,7 @@
 #include "../../Object/Player/Player.h"
 
 #include "../../Object/Enemy/EnemyManager.h"
+#include "../../Object/Enemy/EnemyBase.h"
 
 
 #include "../../Object/Water.h"
@@ -42,10 +43,10 @@ void GameScene::SubPostLoad(void)
 	Snd::GetIns().ChangeScene("Game");
 
 	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
-
+	//プレイヤー
 	AddActor(new Player);
 
-	//敵生成
+	//敵
 	AddActor(new EnemyManager);
 
 }
@@ -99,19 +100,39 @@ void GameScene::SubUiDraw(void)
 
 void GameScene::CreateCamera(void)
 {
+	Player* player = ActorSerch<Player>(actors);
+	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
 
-	camera = new GameCamera(
-		&ActorSerch<Player>(actors)->GetTrans().pos,
-		&ActorSerch<Chilbi>(actors)->GetTrans().pos,
+	// カメラのターゲットをプレイヤーと敵の最も近い敵に設定
+	const EnemyBase* target =
+		enemyManager->GetNearestEnemy(player->GetTrans().pos);
+
+	auto* cam = new GameCamera(
+		&player->GetTrans().pos,
+		nullptr,
 		Vector3::Zonly(-400),
 		Vector3(0.0f, 100.0f, 0.0f),
 		3.0f * (DX_PI_F / 180.0f),
 		Vector3(),
 		350.0f, 400.0f,
 		80.0f * (DX_PI_F / 180.0f),
-		true,                // Remoteで開始
-		KEY_TYPE::PlayerLockOn,      // ターゲットキー
-		KEY_TYPE::PlayerGunMode        // 銃キー
+		true,							// Remoteで開始
+		KEY_TYPE::PlayerLockOn,			// ターゲットキー
+		KEY_TYPE::PlayerGunMode			// 銃キー
 		);
+
+	
+
+	// 毎フレーム最寄りの敵を問い合わせる
+	cam -> SetFocusProvider([player, enemyManager](Vector3& out)
+		{
+		if (!enemyManager) { return false; }
+		const EnemyBase* e = enemyManager->GetNearestEnemy(player->GetTrans().pos);
+		if (!e) { return false; }
+		out = e->GetTrans().pos;
+		return true;
+		});
+
+	camera = cam;
 
 }

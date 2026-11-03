@@ -1,9 +1,10 @@
 #pragma once
 #include "../../Common/CharacterBase/CharacterBase.h"
+#include "../EnemyBase.h"
 
 #include "Wepon/Punch.h"
 
-class Chilbi: public CharacterBase
+class Chilbi: public EnemyBase
 {
 
 public:
@@ -15,11 +16,10 @@ public:
 	// 読み込み
 	void Load(void)override;
 
-	// 当たり判定の通知
-	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;
 
 private:
 
+	//状態定義
 	enum class STATE
 	{
 		None = -1,
@@ -108,19 +108,17 @@ private:
 
 #pragma endregion
 
+
 	//初期読み込み
-	void SubInit(void)override;
-	//更新
-	void SubUpdate(void)override;
+	void EnemyInit(void)override;
+	//更新処理
+	void EnemyUpdate(void)override;
+	//描画
+	void EnemyDraw(void)override;
 
-	void SubDraw(void)override;
+	void OnHit(void)override;
+	void OnDie(void)override;
 
-#pragma region 参照する変数
-
-	//初期座標
-	const Vector3& initPos;
-
-#pragma endregion
 	
 	//チルビーの重さ
 	static constexpr int CHILIBI_WEIGHT = 100;
@@ -129,11 +127,6 @@ private:
 	Punch* punch;
 	//状態
 	STATE state;
-
-	bool isClearRequested = false;
-
-	// 無敵カウンター
-	float invincibleCounter;
 
 };
 

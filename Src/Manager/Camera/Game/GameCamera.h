@@ -1,6 +1,9 @@
 #pragma once
 
+#include <functional>
+
 #include "../CameraBase.h"
+
 #include "../../Input/InputManager.h"
 
 	/// <summary>
@@ -9,7 +12,7 @@
 	///   Auto   : ターゲットON時のカメラ（自機と対象を画角に収める）
 	///   Gun    : 銃モードのカメラ（肩越し。Autoからのみ入れる）
 	/// </summary>
-	class GameCamera : public CameraBase
+class GameCamera : public CameraBase
 {
 public:
 
@@ -68,7 +71,15 @@ public:
 	Mode GetMode(void) const { return mode; }
 	bool IsGunMode(void) const { return mode == Mode::Gun; }
 
+	// 近くの敵の位置を返す
+	using FocusProvider = std::function<bool(Vector3& outPos)>;
+
+	void SetFocusProvider(FocusProvider provider);
+
+
 private:
+
+#pragma region 定数
 
 	// カメラ最低地上高
 	static constexpr float CAMERA_DOWN = 85.0f;
@@ -81,6 +92,11 @@ private:
 	static constexpr float GUN_HEIGHT = 140.0f;                       // 高さ
 	static constexpr float GUN_FOV = 55.0f * (DX_PI_F / 180.0f);      // 照準時の視野角
 	static constexpr float FOV_LERP_RATE = 0.15f;                     // 視野角の補間率
+
+#pragma endregion
+	
+
+#pragma region 変数
 
 	// 追従対象
 	const Vector3* targetPos;
@@ -108,8 +124,14 @@ private:
 	// 現在のモード
 	Mode mode;
 
-	// 通常時の視野角（Gun終了時に戻す先）
+	// 通常時の視野角（Gunから切り替わる時に戻す先）
 	float baseFov;
+
+	Vector3 focusPosValue;       
+	FocusProvider focusProvider; 
+
+#pragma endregion
+
 
 	// 更新
 	void NormalUpdate(void)override;
@@ -122,4 +144,6 @@ private:
 
 	// 終了処理
 	void SubRelease(void)override;
+
+	void UpdateFocus(void);     
 };
