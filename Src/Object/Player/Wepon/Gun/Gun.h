@@ -47,6 +47,8 @@ public:
 
 	Vector3 GetShotDirection(void) const;
 
+	void FollowHand(void);
+
 private:
 
 #pragma region 定数
@@ -77,16 +79,20 @@ private:
 	static constexpr float BULLET_RANGE = 1500.0f;   // この距離で消える
 	static constexpr float BULLET_RADIUS = 8.0f;
 
-	std::vector<BulletObj> bullets;
+	static constexpr float SHOT_OFFSET_RANGE = 30.0f;   // ずらす最大幅
+
 
 #pragma endregion
+
+
+	std::vector<BulletObj> bullets;
 
 	// 手のボーンからの位置補正（手のローカル座標系:位置の調整の倍はこの数値を）
 	Vector3 gripOffset = Vector3(-5.0f, 20.0f, -5.0f);
 
 	// 手のボーンからの回転補正(銃の回転の場合この数値を）
 	Quaternion gripRotation =
-		Quaternion::FromEulerXZY(Vector3(Deg2Rad(80.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
+		Quaternion::FromEulerXZY(Vector3(Deg2Rad(90.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
@@ -98,9 +104,12 @@ private:
 	//弾クールタイム
 	float recoverTimer;
 
+	Vector3 prevPlayerPos;
+
+	Vector3 GetRandomOffset(void) const;
+
 	//派生クラス更新
 	void SubUpdate(void) override;
 
-	Vector3 GetRandomOffset(void) const;
-	static constexpr float SHOT_OFFSET_RANGE = 30.0f;   // ずらす最大幅(±)
+
 };

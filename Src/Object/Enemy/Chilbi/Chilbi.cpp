@@ -16,7 +16,9 @@
 
 Chilbi::Chilbi(Vector3 initPos)
 	:
-	EnemyBase(initPos)
+	EnemyBase(initPos),
+	punch(nullptr),
+	state(STATE::None)
 {
 }
 
@@ -33,7 +35,7 @@ void Chilbi::Load(void)
 	trans.LoadModel("Enemy/Chilbi/Chilbi");
 
 	// モデルのスケール設定
-	trans.scale = 1.5;
+	trans.scale = 2.0f;
 
 	// モデルの中心点のズレの補正
 	trans.centerDiff = Vector3(0.0f, -102.81f, 0.0f) * trans.scale;

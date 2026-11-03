@@ -32,6 +32,7 @@ protected:
 	// プレイヤーの攻撃で受けるダメージ
 	static constexpr int DEFAULT_DAMAGE = 1;
 
+
 #pragma endregion
 
 

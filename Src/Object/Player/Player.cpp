@@ -418,12 +418,13 @@ void Player::SubUpdate(void)
 		gun->BulletUpdate();
 	}
 
+	gun->FollowHand();
 	gun->BulletMoveUpdate();
 }
 
 void Player::SubDraw(void)
 {
-
+	gun->FollowHand();
 	gun->BulletDraw();
 
 	DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
