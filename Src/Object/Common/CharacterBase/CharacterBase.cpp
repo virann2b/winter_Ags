@@ -13,7 +13,7 @@ CharacterBase::CharacterBase() :
 
 	state(-1),
 	stateMap(),
-
+	invincibleCounter(0.0f),
 	anime(nullptr)
 {
 }
@@ -23,7 +23,7 @@ CharacterBase::CharacterBase(const std::string& parameterPath):
 
 	state(0),
 	stateMap(),
-
+	invincibleCounter(0.0f),
 	anime(nullptr)
 {
 }

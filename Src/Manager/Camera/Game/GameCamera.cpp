@@ -196,6 +196,10 @@ void GameCamera::UpdateAuto(void)
 	// íçéãì_
 	lookAtPos = (*targetPos + *focusPos) * 0.5f;
 	if (lookAtPos.y <= FOCUS_DOWN) { lookAtPos.y = FOCUS_DOWN; }
+	// íçéãì_Ç‡ï‚ä‘Ç∑ÇÈ
+	SmoothCameraMove(lookAtPos, (*targetPos + *focusPos) * 0.5f);
+	if (lookAtPos.y <= FOCUS_DOWN) { lookAtPos.y = FOCUS_DOWN; }
+
 
 	angle = CalcCameraAngle(pos, lookAtPos);
 }
@@ -221,7 +225,7 @@ void GameCamera::UpdateGun(void)
 	if (pos.y <= CAMERA_DOWN) { pos.y = CAMERA_DOWN; }
 
 	// íçéãì_ÇÕëŒè€
-	lookAtPos = *focusPos;
+	SmoothCameraMove(lookAtPos, *focusPos);
 	if (lookAtPos.y <= FOCUS_DOWN) { lookAtPos.y = FOCUS_DOWN; }
 
 	angle = CalcCameraAngle(pos, lookAtPos);

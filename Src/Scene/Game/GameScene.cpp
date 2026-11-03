@@ -82,6 +82,19 @@ void GameScene::SubPostUpdate(void)
 		}
 	}
 
+
+	// 銃モード中は、ロックオン中の敵の方向にプレイヤーを向ける
+	if (gameCamera && gameCamera->IsGunMode() && lockedEnemy && !lockedEnemy->IsDead())
+	{
+		Player* player = ActorSerch<Player>(actors);
+		if (player)
+		{
+			Vector3 dir = lockedEnemy->GetTrans().pos - player->GetTrans().pos;
+			dir.y = 0.0f;   // 水平方向のみ
+			if (dir.LengthSq() > 0.000001f) { player->TargetDirection(dir); }
+		}
+	}
+
 	// ロックオン中に切り替えキーが押されたら、次に近い敵へ
 	if (gameCamera && gameCamera->GetMode() != GameCamera::Mode::Remote &&
 		Input::GetIns().GetInfo(KEY_TYPE::PlayerNextLockOn).down)

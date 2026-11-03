@@ -86,7 +86,7 @@ private:
 
 	// 手のボーンからの回転補正(銃の回転の場合この数値を）
 	Quaternion gripRotation =
-		Quaternion::FromEulerXZY(Vector3(Deg2Rad(90.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
+		Quaternion::FromEulerXZY(Vector3(Deg2Rad(80.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;

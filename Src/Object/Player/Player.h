@@ -29,7 +29,8 @@ public:
 
 	// 当たり判定の通知
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;	
-
+	// ロックオンしている敵の方向に向く
+	void TargetDirection(const Vector3& targetPos);
 
 private:
 

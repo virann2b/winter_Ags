@@ -389,6 +389,11 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 	}
 }
 
+void Player::TargetDirection(const Vector3& target)
+{
+	trans.SetRotation(Quaternion::FromRotationY(atan2f(target.x, target.z)));
+}
+
 
 
 void Player::SubUpdate(void)
