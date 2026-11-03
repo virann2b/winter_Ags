@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "../Common/ActorBase/ActorBase.h"
 
 #include "EnemyBase.h"
@@ -15,6 +17,8 @@ public:
 
 	//w’è‚Ì‘ÎÛ‚©‚çÅ‚à‹ß‚¢“G‚ğæ“¾‚·‚é
 	const EnemyBase* GetNearestEnemy(const Vector3& from) const;
+	//¡‘ÎÛ‚É‚µ‚Ä‚¢‚é“G‚©‚ç•Ê‚Ì“G‚ÉØ‚è‘Ö‚¦
+	const EnemyBase* GetNextNearestEnemy(const Vector3& from, const EnemyBase* current) const;
 
 private:
 

@@ -7,8 +7,7 @@
 EnemyBase::EnemyBase(const Vector3& initPos)
 	:
 	CharacterBase(),
-	initPos(initPos),
-	invincibleCounter(0.0f)
+	initPos(initPos)
 {
 }
 

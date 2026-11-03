@@ -83,6 +83,9 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerLockOn, KEY_INPUT_E);
 	SET_C_BUTTON(KEY_TYPE::PlayerLockOn, XINPUT_BUTTON_RIGHT_THUMB);
 
+	//ロックオンの切り替え
+	SET_KEYBOARD(KEY_TYPE::PlayerNextLockOn, KEY_INPUT_T);
+
 
 
 #pragma endregion

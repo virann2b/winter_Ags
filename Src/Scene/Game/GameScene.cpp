@@ -34,7 +34,9 @@
 GameScene::GameScene()
 	: SceneBase(),
 	elapsedSec(0.0f),
-	isChanging(false)
+	isChanging(false),
+	gameCamera(nullptr),
+	lockedEnemy(nullptr)
 {
 }
 
@@ -57,6 +59,7 @@ void GameScene::SubPostInit(void)
 
 	elapsedSec = 0.0f;
 	isChanging = false;
+	lockedEnemy = nullptr;
 }
 
 void GameScene::SubPostUpdate(void)
@@ -79,13 +82,18 @@ void GameScene::SubPostUpdate(void)
 		}
 	}
 
-	/*auto* chilbi = ActorSerch<Chilbi>(actors);
-	if (chilbi && chilbi->IsDead() && !isChanging)
+	// ロックオン中に切り替えキーが押されたら、次に近い敵へ
+	if (gameCamera && gameCamera->GetMode() != GameCamera::Mode::Remote &&
+		Input::GetIns().GetInfo(KEY_TYPE::PlayerNextLockOn).down)
 	{
-		isChanging = true;
-		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
-		return;
-	}*/
+		Player* player = ActorSerch<Player>(actors);
+		EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
+
+		if (player && enemyManager)
+		{
+			lockedEnemy = enemyManager->GetNextNearestEnemy(player->GetTrans().pos, lockedEnemy);
+		}
+	}
 }
 
 void GameScene::SubUiDraw(void)
@@ -121,16 +129,22 @@ void GameScene::CreateCamera(void)
 		KEY_TYPE::PlayerGunMode			// 銃キー
 		);
 
-	
+	gameCamera = cam;
 
 	// 毎フレーム最寄りの敵を問い合わせる
-	cam -> SetFocusProvider([player, enemyManager](Vector3& out)
+	cam->SetFocusProvider([this, player, enemyManager](Vector3& out)
 		{
-		if (!enemyManager) { return false; }
-		const EnemyBase* e = enemyManager->GetNearestEnemy(player->GetTrans().pos);
-		if (!e) { return false; }
-		out = e->GetTrans().pos;
-		return true;
+			if (!enemyManager) { return false; }
+
+			bool locking = gameCamera->GetMode() != GameCamera::Mode::Remote;
+			if (!locking || lockedEnemy == nullptr || lockedEnemy->IsDead())
+			{
+				lockedEnemy = enemyManager->GetNearestEnemy(player->GetTrans().pos);
+			}
+
+			if (!lockedEnemy) { return false; }
+			out = lockedEnemy->GetTrans().pos;
+			return true;
 		});
 
 	camera = cam;

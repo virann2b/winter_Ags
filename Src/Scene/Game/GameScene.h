@@ -3,6 +3,8 @@
 #include"../SceneBase.h"
 
 class EnemyManager;
+class EnemyBase;
+class GameCamera;
 
 class GameScene : public SceneBase
 {
@@ -28,9 +30,17 @@ private:
 
 #pragma endregion
 
+#pragma region 定数
 
 	// ゲームオーバーまでの制限時間(秒)
 	static constexpr float TIME_LIMIT_SEC = 120.0f;
+
+#pragma endregion
+
+	GameCamera* gameCamera;
+	//ロックオン中の敵
+	const EnemyBase* lockedEnemy;   
+
 
 	// 経過時間(秒)
 	float elapsedSec;

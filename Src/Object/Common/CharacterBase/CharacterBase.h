@@ -70,7 +70,9 @@ protected:
 	int hp;
 
 	//被弾後の無敵時間
-	float invincibleTimer;
+	float invincibleCounter;
+
+
 
 #pragma region ステート管理関数
 
