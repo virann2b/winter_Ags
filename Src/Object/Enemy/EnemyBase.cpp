@@ -34,6 +34,18 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	else { OnHit(); }
 }
 
+float EnemyBase::GetDistanceToTarget(void) const
+{
+	if (targetPos == nullptr) { return -1.0f; }
+
+	const Vector3& myPos = trans.pos;
+
+	const float dx = targetPos->x - myPos.x;
+	const float dy = targetPos->y - myPos.y;
+	const float dz = targetPos->z - myPos.z;
+	return std::sqrt(dx * dx + dy * dy + dz * dz);
+}
+
 void EnemyBase::SetupEnemyObject(int pushWeight)
 {
 	// 動的オブジェクトとしての処理を有効

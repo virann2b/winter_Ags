@@ -5,6 +5,7 @@ class EnemyBase : public CharacterBase
 {
 public:
 
+	//敵の種類
 	enum class ENEMY_TYPE
 	{
 		None = -1,
@@ -14,12 +15,31 @@ public:
 		Max
 	};
 
+	//距離の種類
+	enum class DISTANCE
+	{
+		None = -1,
+
+		Near,		//近距離
+		Middle,		//中距離
+		Long,		//遠距離
+
+		Out,		//範囲外	
+
+		Max
+	};
+
+
 	EnemyBase(const Vector3& initPos);
 
 	~EnemyBase()override = default;
 
 	// 当たり判定の通知
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;
+
+	// 攻撃対象の座標を設定
+	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
+;
 
 protected:
 
@@ -32,20 +52,20 @@ protected:
 	// プレイヤーの攻撃で受けるダメージ
 	static constexpr int DEFAULT_DAMAGE = 1;
 
+	// 距離の区分
+	static constexpr float NEAR_RANGE = 200.0f;
+	static constexpr float MIDDLE_RANGE = 500.0f;
+	static constexpr float LONG_RANGE = 900.0f;
 
 #pragma endregion
-
-
 
 	// オブジェクト初期設定
 	void SetupEnemyObject(int pushWeight);
 
 	// 初期化
 	virtual void EnemyInit(void) {}
-
 	// 更新
 	virtual void EnemyUpdate(void) {}
-
 	// 描画
 	virtual void EnemyDraw(void) {}
 
@@ -57,6 +77,9 @@ protected:
 	// 死亡時
 	virtual void OnDie(void) = 0;
 
+
+	// 攻撃対象の座標
+	float GetDistanceToTarget(void) const;
 
 	//無敵中か
 	bool IsInvincible(void) const { return invincibleCounter > 0.0f; }
@@ -81,6 +104,9 @@ private:
 
 	// 初期座標
 	Vector3 initPos;
+	
+	// 攻撃対象の座標
+	const Vector3* targetPos = nullptr;
 
 };
 

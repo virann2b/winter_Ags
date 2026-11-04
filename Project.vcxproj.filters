@@ -75,6 +75,7 @@
     <ClCompile Include="Src\Object\Player\State\PlayerHitState.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
+    <ClCompile Include="SkillBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Src\Object\Player\State\PlayerHitState.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
+    <ClInclude Include="SkillBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />
