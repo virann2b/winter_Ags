@@ -6,7 +6,10 @@ public:
 
 	ChilbiIdleState(
 		std::function<void(void)> playAnimeIdle,
-		const std::function<void(void)> changeAttackState
+		std::function<void(void)> changeMoveState,
+		std::function<void(void)> changeAttackState,
+		std::function<bool(void)> isDistanceNear,
+		float attackCoolTime
 	);
 
 	~ChilbiIdleState()override = default;
@@ -27,7 +30,14 @@ private:
 
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimeIdle;
+	//移動状態に遷移する関数ポインタ
+	const std::function<void(void)> changeMoveState;
+	//攻撃状態に遷移する関数ポインタ
 	const std::function<void(void)> changeAttackState;
+	//攻撃対象との距離判定ポインタ
+	const std::function<bool(void)> isDistanceNear;
+	//攻撃クールタイム
+	const float attackCoolTime;
 
 #pragma endregion
 

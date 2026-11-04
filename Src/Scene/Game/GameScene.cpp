@@ -55,11 +55,19 @@ void GameScene::SubPostLoad(void)
 
 void GameScene::SubPostInit(void)
 {
-	//AddPostEffect(new FocusLinesPostEffect(1.5f, 18.0f, 100.0f));
-
+	
 	elapsedSec = 0.0f;
+
 	isChanging = false;
 	lockedEnemy = nullptr;
+
+	Player* player = ActorSerch<Player>(actors);
+	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
+
+	if (player && enemyManager)
+	{
+		enemyManager->SetTargetPos(&player->GetTrans().pos);
+	}
 }
 
 void GameScene::SubPostUpdate(void)
@@ -82,6 +90,7 @@ void GameScene::SubPostUpdate(void)
 		}
 	}
 
+	
 
 	// 銃モード中は、ロックオン中の敵の方向にプレイヤーを向ける
 	if (gameCamera && gameCamera->IsGunMode() && lockedEnemy && !lockedEnemy->IsDead())

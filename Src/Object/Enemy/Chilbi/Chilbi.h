@@ -26,7 +26,7 @@ private:
 
 		Idle,
 
-		Run,
+		Move,
 
 		Attack,
 
@@ -46,7 +46,7 @@ private:
 
 		Idle,
 
-		Run,
+		Move,
 
 		Attack_1,
 		Attack_2,
@@ -63,7 +63,7 @@ private:
 	{
 		1.0f,	// Idle
 
-		0.8f,	// Run
+		0.8f,	// Move
 
 		0.7f,	// Attack_1
 		0.7f,	// Attack_2
@@ -78,7 +78,7 @@ private:
 	{
 		true,	//Idle
 
-		true,	//Run
+		true,	//Move
 
 		false,	//Attack_1
 		false,	//Attack_2
@@ -95,7 +95,7 @@ private:
 	{
 		"Data/Model/Enemy/Chilbi/Idle.mv1",	//Idle
 
-		"Data/Model/Enemy/Chilbi/Run.mv1",	//Run
+		"Data/Model/Enemy/Chilbi/Move.mv1",	//Run
 
 		"Data/Model/Enemy/Chilbi/Attack_1.mv1",	//Attack_1
 		"Data/Model/Enemy/Chilbi/Attack_2.mv1",	//Attack_1

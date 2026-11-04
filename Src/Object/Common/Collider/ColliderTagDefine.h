@@ -27,6 +27,9 @@ enum class COLLIDER_TAG
 	Enemy,
 	Enemy_ChilbiPunch,
 
+	PlayerSkill,
+	EnemySkill,
+
 	Stage,
 
 	DebugObject,

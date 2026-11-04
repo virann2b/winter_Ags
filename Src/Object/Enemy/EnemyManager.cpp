@@ -67,7 +67,17 @@ const EnemyBase* EnemyManager::GetNextNearestEnemy(const Vector3& from, const En
 
 	// current ‚ªŒ©‚Â‚©‚ç‚È‚¯‚ê‚ÎÅŠñ‚è
 	return alive[0];
-};
+}
+void EnemyManager::SetTargetPos(const Vector3* pos)
+{
+	targetPos = pos;
+
+	for (EnemyBase* enemy : enemies)
+	{
+		if (enemy) { enemy->SetTargetPos(targetPos); }
+	}
+}
+;
 
 EnemyBase* EnemyManager::CreateEnemy(EnemyBase::ENEMY_TYPE type, const Vector3& pos)
 {
@@ -87,5 +97,7 @@ EnemyBase* EnemyManager::CreateEnemy(EnemyBase::ENEMY_TYPE type, const Vector3& 
 	//“G‚Ì¶¬
 	AddChildActor(enemy);
 	enemies.push_back(enemy);
+
+	enemy->SetTargetPos(targetPos);
 	return enemy;
 }

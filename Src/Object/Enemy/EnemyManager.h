@@ -20,11 +20,15 @@ public:
 	//¡‘ÎÛ‚É‚µ‚Ä‚¢‚é“G‚©‚ç•Ê‚Ì“G‚ÉØ‚è‘Ö‚¦
 	const EnemyBase* GetNextNearestEnemy(const Vector3& from, const EnemyBase* current) const;
 
+	void SetTargetPos(const Vector3* targetPos);
+
 private:
 
 	//“G‚Ìí—ŞEÀ•W‚ğw’è‚µ‚Ä“G‚ğ¶¬‚·‚é
 	EnemyBase* CreateEnemy(EnemyBase::ENEMY_TYPE type, const Vector3& pos);
 
 	std::vector<EnemyBase*> enemies;
+
+	const Vector3* targetPos = nullptr;
 };
 

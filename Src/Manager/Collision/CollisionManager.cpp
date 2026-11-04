@@ -418,7 +418,6 @@ void CollisionManager::Check(void)
 	// ②エネミー系 × ステージ系
 	Matching(COLLIDER_GROUP::Enemy, COLLIDER_GROUP::Stage);
 
-
 	// ③プレイヤー系 × エネミー系
 	Matching(COLLIDER_GROUP::Player, COLLIDER_GROUP::Enemy);
 

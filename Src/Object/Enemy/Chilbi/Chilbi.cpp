@@ -8,6 +8,7 @@
 #include "../../Common/Collider/CapsuleCollider.h"
 
 #include "State/ChilbiIdleState.h"
+#include "State/ChilbiMoveState.h"
 #include "State/ChilbiHitState.h"
 #include "State/ChilbiDieState.h"
 #include "State/ChilbiAttackState.h"
@@ -46,6 +47,9 @@ void Chilbi::Load(void)
 	//初期座標登録
 	trans.pos = GetInitPos();
 
+	//加速度を調整
+	ACCEL_MAX =7.5f;
+
 	hp = 100;
 
 #pragma endregion
@@ -83,7 +87,22 @@ void Chilbi::Load(void)
 		STATE::Idle,
 		new ChilbiIdleState(
 			[&]() { AnimePlay((int)ANIME_TYPE::Idle);},
-			[&]() { ChangeState(STATE::Attack); }
+			[&]() { ChangeState(STATE::Move); },
+			[&]() { ChangeState(STATE::Attack); },
+			[&]() { return IsNear(); },
+			attackCoolTime
+		)
+	);
+
+	//移動状態
+	AddState(
+		STATE::Move,
+		new ChilbiMoveState(
+			[&]() { AnimePlay((int)ANIME_TYPE::Move); },
+			[&]() { ChangeState(STATE::Attack); },
+			std::bind(&Chilbi::MoveAccel, this, std::placeholders::_1),
+			[&]() { return GetDirectionToTarget(); },
+			[&]() { return IsNear(); }
 		)
 	);
 
@@ -122,6 +141,7 @@ void Chilbi::Load(void)
 			[&]() 
 			{ 
 				punch->JudgeEnd();
+				attackCoolTime = DEFAULT_ATTACK_COOLTIME;
 				ChangeState(STATE::Idle); 
 
 			},
@@ -170,7 +190,15 @@ void Chilbi::EnemyInit(void)
 
 void Chilbi::EnemyUpdate(void)
 {
-
+	//攻撃クールタイムの更新
+	if (attackCoolTime > 0.0f)
+	{
+		attackCoolTime -= TimeScale::Get();
+	}
+	else
+	{
+		attackCoolTime = 0.0f;
+	}
 }
 
 void Chilbi::EnemyDraw(void)

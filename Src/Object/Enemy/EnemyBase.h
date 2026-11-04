@@ -49,6 +49,9 @@ protected:
 	// 無敵時間(フレーム)
 	static constexpr float DEFAULT_INVINCIBLE_FRAME = 60.0f;
 
+	// 攻撃クールタイム（フレーム）
+	static constexpr float DEFAULT_ATTACK_COOLTIME = 120.0f;
+
 	// プレイヤーの攻撃で受けるダメージ
 	static constexpr int DEFAULT_DAMAGE = 1;
 
@@ -56,6 +59,12 @@ protected:
 	static constexpr float NEAR_RANGE = 200.0f;
 	static constexpr float MIDDLE_RANGE = 500.0f;
 	static constexpr float LONG_RANGE = 900.0f;
+
+	// 停止距離
+	static constexpr float DEFAULT_STOP_RANGE = 200.0f;
+
+	// カウント用攻撃クールタイム
+	float attackCoolTime;
 
 #pragma endregion
 
@@ -77,10 +86,6 @@ protected:
 	// 死亡時
 	virtual void OnDie(void) = 0;
 
-
-	// 攻撃対象の座標
-	float GetDistanceToTarget(void) const;
-
 	//無敵中か
 	bool IsInvincible(void) const { return invincibleCounter > 0.0f; }
 
@@ -90,6 +95,14 @@ protected:
 	// 初期座標
 	const Vector3& GetInitPos(void) const { return initPos; }
 
+	//攻撃範囲外（距離)
+	bool IsFar(float stopRange = DEFAULT_STOP_RANGE) const;
+
+	//攻撃範囲（距離）
+	bool IsNear(float stopRange = DEFAULT_STOP_RANGE) const;
+
+	// プレイヤーへの単位ベクトル
+	Vector3 GetDirectionToTarget(void) const;
 
 private:
 

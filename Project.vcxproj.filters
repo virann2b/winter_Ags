@@ -75,7 +75,10 @@
     <ClCompile Include="Src\Object\Player\State\PlayerHitState.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
-    <ClCompile Include="SkillBase.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiMoveState.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillFire\SkillFire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -176,7 +179,10 @@
     <ClInclude Include="Src\Object\Player\State\PlayerHitState.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
-    <ClInclude Include="SkillBase.h" />
+    <ClInclude Include="Src\Object\Skill\SkillBase.h" />
+    <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiMoveState.h" />
+    <ClInclude Include="Src\Object\Skill\SkillManager.h" />
+    <ClInclude Include="Src\Object\Skill\SkillFire\SkillFire.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

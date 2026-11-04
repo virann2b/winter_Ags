@@ -178,11 +178,21 @@ void Player::Load(void)
 	AddState(
 		STATE::Roll,
 		new PlayerRollState(
-			[&]() {AnimePlay(ANIME_TYPE::Roll); },
+			[&]() 
+			{
+				AnimePlay(ANIME_TYPE::Roll);
+				//‰ñ”ð’†‚Í”»’è‚È‚µ
+				//SetJudgeFlg(false);
+			},
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			trans,
-			[&]() {ChangeState(STATE::Idle); }
+			[&]()
+			{ 
+				//“–‚½‚è”»’è‚ð–ß‚·
+				//SetJudgeFlg(true);
+				ChangeState(STATE::Idle); 
+			}
 		)
 	);
 #pragma endregion

@@ -22,6 +22,10 @@ public:
 
 private:
 
+	static constexpr float PUNCH_OFFSET_POS_Y = -20.0f;
+	static constexpr float PUNCH_OFFSET_POS_Z = 100.0f;
+
+
 	// プレイヤーのモデル制御情報の参照
 	const Transform& chilbiTrans;
 

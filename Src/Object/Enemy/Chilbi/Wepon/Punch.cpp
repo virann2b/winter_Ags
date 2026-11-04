@@ -29,7 +29,7 @@ void Punch::Load(void)
 
 
 	// 生成したコライダーをアクター所有コライダーに追加
-	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 50, trans.pos));
+	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 60, trans.pos));
 
 }
 
@@ -58,8 +58,9 @@ void Punch::JudgeEnd(void)
 
 void Punch::SubUpdate(void)
 {
-	trans.pos.x = chilbiTrans.pos.x;
-	trans.pos.y = chilbiTrans.pos.y;
-	trans.pos.z = chilbiTrans.pos.z + 50;
+	//正面の方向に位置を調整
+	const Vector3 offset = chilbiTrans.rotation.Rotate(Vector3(0.0f, PUNCH_OFFSET_POS_Y, PUNCH_OFFSET_POS_Z));
+
+	trans.pos = chilbiTrans.pos + offset;
 
 }
