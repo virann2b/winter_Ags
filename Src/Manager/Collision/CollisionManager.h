@@ -58,6 +58,7 @@ private:
 	* ②エネミー系	 × ステージ系
 	* 
 	* ③プレイヤー系 × エネミー系
+	* ③'敵の体 × 敵の体（エネミー系の中でEnemyタグ同士のみ。敵同士の押し出し用）
 	* 
 	* ④プレイヤー系 × プレイヤー系にだけ当たるコライダー
 	* ⑤エネミー系	 × エネミー系にだけ当たるコライダー
@@ -148,6 +149,8 @@ private:
 	void Matching(COLLIDER_GROUP groupA, COLLIDER_GROUP groupB);
 	// 指定のグループを総当たりで判定(1グループ指定)
 	void Matching(COLLIDER_GROUP group);
+	// 指定のグループの中で、指定のタグ同士だけを総当たりで判定（動的コライダーのみ）
+	void MatchingSameTag(COLLIDER_GROUP group, COLLIDER_TAG tag);
 
 	// チャンクを振り分けて判定実行
 	void MatchingChunks(ChunkMap& aChunks, ChunkMap& bChunks);

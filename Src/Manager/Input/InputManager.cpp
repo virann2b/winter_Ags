@@ -57,10 +57,6 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerJump, KEY_INPUT_SPACE);
 	SET_C_BUTTON(KEY_TYPE::PlayerJump, XINPUT_BUTTON_A);
 
-	// ダッシュ
-	SET_KEYBOARD(KEY_TYPE::PlayerDash, KEY_INPUT_LSHIFT);
-	SET_C_BUTTON(KEY_TYPE::PlayerDash, XINPUT_BUTTON_A);
-
 	//通常攻撃
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerAttack, MOUSE_INPUT_LEFT);
 	SET_C_BUTTON(KEY_TYPE::PlayerAttack, XINPUT_BUTTON_X);
@@ -73,8 +69,22 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
 	SET_C_BUTTON(KEY_TYPE::PlayerRoll, XINPUT_BUTTON_B);
 
-	//スキル
-	SET_KEYBOARD(KEY_TYPE::PlayerSkill, KEY_INPUT_C);
+	//スキルメニュー（押している間、下のスキル1〜4が使える）
+	SET_KEYBOARD(KEY_TYPE::PlayerSkillMenu, KEY_INPUT_LSHIFT);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkillMenu, XINPUT_BUTTON_LEFT_SHOULDER);
+
+	//スキル1〜4（スキルメニューと同時押し）
+	SET_KEYBOARD(KEY_TYPE::PlayerSkill1, KEY_INPUT_Q);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkill1, XINPUT_BUTTON_X);
+
+	SET_KEYBOARD(KEY_TYPE::PlayerSkill2, KEY_INPUT_E);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkill2, XINPUT_BUTTON_A);
+
+	SET_KEYBOARD(KEY_TYPE::PlayerSkill3, KEY_INPUT_R);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkill3, XINPUT_BUTTON_B);
+
+	SET_KEYBOARD(KEY_TYPE::PlayerSkill4, KEY_INPUT_F);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkill4, XINPUT_BUTTON_Y);
 
 	//コントローラーの登録はPlayerGunStateの中に
 	//武器から銃切り替え
@@ -88,6 +98,8 @@ void InputManager::Init(void)
 
 	//ロックオンの切り替え
 	SET_KEYBOARD(KEY_TYPE::PlayerNextLockOn, KEY_INPUT_T);
+	SET_C_BUTTON(KEY_TYPE::PlayerNextLockOn, XINPUT_BUTTON_RIGHT_SHOULDER);
+
 
 
 
@@ -137,7 +149,6 @@ void InputManager::Init(void)
 
 	// 回転（左）
 	SET_KEYBOARD(KEY_TYPE::CameraRotLeft, KEY_INPUT_LEFT);
-	SET_C_BUTTON(KEY_TYPE::CameraRotLeft, XINPUT_BUTTON_LEFT_SHOULDER);
 	SET_C_OTHERS(KEY_TYPE::CameraRotLeft, CONTROLLER_OTHERS::RightstickLeft);
 
 #pragma endregion
@@ -276,6 +287,51 @@ void InputManager::KeyUpdate(void)
 		keyInfo[i].up = (keyInfo[i].prev && !keyInfo[i].now);
 		keyInfo[i].down = (!keyInfo[i].prev && keyInfo[i].now);
 	}
+
+	// スキルメニューによる入力の打ち消し
+	SkillMenuUpdate();
+}
+
+void InputManager::SkillMenuUpdate(void)
+{
+	// スキルメニューを押している間は使えなくなるキー（同じボタンにスキルが割り当てられているもの）
+	static const KEY_TYPE MENU_BLOCK_KEYS[] = {
+		KEY_TYPE::PlayerAttack,
+		KEY_TYPE::PlayerJump,
+		KEY_TYPE::PlayerRoll,
+		KEY_TYPE::PlayerAttackStrong,
+		KEY_TYPE::PlayerLockOn,
+	};
+
+	// スキルメニューを押している間だけ使えるキー
+	static const KEY_TYPE SKILL_KEYS[] = {
+		KEY_TYPE::PlayerSkill1,
+		KEY_TYPE::PlayerSkill2,
+		KEY_TYPE::PlayerSkill3,
+		KEY_TYPE::PlayerSkill4,
+	};
+
+	const bool isSkillMenu = keyInfo[(int)KEY_TYPE::PlayerSkillMenu].now;
+
+	for (KEY_TYPE type : MENU_BLOCK_KEYS) { SuppressKey(type, isSkillMenu); }
+	for (KEY_TYPE type : SKILL_KEYS) { SuppressKey(type, !isSkillMenu); }
+}
+
+void InputManager::SuppressKey(KEY_TYPE type, bool suppress)
+{
+	KEY_INFO& info = keyInfo[(int)type];
+	bool& suppressed = suppressedKey[(int)type];
+
+	// キーを離したら打ち消しを解除
+	if (!info.now) { suppressed = false; }
+	// 押している最中に打ち消し条件になったら、離すまで打ち消す
+	else if (suppress) { suppressed = true; }
+
+	if (suppressed) { info.now = false; }
+
+	// 打ち消し後の状態で押した瞬間・離した瞬間を計算し直す
+	info.up = (info.prev && !info.now);
+	info.down = (!info.prev && info.now);
 }
 
 bool InputManager::ControllerOthersInput(const CONTROLLER_OTHERS& input)

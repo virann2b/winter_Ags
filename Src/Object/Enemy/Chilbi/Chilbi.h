@@ -123,6 +123,9 @@ private:
 	//チルビーの重さ
 	static constexpr int CHILIBI_WEIGHT = 100;
 
+	//ファイアのクールタイム（フレーム）
+	static constexpr float FIRE_COOLTIME = 180.0f;
+
 	//パンチ
 	Punch* punch;
 	//状態

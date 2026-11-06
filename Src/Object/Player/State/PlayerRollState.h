@@ -11,6 +11,7 @@ public:
 		std::function<void(void)> PlayAnimeRoll,
 		std::function<bool(void)> IsAnimeEnd,
 		std::function<void(const Vector3&)> MoveAccel,
+		float& accelMax,
 		const Transform& playerTrans,
 		std::function<void(void)> ChangeStateIdle
 	);
@@ -45,12 +46,14 @@ private:
 	// プレイヤーのモデル制御情報の参照
 	const Transform& playerTrans;
 
+	float& accelMax;
+
 #pragma endregion
 
 #pragma region 定数
 
 	//回避で移動する距離
-	static constexpr float ROLL_DISTANCE = 500.0f;
+	static constexpr float ROLL_DISTANCE = 600.0f;
 	// 転がる時間(秒)
 	static constexpr float ROLL_TIME = 0.6f;    
 

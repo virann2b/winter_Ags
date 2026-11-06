@@ -87,7 +87,6 @@ void PlayerJumpState::Update(void)
 	}
 
 	case PlayerJumpState::STEP::Loop: {
-		// 滞空
 
 		// コントローラーの入力を取得
 		Vector3 vec = Input::GetIns().GetLeftStickVec(false).ToVector3XZInvertY();

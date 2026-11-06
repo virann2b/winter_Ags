@@ -421,6 +421,9 @@ void CollisionManager::Check(void)
 	// ③プレイヤー系 × エネミー系
 	Matching(COLLIDER_GROUP::Player, COLLIDER_GROUP::Enemy);
 
+	// ③'敵の体 × 敵の体（敵同士の押し出し用。パンチやスキルは含めない）
+	MatchingSameTag(COLLIDER_GROUP::Enemy, COLLIDER_TAG::Enemy);
+
 
 	// ④プレイヤー系 × プレイヤー系にだけ当たるコライダー
 	Matching(COLLIDER_GROUP::Player, COLLIDER_GROUP::PlayerOnly);
@@ -503,6 +506,31 @@ void CollisionManager::Matching(COLLIDER_GROUP group)
 	MatchingChunks(g.dynamicChunks, g.staticChunks);
 
 	// 静的同士は基本不要
+}
+
+// 指定のグループの中で、指定のタグ同士だけを総当たりで判定
+void CollisionManager::MatchingSameTag(COLLIDER_GROUP group, COLLIDER_TAG tag)
+{
+	// グループを取得
+	ColliderGroupData& g = groupColliders[(int)group];
+
+	// 動的同士のみ（敵は動的なので、静的は見ない）
+	for (auto& chunk : g.dynamicChunks) {
+
+		// そのチャンクに含まれるコライダーを取得
+		auto& colliders = chunk.second.colliders;
+
+		for (size_t i = 0; i < colliders.size(); i++) {
+			// 指定タグ以外は無視
+			if (!colliders[i] || colliders[i]->GetTag() != tag) { continue; }
+
+			for (size_t j = i + 1; j < colliders.size(); j++) {
+				if (!colliders[j] || colliders[j]->GetTag() != tag) { continue; }
+
+				CheckPairOnce(colliders[i], colliders[j]);
+			}
+		}
+	}
 }
 
 // チャンクを振り分けて判定実行
@@ -616,8 +644,8 @@ bool CollisionManager::IsHit(ColliderBase* a, ColliderBase* b, CollisionResult& 
 
 	if (aShape == COLLIDER_SHAPE::None || bShape == COLLIDER_SHAPE::None) { return false; }
 
-	// 同一グループに属する同一タグ同士は判定しない
-	if (a->GetTag() == b->GetTag()) {
+	// 同一グループに属する同一タグ同士は判定しない（敵の体同士は押し出しのため判定する）
+	if (a->GetTag() == b->GetTag() && a->GetTag() != COLLIDER_TAG::Enemy) {
 		if (TAG_TO_GROUP_LIST.contains(a->GetTag())) { return false; }
 	}
 

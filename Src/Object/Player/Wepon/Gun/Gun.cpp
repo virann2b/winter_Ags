@@ -70,46 +70,6 @@ void Gun::SubUpdate(void)
 {
 	SetIsDraw(isActive);
 
-	////銃の設定位置フレーム
-	//const int handFrame =
-	//	MV1SearchFrame(playerTrans.model, "smartrig:RightHand");
-
-	//if (handFrame < 0) { return; }
-
-	//MATRIX hand =
-	//	MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
-
-	//// 手のワールド座標
-	//Vector3 handPos(
-	//	hand.m[3][0],
-	//	hand.m[3][1],
-	//	hand.m[3][2]
-	//);
-	//// 回転行列からスケールを除去
-	//MATRIX rotationMat = hand;
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	float length = sqrtf(
-	//		rotationMat.m[i][0] * rotationMat.m[i][0] +
-	//		rotationMat.m[i][1] * rotationMat.m[i][1] +
-	//		rotationMat.m[i][2] * rotationMat.m[i][2]
-	//	);
-	//	if (length > 0.00001f)
-	//	{
-	//		for (int j = 0; j < 3; j++)
-	//		{
-	//			rotationMat.m[i][j] /= length;
-	//		}
-	//	}
-	//}
-	//// 手の回転を取得
-	//Quaternion handRotation =
-	//	Quaternion::FromMatrix(rotationMat);
-
-	//// 手の回転に銃の持ち方の補正を加える
-	//trans.rotation = handRotation * gripRotation;
-	//// 手のローカル座標系で位置を補正
-	//trans.pos = handPos + handRotation.Rotate(gripOffset);
 }
 
 void Gun::BulletUpdate(void)

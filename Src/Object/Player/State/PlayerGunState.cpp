@@ -10,20 +10,20 @@ PlayerGunState::PlayerGunState(
 	std::function<void(void)> PlayAnimeGun,
 	std::function<void(void)> ChangeStateIdle,
 	std::function<void(const Vector3&)> MoveAccel,
+	std::function<void(void)> PlayShot,
 	float ACCEL_MAX,
 	float& accelMax,
 	float& targetTime,
-	int& bulletCount,
-	std::function<void(void)> PlayShot
+	int& bulletCount
 ):
 	PlayAnimeGun(PlayAnimeGun),
 	ChangeStateIdle(ChangeStateIdle),
 	MoveAccel(MoveAccel),
+	PlayShot(PlayShot),
 	ACCEL_MAX(ACCEL_MAX),
 	accelMax(accelMax),
 	targetTime(targetTime),
 	bulletCount(bulletCount),
-	PlayShot(PlayShot),
 	state(STATE::None)
 {
 }
@@ -64,8 +64,6 @@ void PlayerGunState::Update(void)
 		ChangeStateIdle();
 		return;
 	}
-
-	
 
 	switch (state)
 	{

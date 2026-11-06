@@ -79,6 +79,7 @@
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiMoveState.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillFire\SkillFire.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerSkillState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiMoveState.h" />
     <ClInclude Include="Src\Object\Skill\SkillManager.h" />
     <ClInclude Include="Src\Object\Skill\SkillFire\SkillFire.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerSkillState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

@@ -50,9 +50,6 @@ public:
 		// ジャンプ
 		PlayerJump,
 
-		// ダッシュ
-		PlayerDash,
-
 		// ロックオン
 		PlayerLockOn,
 		//次の敵
@@ -74,7 +71,12 @@ public:
 		PlayerRoll,
 
 		//スキル
-		PlayerSkill,
+		PlayerSkillMenu,
+
+		PlayerSkill1,
+		PlayerSkill2,
+		PlayerSkill3,
+		PlayerSkill4,
 
 
 
@@ -228,6 +230,14 @@ private:
 
 	// キーに関する更新
 	void KeyUpdate(void);
+
+	// スキルメニュー（Shift / LB）による入力の打ち消し
+	void SkillMenuUpdate(void);
+	// 指定のキーを打ち消す（一度打ち消したキーは、離すまで打ち消したまま）
+	void SuppressKey(KEY_TYPE type, bool suppress);
+
+	// 打ち消し中のキー
+	bool suppressedKey[(int)KEY_TYPE::Max] = {};
 
 	// キーの情報
 	KEY_INFO keyInfo[(int)KEY_TYPE::Max];

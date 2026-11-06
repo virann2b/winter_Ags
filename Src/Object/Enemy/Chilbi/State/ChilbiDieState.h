@@ -9,7 +9,8 @@ public:
 	ChilbiDieState(
 		std::function<void(void)> playAnimeDie,
 		std::function<bool(void)> isDead,
-		std::function<bool(void)> isAnimeEnd
+		std::function<bool(void)> isAnimeEnd,
+		std::function<void(void)> dieEnd
 	);
 
 	~ChilbiDieState()override = default;
@@ -19,6 +20,8 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
+	// 更新
+	void Update(void)override;
 
 private:
 
@@ -35,7 +38,13 @@ private:
 	//アニメーション終了判定
 	const std::function<bool(void)> isAnimeEnd;
 
+	//死亡アニメーション終了時の処理
+	const std::function<void(void)> dieEnd;
+
 #pragma endregion
+
+	//死亡アニメーション終了処理を済ませたか（1回だけ呼ぶため）
+	bool isDieEnd = false;
 
 };
 

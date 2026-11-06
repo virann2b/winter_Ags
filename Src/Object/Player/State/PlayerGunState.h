@@ -25,11 +25,11 @@ public:
 		std::function<void(void)> PlayAnimeGun,
 		std::function<void(void)> ChangeStateIdle,
 		std::function<void(const Vector3&)> MoveAccel,
+		std::function<void(void)> PlayShot,
 		float ACCEL_MAX,
 		float& accelMax,
 		float& targetTime,
-		int& bulletCount,
-		const std::function<void(void)> PlayShot
+		int& bulletCount
 	);
 
 	~PlayerGunState()override = default;

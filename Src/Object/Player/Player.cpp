@@ -38,7 +38,7 @@ Player::Player()
 	gun(nullptr),
 	sword(nullptr),
 	rangeAttack(nullptr),
-	skillFire(nullptr),
+	skillSlot(),
 	isLockOn(false),
 	lockOnPos(),
 	targetTime(0.0f),
@@ -136,8 +136,10 @@ void Player::Load(void)
 	AddChildActor(rangeAttack);
 
 	//スキル（ファイア）の生成
-	skillFire = new SkillFire(trans, SkillFire::SKILL_USER::Player);
+	SkillFire* skillFire = new SkillFire(trans, SkillBase::SKILL_USER::Player);
 	AddChildActor(skillFire);
+	//スキル1に設定（スキル2～4は空き）
+	skillSlot[0] = skillFire;
 
 	sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 	sword->ChangePosition(Sword::SWORD_POSITION::Back);
@@ -163,7 +165,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Move,
 		new PlayerMoveState(
-			10.0f, 1.5f, 300,
+			15.0f, 1.5f, 300,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			ACCEL_MAX,
 			[&]() { AnimePlay(ANIME_TYPE::Run); },
@@ -175,7 +177,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Jump,
 		new PlayerJumpState(
-			24.0f, velocity.y, isGround, isMaxJump,
+			20.0f, velocity.y, isGround, isMaxJump,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
 			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
@@ -198,6 +200,7 @@ void Player::Load(void)
 			},
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
+			ACCEL_MAX,
 			trans,
 			[&]()
 			{ 
@@ -303,8 +306,6 @@ void Player::Load(void)
 				//武器の切り替え
 				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				gun->SetActive(true);
-				isGunState = true;
-
 				AnimePlay(ANIME_TYPE::Gun);
 			},
 			[&]()
@@ -312,19 +313,17 @@ void Player::Load(void)
 				//武器の切り替え
 				gun->SetActive(false);
 				sword->ChangeActive(Sword::ACTIVE::Active);
-				isGunState = false;
-
-
 				ChangeState(STATE::Idle);
 			},
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
-			10.0f, ACCEL_MAX,
-			targetTime,
-			bulletShotCount,
 			[&]()
 			{
 				gun->Shot(1);
-			}
+			},
+			10.0f,
+			ACCEL_MAX,
+			targetTime,
+			bulletShotCount
 		)
 	);
 
@@ -393,7 +392,7 @@ void Player::Load(void)
 #pragma endregion
 
 
-	hp = 100;
+	hp = 25;
 }
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
@@ -409,6 +408,15 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 		break;
 	}
 
+	//敵のスキル
+	case COLLIDER_TAG::EnemySkill:
+	{
+		TakeDamage(1);
+		ChangeState(STATE::Hit);
+
+		break;
+	}
+
 	}
 }
 
@@ -417,23 +425,18 @@ void Player::TargetDirection(const Vector3& target)
 	trans.SetRotation(Quaternion::FromRotationY(atan2f(target.x, target.z)));
 }
 
-
-
 void Player::SubUpdate(void)
 {
+
 	if (isGround)
 	{
 		isMaxJump = false;
 	}
 
-	if (state == STATE::Gun)
-	{
-		isGunState = true;
-	}
-	else
-	{
-		isGunState = false;
-	}
+#pragma region 銃関連
+
+	//銃状態フラグ
+	isGunState = (GetState() == (int)STATE::Gun);
 
 	//弾の更新
 	if (!isGunState)
@@ -444,55 +447,60 @@ void Player::SubUpdate(void)
 	gun->FollowHand();
 	gun->BulletMoveUpdate();
 
-	//スキル発動
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerSkill).down && !skillFire->IsActive())
-	{
-		//ロックオン中なら敵の方向を向いてから撃つ
-		if (isLockOn)
-		{
-			Vector3 dir = lockOnPos - trans.pos;
-			dir.y = 0.0f;   // 水平方向のみ
-			if (dir.LengthSq() > 0.000001f) { TargetDirection(dir); }
-		}
+#pragma endregion
 
-		skillFire->Activate();
+
+
+	//スキル発動（スキルメニューを押している間だけキーが反応する）
+	const KEY_TYPE SKILL_KEYS[SKILL_SLOT_MAX] = {
+		KEY_TYPE::PlayerSkill1,
+		KEY_TYPE::PlayerSkill2,
+		KEY_TYPE::PlayerSkill3,
+		KEY_TYPE::PlayerSkill4,
+	};
+	for (int i = 0; i < SKILL_SLOT_MAX; ++i)
+	{
+		if (Input::GetIns().GetInfo(SKILL_KEYS[i]).down) { UseSkill(i); }
 	}
+}
+
+void Player::UseSkill(int slot)
+{
+	//範囲外・空き枠・発動中なら何もしない
+	if (slot < 0 || slot >= SKILL_SLOT_MAX) { return; }
+	SkillBase* skill = skillSlot[slot];
+	if (skill == nullptr || skill->IsActive()) { return; }
+
+	//ロックオン中なら敵の方向を向いてから撃つ
+	if (isLockOn)
+	{
+		Vector3 dir = lockOnPos - trans.pos;
+		dir.y = 0.0f;   // 水平方向のみ
+		if (dir.LengthSq() > 0.000001f) { TargetDirection(dir); }
+	}
+
+	skill->Activate();
 }
 
 void Player::SubDraw(void)
 {
-	gun->FollowHand();
+	//銃描画
 	gun->BulletDraw();
-	gun->DrawBulletUI();
 
+	if(isGunState)
+	{
+		gun->DrawBulletUI();
+	}
 
+	//DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 
-	DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
-
-	DrawFormatString(0, 220, 0xffffff, "HP : %d", hp);
+	//DrawFormatString(0, 220, 0xffffff, "HP : %d", hp);
 	
 
 
 	//DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
 	/*DrawFormatString(0, 220, 0xffffff, "isMaxJump : %d", isMaxJump);
 	DrawFormatString(0, 240, 0xffffff, "isGround : %d", isGround);*/
-
-#pragma region 操作デバッグ表示
-
-	//DrawString(0, 120, "操作：WASD・左スティック", 0xffffff);
-	//DrawString(0, 140, "ジャンプ：スペース・Aボタン【最大２回】", 0xffffff);
-	//DrawString(0, 160, "回避：Rキー・Bボタン", 0xffffff);
-	//DrawString(0, 180, "ロックオン：Eキー・右スティック押し込み", 0xffffff);
-	//DrawString(0, 200, "通常攻撃：左クリック・Xボタン", 0xffffff);
-	//DrawString(0, 240, "【 銃モード 】構え：右クリック・LT　長押し", 0xffffff);
-	//DrawString(0, 260, "【 銃モード 】発射：左クリック・RT (弾に当たり判定はないです）", 0xffffff);
-	//DrawFormatString(0, 280, 0xffffff, "【 銃モード 】残弾数(右クリック長押しで増加最大6発) : %d", bulletShotCount);
-	//DrawFormatString(0, 300, 0xffffff, "【 銃モード 】弾所持数 : %d", bullet);
-	//DrawString(0, 340, "タメ攻撃：Fキー ・ Yボタン　長押し【タメ】離すと【攻撃】", 0xffffff);
-	//DrawString(0, 360, "空中攻撃：ジャンプ２回目中に【 通常攻撃 】　", 0xffffff);
-
-#pragma endregion
-
 
 }
 

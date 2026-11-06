@@ -13,6 +13,8 @@
 #include "State/ChilbiDieState.h"
 #include "State/ChilbiAttackState.h"
 
+#include "../../Skill/SkillFire/SkillFire.h"
+
 
 
 Chilbi::Chilbi(Vector3 initPos)
@@ -48,7 +50,7 @@ void Chilbi::Load(void)
 	trans.pos = GetInitPos();
 
 	//加速度を調整
-	ACCEL_MAX =7.5f;
+	ACCEL_MAX = 5.5f;
 
 	hp = 10;
 
@@ -157,12 +159,13 @@ void Chilbi::Load(void)
 			{ 
 				//攻撃状態から遷移した場合の判定削除
 				punch->JudgeEnd();
-
+				//アニメーション再生
 				AnimePlay((int)ANIME_TYPE::Die); 
 			},
 			std::bind(&Chilbi::IsDead, this),
-			std::bind(&Chilbi::IsAnimeEnd, this)
-
+			std::bind(&Chilbi::IsAnimeEnd, this),
+			//死亡アニメーション終了後に描画・判定を消す
+			[&]() { DieEnd(); }
 		)
 	);
 
@@ -175,6 +178,13 @@ void Chilbi::Load(void)
 	//パンチの生成
 	punch = new Punch(trans);
 	AddChildActor(punch);
+
+	//スキル（ファイア）：中距離～遠距離で使う
+	AddSkill(
+		new SkillFire(trans, SkillBase::SKILL_USER::Enemy),
+		DISTANCE::Middle, DISTANCE::Long,
+		FIRE_COOLTIME
+	);
 
 #pragma endregion
 
@@ -199,6 +209,9 @@ void Chilbi::EnemyUpdate(void)
 	{
 		attackCoolTime = 0.0f;
 	}
+
+	//プレイヤーに近づいている途中（攻撃範囲外）ならスキルを使う
+	if (GetState() == (int)STATE::Move) { TryUseSkill(); }
 }
 
 void Chilbi::EnemyDraw(void)

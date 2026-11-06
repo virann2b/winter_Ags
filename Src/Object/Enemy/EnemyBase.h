@@ -1,6 +1,10 @@
 #pragma once
 #include "../Common/CharacterBase/CharacterBase.h"
 
+#include <vector>
+
+class SkillBase;
+
 class EnemyBase : public CharacterBase
 {
 public:
@@ -39,6 +43,9 @@ public:
 
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
+
+	// 死亡アニメーションまで終わったか（画面から消えたか）
+	bool IsDieEnd(void) const { return isDieEnd; }
 ;
 
 protected:
@@ -95,6 +102,9 @@ protected:
 	// 初期座標
 	const Vector3& GetInitPos(void) const { return initPos; }
 
+	// 死亡アニメーション終了時に呼ぶ（描画・当たり判定を消す）
+	void DieEnd(void);
+
 	//攻撃範囲外（距離)
 	bool IsFar(float stopRange = DEFAULT_STOP_RANGE) const;
 
@@ -103,6 +113,28 @@ protected:
 
 	// プレイヤーへの単位ベクトル
 	Vector3 GetDirectionToTarget(void) const;
+
+#pragma region スキル関連
+
+	// 攻撃対象との距離の区分を取得
+	DISTANCE GetTargetDistance(void) const;
+
+	/// <summary>
+	/// スキルを追加する（子アクターとして生成される）
+	/// </summary>
+	/// <param name="skill">スキル（SKILL_USER::Enemyで生成したもの）</param>
+	/// <param name="minDistance">使える距離の下限</param>
+	/// <param name="maxDistance">使える距離の上限</param>
+	/// <param name="coolTime">使った後のクールタイム（フレーム）</param>
+	void AddSkill(SkillBase* skill, DISTANCE minDistance, DISTANCE maxDistance, float coolTime);
+
+	// 今の距離で使えるスキルからランダムに1つ選んで使う（使えたらtrue）
+	bool TryUseSkill(void);
+
+	// どれかのスキルが発動中か
+	bool IsSkillActive(void) const;
+
+#pragma endregion
 
 private:
 
@@ -120,6 +152,23 @@ private:
 	
 	// 攻撃対象の座標
 	const Vector3* targetPos = nullptr;
+
+	// 死亡アニメーションまで終わったか
+	bool isDieEnd = false;
+
+	// スキル枠
+	struct SkillSlot
+	{
+		SkillBase* skill;		// スキル本体
+		DISTANCE minDistance;	// 使える距離の下限
+		DISTANCE maxDistance;	// 使える距離の上限
+		float coolTime;			// クールタイム（フレーム）
+		float coolCount;		// 残りクールタイム（フレーム）
+	};
+	std::vector<SkillSlot> skillSlots;
+
+	// スキルのクールタイム更新
+	void SkillCoolTimeUpdate(void);
 
 };
 

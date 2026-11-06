@@ -56,7 +56,7 @@ private:
 	// 移動関数のポインタ
 	const std::function<void(const Vector3&)> moveAccel;
 
-	// 横軸加速度の最大値の参照
+	// 加速度の最大値の参照
 	float& accelMax;
 
 	// 歩きアニメーションの再生関数のポインタ

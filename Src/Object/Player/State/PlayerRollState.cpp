@@ -11,6 +11,7 @@ PlayerRollState::PlayerRollState(
 	std::function<void(void)> PlayAnimeRoll,
 	std::function<bool(void)> IsAnimeEnd,
 	std::function<void(const Vector3&)> MoveAccel,
+	float& accelMax,
 	const Transform& playerTrans,
 	std::function<void(void)> ChangeStateIdle
 
@@ -18,6 +19,7 @@ PlayerRollState::PlayerRollState(
 	PlayAnimeRoll(PlayAnimeRoll),
 	IsAnimeEnd(IsAnimeEnd),
 	MoveAccel(MoveAccel),
+	accelMax(accelMax),
 	playerTrans(playerTrans),
 	ChangeStateIdle(ChangeStateIdle)
 {
@@ -33,6 +35,8 @@ void PlayerRollState::Enter(void)
 {
 	//“ü—Í•ûŒü‚ðŽæ“¾
 	Vector3 inputVec = InputVec();
+
+	accelMax = 15.0f;
 
 	if (inputVec != 0.0f) 
 	{

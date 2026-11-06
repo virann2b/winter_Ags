@@ -5,7 +5,7 @@
 class Sword;
 class Gun;
 class RangeAttack;
-class SkillFire;
+class SkillBase;
 
 class Player : public CharacterBase
 {
@@ -104,7 +104,7 @@ private:
 
 		0.8f,	// Run
 
-		1.0f,   // Roll
+		1.5f,   // Roll
 
 		0.5f,	// Hit
 
@@ -188,6 +188,9 @@ private:
 	//プレイヤーサイズ
 	static constexpr float PLAYER_SCALE = 1.3f;
 
+	//スキル枠の数
+	static constexpr int SKILL_SLOT_MAX = 4;
+
 #pragma endregion
 
 #pragma region 変数
@@ -195,8 +198,8 @@ private:
 	Sword* sword;
 	Gun* gun;
 	RangeAttack* rangeAttack;
-	//スキル（ファイア）
-	SkillFire* skillFire;
+	//スキル枠（Shift+Q/E/R/F ・ LB+X/A/B/Y）
+	SkillBase* skillSlot[SKILL_SLOT_MAX];
 
 	//ロックオン中かどうか
 	bool isLockOn;
@@ -232,6 +235,9 @@ private:
 	}
 
 	void SubUpdate(void)override;
+
+	//指定した枠のスキルを使う（ロックオン中は敵の方向を向く）
+	void UseSkill(int slot);
 
 	void SubDraw(void)override;
 

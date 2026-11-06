@@ -103,9 +103,10 @@ private:
 	bool isActive;
 	//弾
 	int& bullet;
+
 	//弾クールタイム
 	float recoverTimer;
-
+	//1フレーム前のプレイヤー座標
 	Vector3 prevPlayerPos;
 
 	Vector3 GetRandomOffset(void) const;

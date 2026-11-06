@@ -24,6 +24,8 @@ public:
 
 	//全ての敵の死亡判定
 	bool IsAllDead(void);
+	//全ての敵の死亡アニメーション判定
+	bool IsAllDieAnimEnd(void) const;
 
 private:
 

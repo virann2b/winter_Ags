@@ -35,6 +35,10 @@ private:
 	// ゲームオーバーまでの制限時間(秒)
 	static constexpr float TIME_LIMIT_SEC = 120.0f;
 
+	// 最後の敵を倒したときのスロー演出（死亡アニメーションが終わるまで続く）
+	static constexpr float CLEAR_SLOW_SCALE = 0.2f;					// スロー中の時間倍率
+	static constexpr unsigned short CLEAR_SLOW_CHANGE_TIME = 5;		// スローに入るのにかける時間（フレーム）
+
 #pragma endregion
 
 	GameCamera* gameCamera;
@@ -47,6 +51,9 @@ private:
 
 	// 遷移済みフラグ(毎フレーム遷移を呼ばないため)
 	bool isChanging;
+
+	// クリア時のスロー演出を開始したか（1回だけ行うため）
+	bool isClearSlow;
 
 	void CreateCamera(void)override;
 

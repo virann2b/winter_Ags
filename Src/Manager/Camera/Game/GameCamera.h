@@ -88,7 +88,7 @@ private:
 
 	// Gun用パラメータ
 	static constexpr float GUN_BACK_DIST = 140.0f;                    // 自機の後ろ
-	static constexpr float GUN_SHOULDER = 45.0f;                      // 右肩へのずらし
+	static constexpr float GUN_SHOULDER = 100.0f;                      // 右肩へのずらし
 	static constexpr float GUN_HEIGHT = 110.0f;                       // 高さ
 	static constexpr float GUN_FOV = 55.0f * (DX_PI_F / 180.0f);      // 照準時の視野角
 	static constexpr float FOV_LERP_RATE = 0.15f;                     // 視野角の補間率
@@ -126,6 +126,8 @@ private:
 
 	// 通常時の視野角（Gunから切り替わる時に戻す先）
 	float baseFov;
+
+	Vector3 gunOffset;
 
 	Vector3 focusPosValue;       
 	FocusProvider focusProvider; 

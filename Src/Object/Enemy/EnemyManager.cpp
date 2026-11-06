@@ -10,7 +10,7 @@ EnemyManager::EnemyManager()
 
 void EnemyManager::Load(void)
 {
-	CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(300, 50, 200));
+	CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(1300, 50, 200));
 
 	CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(300, 50, 1000));
 }
@@ -91,6 +91,17 @@ bool EnemyManager::IsAllDead(void)
 	}
 
 	//¶‘¶‚µ‚Ä‚¢‚é“G‚ª‚¢‚È‚¢ê‡
+	return true;
+}
+
+bool EnemyManager::IsAllDieAnimEnd(void) const
+{
+	for (const EnemyBase* enemy : enemies)
+	{
+		//‚Ü‚¾Á‚¦‚Ä‚¢‚È‚¢“G‚ª‚¢‚éê‡
+		if (!enemy->IsDieEnd()) { return false; }
+	}
+
 	return true;
 }
 

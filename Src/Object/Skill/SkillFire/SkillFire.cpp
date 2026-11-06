@@ -15,6 +15,11 @@ SkillFire::SkillFire
 
 void SkillFire::Load(void)
 {
+	// モデルをロード
+	trans.LoadModel("Skill/Fire/Fire");
+
+	trans.scale = 0.5f;
+
 	//オブジェクト初期設定
 	SetUpSkillObject();
 

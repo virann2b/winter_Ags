@@ -38,10 +38,8 @@ void PlayerMoveState::OwnStateConditionUpdate(void)
 
 void PlayerMoveState::Enter(void)
 {
-	// 非ダッシュ
-	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerDash).now) { playAnimeRun(); }
-	// ダッシュ
-	else { playAnimeWalk(); }
+	// ダッシュは廃止したので常に通常移動
+	playAnimeWalk();
 }
 
 void PlayerMoveState::Update(void)
@@ -50,7 +48,8 @@ void PlayerMoveState::Update(void)
 	Vector3 inputVec = InputVec();
 
 	// ダッシュフラグを立てる(移動中じゃなければ、ダッシュフラグは変えない)
-	isDash = (isTired) ? false : Input::GetIns().GetInfo(KEY_TYPE::PlayerDash).now && inputVec != 0.0f;
+	// ダッシュは廃止（ダッシュ関連の処理は今は通らない）
+	isDash = false;
 
 	// 移動量の最大値を更新する
 	accelMax = (isDash) ? ACCEL_MAX * DASH_SPEED_RATE : ACCEL_MAX * inputVec.Length();

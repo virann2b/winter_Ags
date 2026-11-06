@@ -35,6 +35,7 @@ GameScene::GameScene()
 	: SceneBase(),
 	elapsedSec(0.0f),
 	isChanging(false),
+	isClearSlow(false),
 	gameCamera(nullptr),
 	lockedEnemy(nullptr)
 {
@@ -45,11 +46,12 @@ void GameScene::SubPostLoad(void)
 	Snd::GetIns().ChangeScene("Game");
 
 	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
+	//敵
+	AddActor(new EnemyManager);
+
 	//プレイヤー
 	AddActor(new Player);
 
-	//敵
-	AddActor(new EnemyManager);
 
 }
 
@@ -59,7 +61,11 @@ void GameScene::SubPostInit(void)
 	elapsedSec = 0.0f;
 
 	isChanging = false;
+	isClearSlow = false;
 	lockedEnemy = nullptr;
+
+	// 前のシーンのスローが残っていても通常速度から始める
+	TimeScale::GetIns().ChangeDefaultTimeScale();
 
 	Player* player = ActorSerch<Player>(actors);
 	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
@@ -81,7 +87,20 @@ void GameScene::SubPostUpdate(void)
 
 	if (enemyManager->IsAllDead())
 	{
-		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
+		// 最後の敵を倒した瞬間にスローにする（1回だけ）
+		if (!isClearSlow)
+		{
+			isClearSlow = true;
+			TimeScale::GetIns().ChangeTimeScale(CLEAR_SLOW_SCALE, CLEAR_SLOW_CHANGE_TIME);
+		}
+
+		// 死亡アニメーションが終わって敵が消えたら、元の速さに戻してクリアへ（1回だけ）
+		if (enemyManager->IsAllDieAnimEnd() && !isChanging)
+		{
+			isChanging = true;
+			TimeScale::GetIns().ChangeDefaultTimeScale();
+			SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
+		}
 	}
 
 	// 制限時間の更新
@@ -141,6 +160,21 @@ void GameScene::SubUiDraw(void)
 	int remain = (int)(TIME_LIMIT_SEC - elapsedSec);
 	if (remain < 0) { remain = 0; }
 	DrawFormatString(0, 50, 0xffffff, "残り %d:%02d", remain / 60, remain % 60);
+
+#pragma region 操作デバッグ表示
+
+	DrawString(0, 120, "操作：WASD・左スティック", 0xffffff);
+	DrawString(0, 140, "ジャンプ：スペース・Aボタン【最大２回】", 0xffffff);
+	DrawString(0, 160, "回避：Rキー・Bボタン", 0xffffff);
+	DrawString(0, 180, "ロックオン：Eキー・右スティック押し込み", 0xffffff);
+	DrawString(0, 200, "通常攻撃：左クリック・Xボタン", 0xffffff);
+	DrawString(0, 220, "スキル：Shift + Qキー・LB + Y", 0xffffff);
+	DrawString(0, 240, "【 銃モード 】構え：右クリック・LT　長押し(ロックオンしている時のみ)", 0xffffff);
+	DrawString(0, 260, "【 銃モード 】発射：左クリック・RT (弾に当たり判定はないです）", 0xffffff);
+	DrawString(0, 340, "強攻撃：Fキー ・ Yボタン　長押し【タメ】離すと【攻撃】", 0xffffff);
+	DrawString(0, 360, "空中攻撃：ジャンプ２回目中に【 強攻撃 】　", 0xffffff);
+
+#pragma endregion
 
 }
 
