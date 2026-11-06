@@ -73,6 +73,9 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
 	SET_C_BUTTON(KEY_TYPE::PlayerRoll, XINPUT_BUTTON_B);
 
+	//スキル
+	SET_KEYBOARD(KEY_TYPE::PlayerSkill, KEY_INPUT_C);
+
 	//コントローラーの登録はPlayerGunStateの中に
 	//武器から銃切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);

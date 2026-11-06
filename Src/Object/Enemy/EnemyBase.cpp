@@ -21,7 +21,8 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 
 	//プレイヤーの攻撃以外は無視
 	if (otherTag != COLLIDER_TAG::PlayerSword &&
-		otherTag != COLLIDER_TAG::PlayerLargeAttack)
+		otherTag != COLLIDER_TAG::PlayerLargeAttack &&
+		otherTag != COLLIDER_TAG::PlayerSkill)
 	{
 		return;
 	}

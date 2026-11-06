@@ -14,6 +14,10 @@
 #include "Wepon/Gun/Gun.h"
 #include "Wepon/RangeAttack/RangeAttack.h"
 
+#include "../Skill/SkillFire/SkillFire.h"
+
+#include "../../Manager/Input/InputManager.h"
+
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
 #include "State/PlayerJumpState.h"
@@ -34,6 +38,9 @@ Player::Player()
 	gun(nullptr),
 	sword(nullptr),
 	rangeAttack(nullptr),
+	skillFire(nullptr),
+	isLockOn(false),
+	lockOnPos(),
 	targetTime(0.0f),
 	bulletShotCount(0),
 	bullet(0),
@@ -128,6 +135,10 @@ void Player::Load(void)
 	rangeAttack = new RangeAttack(trans);
 	AddChildActor(rangeAttack);
 
+	//スキル（ファイア）の生成
+	skillFire = new SkillFire(trans, SkillFire::SKILL_USER::Player);
+	AddChildActor(skillFire);
+
 	sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 	sword->ChangePosition(Sword::SWORD_POSITION::Back);
 
@@ -182,7 +193,8 @@ void Player::Load(void)
 			{
 				AnimePlay(ANIME_TYPE::Roll);
 				//回避中は判定なし
-				//SetJudgeFlg(false);
+				SetGravityFlg(false);
+				SetJudgeFlg(false);
 			},
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
@@ -190,7 +202,8 @@ void Player::Load(void)
 			[&]()
 			{ 
 				//当たり判定を戻す
-				//SetJudgeFlg(true);
+				SetGravityFlg(true);
+				SetJudgeFlg(true);
 				ChangeState(STATE::Idle); 
 			}
 		)
@@ -430,12 +443,29 @@ void Player::SubUpdate(void)
 
 	gun->FollowHand();
 	gun->BulletMoveUpdate();
+
+	//スキル発動
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerSkill).down && !skillFire->IsActive())
+	{
+		//ロックオン中なら敵の方向を向いてから撃つ
+		if (isLockOn)
+		{
+			Vector3 dir = lockOnPos - trans.pos;
+			dir.y = 0.0f;   // 水平方向のみ
+			if (dir.LengthSq() > 0.000001f) { TargetDirection(dir); }
+		}
+
+		skillFire->Activate();
+	}
 }
 
 void Player::SubDraw(void)
 {
 	gun->FollowHand();
 	gun->BulletDraw();
+	gun->DrawBulletUI();
+
+
 
 	DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 

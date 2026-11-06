@@ -24,9 +24,7 @@ void Punch::Load(void)
 	//当たり判定OFF
 	SetJudgeFlg(false);
 
-
 #pragma endregion
-
 
 	// 生成したコライダーをアクター所有コライダーに追加
 	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 60, trans.pos));

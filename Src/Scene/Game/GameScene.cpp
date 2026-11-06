@@ -77,6 +77,13 @@ void GameScene::SubPostUpdate(void)
 		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::Title);
 	}
 
+	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
+
+	if (enemyManager->IsAllDead())
+	{
+		SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
+	}
+
 	// 制限時間の更新
 	if (!isChanging)
 	{
@@ -109,12 +116,21 @@ void GameScene::SubPostUpdate(void)
 		Input::GetIns().GetInfo(KEY_TYPE::PlayerNextLockOn).down)
 	{
 		Player* player = ActorSerch<Player>(actors);
-		EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
 
 		if (player && enemyManager)
 		{
 			lockedEnemy = enemyManager->GetNextNearestEnemy(player->GetTrans().pos, lockedEnemy);
 		}
+	}
+
+	// ロックオン中の敵をプレイヤーに伝える（スキル発動時の向き用）
+	if (Player* player = ActorSerch<Player>(actors))
+	{
+		const bool isLock =
+			gameCamera && gameCamera->GetMode() != GameCamera::Mode::Remote &&
+			lockedEnemy && !lockedEnemy->IsDead();
+
+		player->SetLockOnTarget(isLock, isLock ? lockedEnemy->GetTrans().pos : Vector3());
 	}
 }
 

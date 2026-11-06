@@ -76,11 +76,13 @@ private:
 		{ COLLIDER_TAG::Player,	COLLIDER_GROUP::Player },
 		{ COLLIDER_TAG::PlayerSword,	COLLIDER_GROUP::Player },
 		{ COLLIDER_TAG::PlayerLargeAttack,	COLLIDER_GROUP::Player },
+		{ COLLIDER_TAG::PlayerSkill,	COLLIDER_GROUP::Player },
 
 
 		// エネミー系
 		{ COLLIDER_TAG::Enemy,	COLLIDER_GROUP::Enemy },
 		{ COLLIDER_TAG::Enemy_ChilbiPunch,	COLLIDER_GROUP::Enemy },
+		{ COLLIDER_TAG::EnemySkill,	COLLIDER_GROUP::Enemy },
 
 
 		// ステージ系

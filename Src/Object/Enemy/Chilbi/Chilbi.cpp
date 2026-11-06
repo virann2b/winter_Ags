@@ -50,7 +50,7 @@ void Chilbi::Load(void)
 	//‰Á‘¬“x‚ğ’²®
 	ACCEL_MAX =7.5f;
 
-	hp = 100;
+	hp = 10;
 
 #pragma endregion
 

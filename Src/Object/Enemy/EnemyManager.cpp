@@ -77,7 +77,22 @@ void EnemyManager::SetTargetPos(const Vector3* pos)
 		if (enemy) { enemy->SetTargetPos(targetPos); }
 	}
 }
-;
+
+
+bool EnemyManager::IsAllDead(void)
+{
+	for (const EnemyBase* enemy : enemies)
+	{
+		//“G‚ª¶‘¶‚µ‚Ä‚¢‚éê‡
+		if (!enemy->IsDead())
+		{
+			return false;
+		}
+	}
+
+	//¶‘¶‚µ‚Ä‚¢‚é“G‚ª‚¢‚È‚¢ê‡
+	return true;
+}
 
 EnemyBase* EnemyManager::CreateEnemy(EnemyBase::ENEMY_TYPE type, const Vector3& pos)
 {

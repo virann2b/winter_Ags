@@ -73,6 +73,9 @@ public:
 		//回避
 		PlayerRoll,
 
+		//スキル
+		PlayerSkill,
+
 
 
 #pragma endregion

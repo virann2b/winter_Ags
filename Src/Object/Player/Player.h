@@ -5,6 +5,7 @@
 class Sword;
 class Gun;
 class RangeAttack;
+class SkillFire;
 
 class Player : public CharacterBase
 {
@@ -31,6 +32,9 @@ public:
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;	
 	// ロックオンしている敵の方向に向く
 	void TargetDirection(const Vector3& targetPos);
+
+	//ロックオン対象の設定（GameSceneから毎フレーム設定）
+	void SetLockOnTarget(bool isLock, const Vector3& pos) { isLockOn = isLock; lockOnPos = pos; }
 
 private:
 
@@ -191,6 +195,13 @@ private:
 	Sword* sword;
 	Gun* gun;
 	RangeAttack* rangeAttack;
+	//スキル（ファイア）
+	SkillFire* skillFire;
+
+	//ロックオン中かどうか
+	bool isLockOn;
+	//ロックオン中の敵の位置
+	Vector3 lockOnPos;
 
 	STATE state;
 

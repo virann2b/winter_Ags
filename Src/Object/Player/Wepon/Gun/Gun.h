@@ -46,8 +46,10 @@ public:
 	void BulletDraw(void);        
 
 	Vector3 GetShotDirection(void) const;
-
+	//e‚ÌˆÊ’u’²®
 	void FollowHand(void);
+	//’e‚Ìc’e”•`‰æ
+	void DrawBulletUI(void) const;
 
 private:
 
