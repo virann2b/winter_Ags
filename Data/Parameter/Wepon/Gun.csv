@@ -1,0 +1,6 @@
+MaxBulletPossession,48
+MaxShot,6
+RecoverTime,180
+MaxAimingTime,10
+AimTimeDecRease,1
+AimSpread,60

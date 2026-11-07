@@ -40,6 +40,17 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	else { OnHit(); }
 }
 
+void EnemyBase::TakeGunDamege(int damage)
+{
+	// すでに倒れている敵には当てない
+	if (IsDead()) { return; }
+
+	TakeDamage(damage);
+
+	// 倒したときだけ死亡処理（生きていても OnHit は呼ばない＝のけぞらない）
+	if (IsDead()) { OnDie(); }
+}
+
 void EnemyBase::SetupEnemyObject(int pushWeight)
 {
 	// 動的オブジェクトとしての処理を有効

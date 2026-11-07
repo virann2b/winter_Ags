@@ -16,6 +16,8 @@
 
 #include "../Skill/SkillFire/SkillFire.h"
 
+#include "../Enemy/EnemyBase.h"
+
 #include "../../Manager/Input/InputManager.h"
 
 #include "State/PlayerIdleState.h"
@@ -39,8 +41,8 @@ Player::Player()
 	sword(nullptr),
 	rangeAttack(nullptr),
 	skillSlot(),
-	isLockOn(false),
-	lockOnPos(),
+	lockOnEnemyId(EnemyBase::INVALID_ID),
+	findEnemy(),
 	targetTime(0.0f),
 	bulletShotCount(0),
 	bullet(0),
@@ -91,7 +93,6 @@ void Player::Load(void)
 
 #pragma region アニメーション読み込み
 
-
 	// アニメーションコントローラーの生成
 	CreateAnimationController();
 
@@ -100,10 +101,11 @@ void Player::Load(void)
 	{
 		AddAnimation(i, ANIME_SPEED_TABLE[i], ANIME_LOOP_TABLE[i], ANIME_PATH_TABLE[i]);
 	}
-	
 
+	//フレーム取得
 	anime->SetPositionCorrectionFrame("smartrig:Hips");
 	anime->SetPositionCorrection(true);
+
 #pragma endregion
 
 
@@ -128,7 +130,8 @@ void Player::Load(void)
 	AddChildActor(sword);
 
 	//銃の生成
-	gun = new Gun(trans,gunIsActive,bullet);
+	gun = new Gun(trans,gunIsActive);
+	gun->SetEnemyFinder([&](int id) { return findEnemy ? findEnemy(id) : nullptr; });
 	AddChildActor(gun);
 
 	//範囲攻撃の生成
@@ -318,12 +321,14 @@ void Player::Load(void)
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]()
 			{
-				gun->Shot(1);
+				gun->Shot();
 			},
 			10.0f,
 			ACCEL_MAX,
 			targetTime,
-			bulletShotCount
+			bulletShotCount,
+			//ロックオンしているか（銃に入れる条件・構えを続ける条件）
+			[&]() { return FindLockOnEnemy() != nullptr; }
 		)
 	);
 
@@ -435,23 +440,29 @@ void Player::SubUpdate(void)
 
 #pragma region 銃関連
 
-	//銃状態フラグ
-	isGunState = (GetState() == (int)STATE::Gun);
-
-	//弾の更新
-	if (!isGunState)
+	
+	if(GetState() == (int)STATE::Gun)
 	{
-		gun->BulletUpdate();
+		//照準の更新処理
+		gun->UpdateAim(FindLockOnEnemy() ? lockOnEnemyId : EnemyBase::INVALID_ID);
+	}
+	else
+	{
+		//構えていない時に照準リセット・弾の残弾数の回復
+		gun->ResetAim();
+		gun->UpdateRecover();
+
 	}
 
+	gun->UpdateHit();
 	gun->FollowHand();
-	gun->BulletMoveUpdate();
+
 
 #pragma endregion
 
 
 
-	//スキル発動（スキルメニューを押している間だけキーが反応する）
+	//スキル発動（スキルメニューを押している間）
 	const KEY_TYPE SKILL_KEYS[SKILL_SLOT_MAX] = {
 		KEY_TYPE::PlayerSkill1,
 		KEY_TYPE::PlayerSkill2,
@@ -472,29 +483,46 @@ void Player::UseSkill(int slot)
 	if (skill == nullptr || skill->IsActive()) { return; }
 
 	//ロックオン中なら敵の方向を向いてから撃つ
-	if (isLockOn)
+	if (const EnemyBase* enemy = FindLockOnEnemy())
 	{
-		Vector3 dir = lockOnPos - trans.pos;
-		dir.y = 0.0f;   // 水平方向のみ
+		Vector3 dir = enemy->GetTrans().pos - trans.pos;
+		dir.y = 0.0f;  
 		if (dir.LengthSq() > 0.000001f) { TargetDirection(dir); }
 	}
 
 	skill->Activate();
 }
 
+const EnemyBase* Player::FindLockOnEnemy(void) const
+{
+	if (!findEnemy) { return nullptr; }
+
+	const EnemyBase* enemy = findEnemy(lockOnEnemyId);
+
+	//既に死んでいる敵はロックオンしない
+	if (enemy == nullptr || enemy->IsDead()) { return nullptr; }
+
+	return enemy;
+}
+
+bool Player::IsAiming(void) const
+{
+	return GetState() == (int)STATE::Gun;
+}
+
 void Player::SubDraw(void)
 {
-	//銃描画
-	gun->BulletDraw();
 
-	if(isGunState)
+	if(GetState() == (int)STATE::Gun)
 	{
+	
 		gun->DrawBulletUI();
+		gun->DrawAimUI();
 	}
 
 	//DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 
-	//DrawFormatString(0, 220, 0xffffff, "HP : %d", hp);
+	DrawFormatString(0, 220, 0xffffff, "Bullet : %d", gun->GetBullet());
 	
 
 

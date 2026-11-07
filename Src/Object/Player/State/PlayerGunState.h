@@ -29,7 +29,8 @@ public:
 		float ACCEL_MAX,
 		float& accelMax,
 		float& targetTime,
-		int& bulletCount
+		int& bulletCount,
+		std::function<bool(void)> IsLockOn
 	);
 
 	~PlayerGunState()override = default;
@@ -62,6 +63,9 @@ private:
 
 	// 移動関数のポインタ
 	const std::function<void(const Vector3&)> MoveAccel;
+
+	// ロックオンしているか（銃に入れる条件・構えを続ける条件）
+	const std::function<bool(void)> IsLockOn;
 
 	// 横軸加速度の最大値の参照
 	float& accelMax;

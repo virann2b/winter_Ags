@@ -38,7 +38,7 @@ GameCamera::GameCamera(
 	toggleKey(toggleKey),
 	gunKey(gunKey),
 
-	mode(initialModeRemote ? Mode::Remote : Mode::Auto),
+	mode(initialModeRemote ? Mode::Remote : Mode::LockOn),
 	baseFov(fov)
 {
 	if (mode == Mode::Remote && targetPos != nullptr) {
@@ -46,8 +46,8 @@ GameCamera::GameCamera(
 		if (ROT_POWER != 0.0f) { Input::GetIns().SetMouseFixed(true); }
 	}
 	else {
-		// Auto モード初期更新して位置を決める
-		UpdateAuto();
+		// 追従モード初期更新して位置を決める
+		UpdateLockOn();
 	}
 }
 
@@ -55,20 +55,20 @@ bool GameCamera::SetMode(Mode m)
 {
 	if (mode == m) { return true; }
 
-	// Auto / Gun は対象がいないと成立しない
-	if ((m == Mode::Auto || m == Mode::Gun) && focusPos == nullptr) { return false; }
+	// 追従モード・カメラモード は対象がいないと成立しない
+	if ((m == Mode::LockOn || m == Mode::Gun) && focusPos == nullptr) { return false; }
 
-	// Gun は Remote からのみ入れる
-	if (m == Mode::Gun && mode != Mode::Auto) { return false; }
+	// カメラモード は 追従モード からのみ入れる
+	if (m == Mode::Gun && mode != Mode::LockOn) { return false; }
 
-	// Remote から出るときはマウス固定を戻す
+	// フリーモード から出るときはマウス固定を戻す
 	if (mode == Mode::Remote && ROT_POWER != 0.0f) {
 		Input::GetIns().SetMouseFixed(false);
 	}
 
 	mode = m;
 
-	// Remote に入るときは位置を合わせてマウス固定
+	// フリーモード に入るときは位置を合わせてマウス固定
 	if (mode == Mode::Remote) {
 		SnapRemote();
 		if (ROT_POWER != 0.0f) { Input::GetIns().SetMouseFixed(true); }
@@ -77,17 +77,25 @@ bool GameCamera::SetMode(Mode m)
 	return true;
 }
 
-void GameCamera::ToggleTarget(void)
+void GameCamera::ChangeTargetMode(void)
 {
-	// Remote -> Auto、それ以外(Auto/Gun) -> Remote
-	SetMode(mode == Mode::Remote ? Mode::Auto : Mode::Remote);
+	//フリーモード 
+	SetMode(mode == Mode::Remote ? Mode::LockOn : Mode::Remote);
 }
 
-void GameCamera::ToggleGun(void)
+void GameCamera::ChangeGunMode(void)
 {
-	if (mode == Mode::Auto) { SetMode(Mode::Gun); }
-	else if (mode == Mode::Gun) { SetMode(Mode::Auto); }
-	// Remote 中は何もしない（ターゲットON時のみ銃モード可）
+	// ターゲットON時のみ銃モード可
+
+	if (mode == Mode::LockOn) { SetMode(Mode::Gun); }
+	else if (mode == Mode::Gun) { SetMode(Mode::LockOn); }
+}
+
+void GameCamera::SetAiming(bool aiming)
+{
+	if (aiming && mode == Mode::LockOn) { SetMode(Mode::Gun); }
+	else if (!aiming && mode == Mode::Gun) { SetMode(Mode::LockOn); }
+	// フリーモード（ロックオン解除中）なら何もしない
 }
 
 void GameCamera::SetFocusProvider(FocusProvider provider)
@@ -96,17 +104,17 @@ void GameCamera::SetFocusProvider(FocusProvider provider)
 	// セット直後に一度更新
 	UpdateFocus();         
 
-	if (mode == Mode::Auto)
+	if (mode == Mode::LockOn)
 	{  
 
 		if (focusPos != nullptr)
 		{
-			// Auto 開始なら位置も合わせる
-			UpdateAuto();
+			// 追従モード 開始なら位置も合わせる
+			UpdateLockOn();
 		}
 		else
 		{
-			// 敵がいないので Remote で開始
+			// 敵がいないので フリーモード で開始
 			SetMode(Mode::Remote);       
 		}
 	
@@ -129,23 +137,23 @@ void GameCamera::NormalUpdate(void)
 
 	UpdateFocus();
 
-	// ターゲット対象が消えていたら強制的に Remote へ
+	// ターゲット対象が消えていたら強制的に フリーモード へ
 	if (mode != Mode::Remote && focusPos == nullptr)
 	{
 		SetMode(Mode::Remote);
 	}
 
-	// 入力（カメライベント中は NormalUpdate 自体が呼ばれないので受け付けない）
-	if (Input::GetIns().GetInfo(toggleKey).down) { ToggleTarget(); }
+	// 入力
+	if (Input::GetIns().GetInfo(toggleKey).down) { ChangeTargetMode(); }
 
 
-	// 視野角：Gun中は絞り、それ以外は通常へ戻す
+	// カメラモード中は絞り、それ以外は通常へ戻す
 	const float targetFov = (mode == Mode::Gun) ? GUN_FOV : baseFov;
 	fov += (targetFov - fov) * FOV_LERP_RATE * TimeScale::Get();
 
 	switch (mode) {
 	case Mode::Remote: UpdateRemote(); break;
-	case Mode::Auto:   UpdateAuto();   break;
+	case Mode::LockOn:   UpdateLockOn();   break;
 	case Mode::Gun:    UpdateGun();    break;
 	}
 }
@@ -171,14 +179,14 @@ void GameCamera::UpdateRemote(void)
 	angle = CalcCameraAngle(pos, lookAtPos);
 }
 
-void GameCamera::UpdateAuto(void)
+void GameCamera::UpdateLockOn(void)
 {
 	if (targetPos == nullptr || focusPos == nullptr) { return; }
 
 	// ２点間ベクトル
 	Vector3 atToTarget = *targetPos - *focusPos;
 
-	// fovから必要距離を計算（縦fov基準。Gun中のfov変化の影響を避けるため baseFov を使う）
+	// fovから必要距離を計算
 	float needDist = std::clamp((atToTarget.Length() * 0.5f) / tanf(baseFov * 0.5f), TARGET_DISTANCE_MIN, TARGET_DISTANCE_MAX);
 
 	// 対象から見て自機のさらに先にカメラを置く
@@ -233,7 +241,7 @@ void GameCamera::UpdateGun(void)
 
 void GameCamera::SubRelease(void)
 {
-	// Remote で固定したマウスを戻す（終了時）
+	// フリーモード で固定したマウスを戻す
 	if (mode == Mode::Remote && ROT_POWER != 0.0f) {
 		Input::GetIns().SetMouseFixed(false);
 	}

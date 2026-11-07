@@ -4,7 +4,6 @@
 
 #include "../../../Manager/Input/InputManager.h"
 #include "../../../Manager/Camera/CurrentCamera.h"
-#include "../../../Manager/Camera/Game/GameCamera.h"
 
 PlayerGunState::PlayerGunState(
 	std::function<void(void)> PlayAnimeGun,
@@ -14,7 +13,8 @@ PlayerGunState::PlayerGunState(
 	float ACCEL_MAX,
 	float& accelMax,
 	float& targetTime,
-	int& bulletCount
+	int& bulletCount,
+	std::function<bool(void)> IsLockOn
 ):
 	PlayAnimeGun(PlayAnimeGun),
 	ChangeStateIdle(ChangeStateIdle),
@@ -24,17 +24,15 @@ PlayerGunState::PlayerGunState(
 	accelMax(accelMax),
 	targetTime(targetTime),
 	bulletCount(bulletCount),
+	IsLockOn(IsLockOn),
 	state(STATE::None)
 {
 }
 
 void PlayerGunState::OwnStateConditionUpdate(void)
 {
-	//入力
-	auto camera = dynamic_cast<GameCamera*>(&CurrentCamera::Get())->GetMode();
-
 	//ロックオンをしている時のみ銃に遷移可能
-	if (camera == GameCamera::Mode::Auto)
+	if (IsLockOn())
 	{
 		if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).down
 			|| Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Left).down){ OwnChangeState(); }
@@ -52,12 +50,18 @@ void PlayerGunState::Enter(void)
 	//ターゲットタイムリセット
 	targetTime = 0.0f;
 
-	// カメラを専用のモードに変える
-	dynamic_cast<GameCamera*>(&CurrentCamera::Get())->SetMode(GameCamera::Mode::Gun);
+	//カメラの銃モードへの切り替えは、GameSceneから伝わった「構えている」をもとにカメラが行う
 }
 
 void PlayerGunState::Update(void)
 {
+	//ロックオンが外れた（Eで解除・敵がいなくなった）ら構えを解く
+	if (!IsLockOn())
+	{
+		ChangeStateIdle();
+		return;
+	}
+
 	//待機状態に遷移
 	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunMode).up || Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Left).up)
 	{ 
@@ -65,57 +69,13 @@ void PlayerGunState::Update(void)
 		return;
 	}
 
-	switch (state)
+	//右クリックを押している時のみ
+	//コントローラの場合はRTが入力された時のみ
+	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunShot).down || Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Right).down)
 	{
-		case PlayerGunState::STATE::Target:
-		{
-			//右クリックを押している時のみ
-			//コントローラの場合はRTが入力された時のみ
-			if (Input::GetIns().GetInfo(KEY_TYPE::PlayerGunShot).down || Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Right).down)
-			{
-				ChangeState(STATE::Shot);
-				return;
-			}
-
-			if (targetTime < BULLET_COUNT_MAX_TIME)
-			{
-				//ターゲットカウンタ加算
-				targetTime++;
-				//ターゲットカウンタによって発射数を計算
-				int count = (int)(targetTime / BULLET_COUNT_TIME);
-				bulletCount = (count > MAX_BULLET) ? MAX_BULLET : count;
-			}
-
-
-			break;
-		}
-		case PlayerGunState::STATE::Shot:
-		{
-			if (bulletCount == 0)
-			{
-				ChangeState(STATE::Relod);
-				return;
-			}
-
-			//弾の処理
-			PlayShot();
-			bulletCount--;
-
-
-			break;
-		}
-		case PlayerGunState::STATE::Relod:
-		{
-			//ターゲット追従時間リセット
-			targetTime = 0.0f;
-			//発射数リセット
-			bulletCount = 0;
-			//ターゲット状態に遷移
-			ChangeState(STATE::Target);
-
-			break;
-		}
+		PlayShot();
 	}
+
 
 	Vector3 inputVec = InputVec();
 
@@ -134,8 +94,7 @@ void PlayerGunState::Exit(void)
 {
 	accelMax = ACCEL_MAX;
 
-	// カメラを専用のモードに変える
-	dynamic_cast<GameCamera*>(&CurrentCamera::Get())->SetMode(GameCamera::Mode::Auto);
+	//カメラを元のモードに戻すのも、GameSceneから伝わった「構えていない」をもとにカメラが行う
 }
 
 void PlayerGunState::ChangeState(STATE state_)

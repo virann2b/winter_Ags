@@ -34,18 +34,26 @@ public:
 	};
 
 
+	// 敵がいない場合
+	static constexpr int INVALID_ID = -1;
+
 	EnemyBase(const Vector3& initPos);
 
 	~EnemyBase()override = default;
 
 	// 当たり判定の通知
 	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)override;
+	//銃専陽ダメージ処理
+	void TakeGunDamege(int damage);
 
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
 
 	// 死亡アニメーションまで終わったか（画面から消えたか）
 	bool IsDieEnd(void) const { return isDieEnd; }
+
+	// 敵の番号（EnemyManagerが生成時に振る。同じ番号は二度と使われない）
+	int GetId(void) const { return id; }
 ;
 
 protected:
@@ -105,10 +113,10 @@ protected:
 	// 死亡アニメーション終了時に呼ぶ（描画・当たり判定を消す）
 	void DieEnd(void);
 
-	//攻撃範囲外（距離)
+	//攻撃範囲外
 	bool IsFar(float stopRange = DEFAULT_STOP_RANGE) const;
 
-	//攻撃範囲（距離）
+	//攻撃範囲
 	bool IsNear(float stopRange = DEFAULT_STOP_RANGE) const;
 
 	// プレイヤーへの単位ベクトル
@@ -137,6 +145,12 @@ protected:
 #pragma endregion
 
 private:
+
+	// 番号を振れるのはEnemyManagerだけ
+	friend class EnemyManager;
+
+	// 敵の番号
+	int id = INVALID_ID;
 
 	// 初期読み込み
 	void SubInit(void)override final;

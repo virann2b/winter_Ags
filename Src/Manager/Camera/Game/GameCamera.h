@@ -6,33 +6,27 @@
 
 #include "../../Input/InputManager.h"
 
-	/// <summary>
-	/// 3モードを切り替えるカメラ
-	///   Remote : ターゲットOFF時のカメラ（自由回転）
-	///   Auto   : ターゲットON時のカメラ（自機と対象を画角に収める）
-	///   Gun    : 銃モードのカメラ（肩越し。Autoからのみ入れる）
-	/// </summary>
 class GameCamera : public CameraBase
 {
 public:
 
 	enum class Mode
 	{
-		Auto,
-		Remote,
-		Gun
+		LockOn,		//フリーモード
+		Remote,		//追従モード
+		Gun			//銃モード
 	};
 
 	/// <param name="targetPos">追従対象（自機）</param>
-	/// <param name="focusPos">ロックオン対象（Auto/Gunで使用）</param>
-	/// <param name="cameraOffset">Remoteのカメラオフセット</param>
-	/// <param name="lookAtOffset">Remoteの注視点オフセット</param>
-	/// <param name="ROT_POWER">Remoteの回転力（0で回転無効）</param>
-	/// <param name="initAngle">Remoteの初期角度</param>
-	/// <param name="TARGET_DISTANCE_MIN">Autoの最低距離</param>
-	/// <param name="TARGET_DISTANCE_MAX">Autoの最大距離</param>
+	/// <param name="focusPos">ロックオン対象（追従モード・カメラモードで使用）</param>
+	/// <param name="cameraOffset">フリーモードのカメラオフセット</param>
+	/// <param name="lookAtOffset">フリーモードの注視点オフセット</param>
+	/// <param name="ROT_POWER">フリーモードの回転力（0で回転無効）</param>
+	/// <param name="initAngle">フリーモードの初期角度</param>
+	/// <param name="TARGET_DISTANCE_MIN">追従モードの最低距離</param>
+	/// <param name="TARGET_DISTANCE_MAX">追従モードの最大距離</param>
 	/// <param name="fov">通常時の視野角</param>
-	/// <param name="initialModeRemote">true:Remoteで開始 / false:Autoで開始</param>
+	/// <param name="initialModeRemote">true:フリーモードで開始 / false:追従モードで開始</param>
 	/// <param name="toggleKey">ターゲットON/OFFキー</param>
 	/// <param name="gunKey">銃モードON/OFFキー</param>
 	GameCamera(
@@ -57,16 +51,22 @@ public:
 		this->targetPos = targetPos;
 	}
 
-	// ロックオン対象を途中で変更する（nullptrを許可：対象消失時にRemoteへ戻すため）
+	// ロックオン対象を途中で変更する（nullptrを許可：対象消失時にフリーモードへ戻すため）
 	void FocusChange(const Vector3* focusPos) { this->focusPos = focusPos; }
 
-	// モード切替（Gunは Auto 中かつ focusPos がある時のみ成功する）
+	// モード切替（カメラモードは 追従モード 中かつ focusPos がある時のみ成功する）
 	// 成功したら true
 	bool SetMode(Mode m);
-	// ターゲットON/OFF（Remote <-> Auto。Gun中はRemoteへ）
-	void ToggleTarget(void);
-	// 銃モードON/OFF（Auto <-> Gun。Remoteでは何もしない）
-	void ToggleGun(void);
+	// ターゲットON/OFF（フリーモード <-> 追従モード。カメラモード中はフリーモードへ）
+	void ChangeTargetMode(void);
+	// 銃モードON/OFF（追従モード <-> カメラモード。フリーモードでは何もしない）
+	void ChangeGunMode(void);
+
+	// 構えているかを設定（モードの切り替えはカメラが判断する。毎フレーム呼んでよい）
+	//   構えている かつ 追従モード → カメラモード
+	//   構えていない かつ カメラモード → 追従モード
+	//   フリーモード（ロックオン解除中）は何もしない
+	void SetAiming(bool aiming);
 
 	Mode GetMode(void) const { return mode; }
 	bool IsGunMode(void) const { return mode == Mode::Gun; }
@@ -86,7 +86,7 @@ private:
 	// 注視点最低地上高
 	static constexpr float FOCUS_DOWN = 70.0f;
 
-	// Gun用パラメータ
+	// カメラモード用パラメータ
 	static constexpr float GUN_BACK_DIST = 140.0f;                    // 自機の後ろ
 	static constexpr float GUN_SHOULDER = 100.0f;                      // 右肩へのずらし
 	static constexpr float GUN_HEIGHT = 110.0f;                       // 高さ
@@ -103,17 +103,17 @@ private:
 	// ロックオン対象
 	const Vector3* focusPos;
 
-	// Remote 用オフセット
+	// フリーモード 用オフセット
 	const Vector3 cameraOffset;
 	const Vector3 lookAtOffset;
 	// 注視点
 	Vector3 lookAtPos;
 
-	// Auto 用距離制約
+	// 追従モード 用距離制約
 	float TARGET_DISTANCE_MIN;
 	float TARGET_DISTANCE_MAX;
 
-	// Remote 用
+	// フリーモード 用
 	const float ROT_POWER;
 	Vector3 controlAngle;
 
@@ -124,7 +124,7 @@ private:
 	// 現在のモード
 	Mode mode;
 
-	// 通常時の視野角（Gunから切り替わる時に戻す先）
+	// 通常時の視野角（カメラモードから切り替わる時に戻す先）
 	float baseFov;
 
 	Vector3 gunOffset;
@@ -138,10 +138,10 @@ private:
 	// 更新
 	void NormalUpdate(void)override;
 	void UpdateRemote(void);
-	void UpdateAuto(void);
+	void UpdateLockOn(void);
 	void UpdateGun(void);
 
-	// Remoteの位置を controlAngle から即座に合わせる
+	// フリーモードの位置を controlAngle から即座に合わせる
 	void SnapRemote(void);
 
 	// 終了処理

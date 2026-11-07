@@ -317,6 +317,7 @@ Vector2I ActorBase::GetParameterToVector2I(const std::string& fileName, const st
 	return parameter->GetParameterToVector2I(fileName, parameterName);
 }
 
+
 #pragma endregion
 
 bool ActorBase::GetJudgeFlg(void)

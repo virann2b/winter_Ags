@@ -2,10 +2,13 @@
 
 #include "../Common/CharacterBase/CharacterBase.h"
 
+#include <functional>
+
 class Sword;
 class Gun;
 class RangeAttack;
 class SkillBase;
+class EnemyBase;
 
 class Player : public CharacterBase
 {
@@ -33,8 +36,14 @@ public:
 	// ロックオンしている敵の方向に向く
 	void TargetDirection(const Vector3& targetPos);
 
-	//ロックオン対象の設定（GameSceneから毎フレーム設定）
-	void SetLockOnTarget(bool isLock, const Vector3& pos) { isLockOn = isLock; lockOnPos = pos; }
+	//ロックオン対象の番号を設定（GameSceneから毎フレーム設定。ロックオンしていなければ EnemyBase::INVALID_ID）
+	void SetLockOnTarget(int enemyId) { lockOnEnemyId = enemyId; }
+
+	//番号から敵を探す関数を設定（GameSceneから初期化時に設定）
+	void SetEnemyFinder(std::function< EnemyBase*(int)> finder) { findEnemy = finder; }
+
+	//銃を構えているか
+	bool IsAiming(void) const;
 
 private:
 
@@ -201,10 +210,10 @@ private:
 	//スキル枠（Shift+Q/E/R/F ・ LB+X/A/B/Y）
 	SkillBase* skillSlot[SKILL_SLOT_MAX];
 
-	//ロックオン中かどうか
-	bool isLockOn;
-	//ロックオン中の敵の位置
-	Vector3 lockOnPos;
+	//ロックオン中の敵の番号
+	int lockOnEnemyId;
+	//番号から敵を探す関数
+	std::function<EnemyBase*(int)> findEnemy;
 
 	STATE state;
 
@@ -238,6 +247,9 @@ private:
 
 	//指定した枠のスキルを使う（ロックオン中は敵の方向を向く）
 	void UseSkill(int slot);
+
+	//ロックオン中の生存している敵を探す（いなければnullptr。そのフレームの中だけで使うこと）
+	const EnemyBase* FindLockOnEnemy(void) const;
 
 	void SubDraw(void)override;
 

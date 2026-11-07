@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <string>
 #include <vector>
 #include <map>
@@ -230,6 +231,7 @@ protected:
 	/// <param name="parameterName">パラメーターのID</param>
 	/// <returns></returns>
 	Vector2I GetParameterToVector2I(const std::string& fileName, const std::string& parameterName);
+
 
 #pragma endregion
 

@@ -2,21 +2,29 @@
 
 #include "../../../../Utility/Utility.h"
 
-#include "../../../Common/Collider/CapsuleCollider.h"
+#include "../../../../Manager/TimeScale/TimeScale.h"
+
+#include "../../../Enemy/EnemyBase.h"
 
 #include "../../Player.h"
 
-#include <random>
 
 
-Gun::Gun(const Transform& playerTrans,
-	bool isAlive, int& bullet)
+
+
+Gun::Gun(
+	const Transform& playerTrans,
+	bool isAlive)
 	:
-	ActorBase(),
+	ActorBase("Data/Parameter/Wepon/"),
 	playerTrans(playerTrans),
 	isActive(false),
-	bullet(bullet),
-	recoverTimer(0.0f)
+	remainingBullet(0),
+	recoverTimer(0.0f),
+	aimTargetId(EnemyBase::INVALID_ID),
+	aimCount(0),
+	aimingTimer(0.0f),
+	prevPlayerPos()
 {
 }
 
@@ -24,13 +32,6 @@ void Gun::Load(void)
 {
 	// モデルをロード
 	trans.LoadModel("Gun/Gun");
-
-
-	AddCollider(
-		new CapsuleCollider(COLLIDER_TAG::PlayerSword,
-			Vector3::Yonly(40.0f),
-			Vector3::Yonly(-40.0f),
-			40.0f));
 
 	//サイズ設定
 	trans.scale = 0.2f;
@@ -43,91 +44,182 @@ void Gun::Load(void)
 	//判定オフ
 	SetJudgeFlg(false);
 
-	//所持弾数初期化
-	bullet = MAX_POSSESSION_BULLET;
-	//弾クールタイム初期化
-	recoverTimer = MAX_RECOVER_TIME;
+#pragma region 外部読み込み
+
+	GunParams loadParams;
+	//読み込みファイル
+	const std::string fileName = "Gun";
+
+	// MAX_AMMOパラメーター名
+	std::string parameterName = "MaxBulletPossession";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName)) 
+	{ loadParams.MAX_AMMO = GetParameterToInt(fileName, parameterName);}
+
+	// MAX_SHOTパラメーター名
+	parameterName = "MaxShot";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName)) 
+	{ loadParams.MAX_SHOT = GetParameterToInt(fileName, parameterName); }
+
+	// RECOVER_TIMEパラメーター名
+	parameterName = "RecoverTime";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName)) 
+	{ loadParams.RECOVER_TIME = GetParameter(fileName, parameterName);}
+
+	// MAX_AIMING_TIMEパラメーター名
+	parameterName = "MaxAimingTime";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName))
+	{ loadParams.MAX_AIMING_TIME = GetParameter(fileName, parameterName);}
+
+	// AIM_TIME_DECREASEパラメーター名
+	parameterName = "AimTimeDecRease";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName))
+	{ loadParams.AIM_TIME_DECREASE = GetParameter(fileName, parameterName); }
+
+	// MAX_AIMING_TIMEパラメーター名
+	parameterName = "AimSpread";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName))
+	{ loadParams.AIM_SPREAD = GetParameter(fileName, parameterName);}
+
+	params = loadParams;
+
+	//初期最大所持数初期化
+	remainingBullet = params.MAX_AMMO;
+
+	//弾の回復時間の初期化
+	recoverTimer = 0.0f;
+
+#pragma endregion
+
 }
 
-void Gun::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
+void Gun::UseBullet(int useBullet)
 {
-}
+	if (remainingBullet <= 0) return;
 
-void Gun::Shot(int useBullet)
-{
-	if (bullet <= 0) return;
+	remainingBullet = (std::max)(remainingBullet - useBullet, 0);
 
-	bullet = (std::max)(bullet - useBullet, 0);
+	//照準リセット
+	ResetAim();
 
-	BulletObj b;
-	b.dir = GetShotDirection();
-	b.moved = 0.0f;
-	b.pos = trans.pos + GetRandomOffset();
-	bullets.push_back(b);
 }
 
 void Gun::SubUpdate(void)
 {
 	SetIsDraw(isActive);
-
 }
 
-void Gun::BulletUpdate(void)
+float Gun::GetAimTime(int aimCount) const
+{
+
+	//最大照準時間から所持数増えるごとに最大照準時間を減少
+	const float aimTime = params.MAX_AIMING_TIME - params.AIM_TIME_DECREASE * aimCount;
+
+	return aimTime;
+}
+
+Vector3 Gun::GetAimWorldPos(const EnemyBase& enemy, int index) const
+{
+	// 置く順：中心 → 上 → 左 → 右 → 左下 → 右下（AIMING_POS の順）
+	// x = カメラから見た右、y = カメラから見た上 への割合
+	static const float OFFSET_X[(int)AIMING_POS::Max] = { 0.0f, 0.0f, -1.0f, 1.0f, -0.6f,  0.6f };
+	static const float OFFSET_Y[(int)AIMING_POS::Max] = { 0.0f, 1.0f,  0.0f, 0.0f, -0.9f, -0.9f };
+
+	// カメラ基準の右・上
+	const VECTOR r = GetCameraRightVector();
+	const VECTOR u = GetCameraUpVector();
+	const Vector3 right(r.x, r.y, r.z);
+	const Vector3 up(u.x, u.y, u.z);
+
+	return enemy.GetTrans().pos
+		+ right * (OFFSET_X[index] * params.AIM_SPREAD)
+		+ up * (OFFSET_Y[index] * params.AIM_SPREAD);
+}
+
+void Gun::UpdateRecover(void)
 {
 	//弾が最大数持っていた場合のみ
-	if (bullet >= MAX_POSSESSION_BULLET)
+	if (remainingBullet >= params.MAX_AMMO)
 	{
 		recoverTimer = 0.0f;
 		return;
 	}
 
-	recoverTimer++;
-	if (recoverTimer >= MAX_RECOVER_TIME)
+	//回復時間をタイムスケールに合わせる
+	recoverTimer += TimeScale::Get();
+
+	if (recoverTimer >= params.RECOVER_TIME)
 	{
 		//弾残数追加
-		bullet++;
+		remainingBullet++;
 		//弾クールタイムリセット
 		recoverTimer = 0.0f;
 
-		if (bullet >= MAX_POSSESSION_BULLET)
+		if (remainingBullet >= params.MAX_AMMO)
 		{
-			bullet = MAX_POSSESSION_BULLET;
+			remainingBullet = params.MAX_AMMO;
 		}
 	}
 }
 
-void Gun::BulletMoveUpdate(void)
+void Gun::UpdateAim(int targetId)
 {
-
-	for (auto& b : bullets)
+	//ロックオンの対象が変更した場合
+	if (targetId != aimTargetId)
 	{
-		b.pos = b.pos + b.dir * BULLET_SPEED;
-		b.moved += BULLET_SPEED;
+		//リセット(再照準）
+		ResetAim();
+		aimTargetId = targetId;
 	}
 
-	// 射程を超えた弾を削除
-	bullets.erase(
-		std::remove_if(bullets.begin(), bullets.end(),
-			[](const BulletObj& b) { return b.moved >= BULLET_RANGE; }),
-		bullets.end());
-}
+	//ロックオンしていない場合
+	if (aimTargetId == EnemyBase::INVALID_ID) { return; }
 
-void Gun::BulletDraw(void)
-{
-	for (const auto& b : bullets)
+	//一度に射撃できる弾数・所持弾数以上だと更新しない
+	if (aimCount >= params.MAX_SHOT) { return; }
+	if (aimCount >= remainingBullet) { return; }
+
+	//照準時間の加算
+	aimingTimer += TimeScale::Get();
+
+	//リセット
+	if (aimingTimer >= GetAimTime(aimCount))
 	{
-		DrawSphere3D(VGet(b.pos.x, b.pos.y, b.pos.z),
-			BULLET_RADIUS, 8, 0xffff00, 0xffffff, TRUE);
+		aimingTimer = 0.0f;
+		aimCount++;
 	}
+
 }
 
-
-Vector3 Gun::GetShotDirection(void) const
+void Gun::UpdateHit(void)
 {
-	// プレイヤーの向き(クォータニオン)で、基準の正面ベクトルを回転させる
-	Vector3 dir = playerTrans.rotation.Rotate(Vector3(0.0f, 0.0f, 1.0f));
-	return dir.Normalized();   // Vector3 に正規化関数があれば
+	for (Hit& hit : hitBullet)
+	{
+		hit.timer -= TimeScale::Get();
+		if (hit.timer > 0.0f) { continue; }
+
+		// 着弾：その敵がまだ生きていれば当てる（死んでいたら何もしない＝残りの弾は消える）
+		EnemyBase* enemy = findEnemy ? findEnemy(hit.targetId) : nullptr;
+		if (enemy == nullptr || enemy->IsDead()) { continue; }
+
+		enemy->TakeGunDamege(damage);
+
+		// 手順6でここをダメージ、手順7でMP回復に置き換える
+		debugHitCount++;
+	}
+
+	// 着弾済みを消す
+	hitBullet.erase(
+		std::remove_if(hitBullet.begin(), hitBullet.end(),
+			[](const Hit& hit) { return hit.timer <= 0.0f; }),
+		hitBullet.end());
 }
+
 
 void Gun::FollowHand(void)
 {
@@ -179,6 +271,35 @@ void Gun::FollowHand(void)
 
 }
 
+void Gun::ResetAim(void)
+{
+	//ロックオンしている番号リセット
+	aimTargetId = EnemyBase::INVALID_ID;
+	//照準時間リセット
+	aimingTimer = 0.0f;
+	//照準数リセット
+	aimCount = 0;
+}
+
+void Gun::Shot(void)
+{
+	// 照準がない・対象がいない
+	if (aimCount <= 0 || aimTargetId == EnemyBase::INVALID_ID) { return; }
+
+	for (int i = 0; i < aimCount; ++i)
+	{
+		// 1発目は0フレーム後（すぐ）、以降 HIT_INTERVAL ずつ遅れて着弾
+		hitBullet.push_back({ aimTargetId, i, HIT_INTERVAL * i });
+
+		// 1発ごとに所持弾を1減らす（照準は所持弾の数までしか置けないので0未満にはならない）
+		remainingBullet--;
+	}
+
+	// 照準は撃ち切ったので0に戻す（同じ敵に1つ目から置き直す）
+	aimCount = 0;
+	aimingTimer = 0.0f;
+}
+
 void Gun::DrawBulletUI(void) const
 {
 	// 画面中央を円の中心にする(仮)
@@ -191,14 +312,14 @@ void Gun::DrawBulletUI(void) const
 	const float RING_RADIUS = 150.0f;	// リングの半径
 	const float BULLET_UI_R = 12.0f;	// 弾アイコンの半径
 
-	for (int i = 0; i < MAX_POSSESSION_BULLET; ++i)
+	for (int i = 0; i < params.MAX_AMMO; ++i)
 	{
 		// 真上から時計回りに等間隔で配置
-		float rad = -PI * 0.5f + (PI * 2.0f) * i / MAX_POSSESSION_BULLET;
+		float rad = -PI * 0.5f + (PI * 2.0f) * i / params.MAX_AMMO;
 		float x = cx + cosf(rad) * RING_RADIUS;
 		float y = cy + sinf(rad) * RING_RADIUS;
 
-		if (i < bullet)
+		if (i < remainingBullet)
 		{
 			// 残っている弾:金色で塗りつぶし+縁取り
 			DrawCircleAA(x, y, BULLET_UI_R, 24, 0xd4af37, TRUE);
@@ -213,14 +334,29 @@ void Gun::DrawBulletUI(void) const
 
 	// リング中央に数字も表示(確認用)
 	DrawFormatString((int)cx - 20, (int)cy - 8, 0xffffff,
-		"%d / %d", bullet, MAX_POSSESSION_BULLET);
+		"%d / %d", remainingBullet, params.MAX_AMMO);
 }
 
-Vector3 Gun::GetRandomOffset(void) const
+void Gun::DrawAimUI(void) const
 {
-	// static にして毎回シードし直さない
-	static std::mt19937 rng{ std::random_device{}() };
-	std::uniform_real_distribution<float> dist(-SHOT_OFFSET_RANGE, SHOT_OFFSET_RANGE);
+	if (!findEnemy) { return; }
 
-	return Vector3(dist(rng), dist(rng), dist(rng));
+	//ロックオンしている敵を取得
+	const EnemyBase* enemy = findEnemy(aimTargetId);
+	if (enemy == nullptr || enemy->IsDead()) { return; }
+
+	for (int i = 0; i < aimCount; ++i)
+	{
+		// ワールド座標 → 画面座標
+		const VECTOR screen = ConvWorldPosToScreenPos(GetAimWorldPos(*enemy, i).ToVECTOR());
+		// カメラの後ろ側は描かない
+		if (screen.z <= 0.0f || screen.z >= 1.0f) { continue; }
+
+		const float x = screen.x, y = screen.y, rad = AIM_DRAW_RADIUS;
+		DrawCircleAA(x, y, rad, 32, 0xffffff, FALSE, 2.0f);
+		DrawLineAA(x - rad * 1.4f, y, x + rad * 1.4f, y, 0xffffff, 2.0f);
+		DrawLineAA(x, y - rad * 1.4f, x, y + rad * 1.4f, 0xffffff, 2.0f);
+	}
+
+	DrawFormatString(0, 260, 0xffffff, "Hit : %d", debugHitCount);
 }

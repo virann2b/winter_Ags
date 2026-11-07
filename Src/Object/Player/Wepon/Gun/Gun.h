@@ -5,114 +5,159 @@
 
 #include <vector>
 
+class EnemyBase;
+
 class Gun :public ActorBase
 {
 public:
 
-	// 仮の弾
-	struct BulletObj
-	{
-		Vector3 pos{ 0,0,0 };        // 現在位置
-		Vector3 dir{ 0,0,0 };        // 進行方向(正規化済み)
-		float  moved = 0.0f;      // 移動した距離
-	};
-
 	Gun(const Transform& playerTrans,
-		bool isAlive, int& bullet);
+		bool isAlive);
 
 	~Gun() override = default;
 
 	//読み込み
 	void Load(void) override;
 
-	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
+	//弾情報の更新
+	void UpdateRecover(void);
+	//標準の更新
+	void UpdateAim(int targetId);
+	//着弾更新
+	void UpdateHit(void);
+
+
+	//弾の残弾数描画
+	void DrawBulletUI(void) const;
+	//照準の描画
+	void DrawAimUI(void) const;
+	
 
 	//武器切り替え
 	void SetActive(bool active) {isActive = active;	}
 
 	//弾発射処理
-	void Shot(int useBullet);
+	void UseBullet(int useBullet);
 
-	//弾数取得
-	int GetBullet(void) const { return bullet; }
-
-	//弾情報の更新
-	void BulletUpdate(void);
-
-	//仮の描画
-	// 弾の移動・消去
-	void BulletMoveUpdate(void); 
-	// 弾の描画
-	void BulletDraw(void);        
-
-	Vector3 GetShotDirection(void) const;
 	//銃の位置調整
 	void FollowHand(void);
-	//弾の残弾数描画
-	void DrawBulletUI(void) const;
+	//照準のリセット
+	void ResetAim(void);
+
+	//番号から敵を探す
+	void SetEnemyFinder(std::function<EnemyBase* (int) > finder) { findEnemy = finder; }
+	//射撃
+	void Shot(void);
+
+	//残弾数取得
+	int GetBullet(void) const { return remainingBullet; }
+	//照準しているの数取得
+	int GetAim(void) const { return aimCount; }
 
 private:
+
+	//描画する標準位置
+	enum class AIMING_POS
+	{
+		None = -1,
+		
+		Center,		//中心
+		Up,			//上
+		Left,		//左
+		Right,		//右
+		DownLeft,	//左下
+		DownRight,	//右下
+
+		Max
+	};
+
+	// 着弾予定
+	struct Hit
+	{
+		int targetId;	// 敵の番号
+		int index;		// 何発目か
+		float timer;	// 着弾までの残りフレーム
+	};
 
 #pragma region 定数
 
 	// モデル表示倍率
 	const float MODEL_SCALE = 1.3f;
-
-	//生成位置の相対座標
-	const Vector3 CREATE_LOCAL_POS = Vector3(0.0f, 400.0f, 0.0f);
-
-	// Wait状態の待ち時間
-	const unsigned short WAIT_TIME = 60;
-	//落下時の最大Y座標
-	static constexpr float MAX_FALL_POS_Y = -200.0f;
-	//拡大量
-	static constexpr float SCALE_POW = 0.05f;
-
 	//右手のフレーム番号
 	static constexpr int RIGHT_HAND_FLAME_INDEX = 17;
+	// ずらす最大幅
+	static constexpr float SHOT_OFFSET_RANGE = 30.0f;  
 
-	//最大弾所持数
-	static constexpr int  MAX_POSSESSION_BULLET = 48;
+	static constexpr float AIM_DRAW_RADIUS = 16.0f;
 
-	//弾回復時間
-	static constexpr float MAX_RECOVER_TIME = 30.0f;
+	float HIT_INTERVAL = 3.0f;		// 着弾の時間差（フレーム）
+	int damage = 2;
 
-	static constexpr float BULLET_SPEED = 30.0f;     // 1フレームの移動量
-	static constexpr float BULLET_RANGE = 1500.0f;   // この距離で消える
-	static constexpr float BULLET_RADIUS = 8.0f;
-
-	static constexpr float SHOT_OFFSET_RANGE = 30.0f;   // ずらす最大幅
+	//銃パラメータ
+	struct GunParams
+	{
+		//数値を入れてるのは保険
+		float MAX_AIMING_TIME = 10.0f;		//1発目の照準最大時間
+		float RECOVER_TIME = 180.0f;		//弾回復時間
+		int MAX_AMMO = 48;					//最大弾所持数
+		int MAX_SHOT= 6;					//一度に打てる最大弾数
+		float AIM_TIME_DECREASE = 1.0f;		//照準の減少時間
+		float AIM_SPREAD = 60.0f;			//照準の広がり
+	};
 
 
 #pragma endregion
 
+	// プレイヤーのモデル制御情報の参照
+	const Transform& playerTrans;
 
-	std::vector<BulletObj> bullets;
+	// 番号から敵を探す関数
+	std::function< EnemyBase*(int)> findEnemy;
 
-	// 手のボーンからの位置補正（手のローカル座標系:位置の調整の倍はこの数値を）
+	std::vector<Hit> hitBullet;
+
+	// 手のボーンからの位置補正
 	Vector3 gripOffset = Vector3(-5.0f, 20.0f, -5.0f);
 
 	// 手のボーンからの回転補正(銃の回転の場合この数値を）
 	Quaternion gripRotation =
 		Quaternion::FromEulerXZY(Vector3(Deg2Rad(90.0f), Deg2Rad(180.0f), Deg2Rad(-10.0f)));
 
-	// プレイヤーのモデル制御情報の参照
-	const Transform& playerTrans;
+	//銃のパラメータ
+	GunParams params;
 
 	//武器切り替えフラグ
 	bool isActive;
-	//弾
-	int& bullet;
+
+	//照準を置いている敵の番号
+	int aimTargetId;
+
+	//残弾数
+	int remainingBullet;
+	//照準の数
+	int aimCount;
 
 	//弾クールタイム
 	float recoverTimer;
+	//照準時間
+	float aimingTimer;
+
+	int debugHitCount = 0;
+
 	//1フレーム前のプレイヤー座標
 	Vector3 prevPlayerPos;
-
-	Vector3 GetRandomOffset(void) const;
 
 	//派生クラス更新
 	void SubUpdate(void) override;
 
+	/// <summary>
+	///照準を置くまでの時間
+	/// </summary>
+	/// <param name="aimCount">照準の数</param>
+	/// <returns></returns>
+	float GetAimTime(int aimCount) const;
+
+	//照準のワールド座標
+	Vector3 GetAimWorldPos(const EnemyBase& enemy, int index) const;
 
 };

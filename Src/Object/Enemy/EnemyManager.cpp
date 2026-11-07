@@ -15,7 +15,34 @@ void EnemyManager::Load(void)
 	CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(300, 50, 1000));
 }
 
-const EnemyBase* EnemyManager::GetNearestEnemy(const Vector3& from) const
+const EnemyBase* EnemyManager::FindEnemy(int id) const
+{
+	//“G‚ª‚¢‚È‚¢ê‡‚Ínullptr
+	if (id == EnemyBase::INVALID_ID) { return nullptr; }
+
+	for (const EnemyBase* enemy : enemies)
+	{
+		//”Ô†‚Æ‡’v‚·‚é“G‚Ìæ“¾
+		if (enemy && enemy->GetId() == id) { return enemy; }
+	}
+
+	return nullptr;
+}
+
+EnemyBase* EnemyManager::FindEnemy(int id)
+{
+	//“G‚ª‚¢‚È‚¢ê‡‚Ínullptr
+	if (id == EnemyBase::INVALID_ID) { return nullptr; }
+
+	for (EnemyBase* enemy : enemies)
+	{
+		//”Ô†‚Æ‡’v‚·‚é“G‚Ìæ“¾
+		if (enemy && enemy->GetId() == id) { return enemy; }
+	}
+	return nullptr;
+}
+
+int EnemyManager::GetNearestEnemyId(const Vector3& from) const
 {
 	const EnemyBase* nearest = nullptr;
 	float minDistSq = FLT_MAX;
@@ -35,10 +62,10 @@ const EnemyBase* EnemyManager::GetNearestEnemy(const Vector3& from) const
 		}
 	}
 
-	return nearest;
+	return nearest ? nearest->GetId() : EnemyBase::INVALID_ID;
 }
 
-const EnemyBase* EnemyManager::GetNextNearestEnemy(const Vector3& from, const EnemyBase* current) const
+int EnemyManager::GetNextNearestEnemyId(const Vector3& from, int currentId) const
 {
 	// ¶‘¶’†‚Ì“G‚ğW‚ß‚é
 	std::vector<const EnemyBase*> alive;
@@ -47,7 +74,7 @@ const EnemyBase* EnemyManager::GetNextNearestEnemy(const Vector3& from, const En
 		if (!enemy->IsDead()) { alive.push_back(enemy); }
 	}
 	
-	if (alive.empty()) { return nullptr; }
+	if (alive.empty()) { return EnemyBase::INVALID_ID; }
 
 	// ‹——£‚Ì‹ß‚¢‡‚É•À‚×‚é
 	auto distSq = [&from](const EnemyBase* enemy)
@@ -62,12 +89,13 @@ const EnemyBase* EnemyManager::GetNextNearestEnemy(const Vector3& from, const En
 	// current ‚ÌŸ‚ğ•Ô‚·(ÅŒã‚È‚çæ“ª‚Ö–ß‚é)
 	for (size_t i = 0; i < alive.size(); ++i)
 	{
-		if (alive[i] == current) { return alive[(i + 1) % alive.size()]; }
+		if (alive[i]->GetId() == currentId) { return alive[(i + 1) % alive.size()]->GetId(); }
 	}
 
 	// current ‚ªŒ©‚Â‚©‚ç‚È‚¯‚ê‚ÎÅŠñ‚è
-	return alive[0];
+	return alive[0]->GetId();
 }
+
 void EnemyManager::SetTargetPos(const Vector3* pos)
 {
 	targetPos = pos;
@@ -119,6 +147,9 @@ EnemyBase* EnemyManager::CreateEnemy(EnemyBase::ENEMY_TYPE type, const Vector3& 
 	default:
 		return nullptr;
 	}
+
+	//”Ô†‚ğU‚éig‚¢‰ñ‚³‚È‚¢j
+	enemy->id = nextId++;
 
 	//“G‚Ì¶¬
 	AddChildActor(enemy);

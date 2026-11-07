@@ -37,7 +37,7 @@ GameScene::GameScene()
 	isChanging(false),
 	isClearSlow(false),
 	gameCamera(nullptr),
-	lockedEnemy(nullptr)
+	lockedEnemyId(EnemyBase::INVALID_ID)
 {
 }
 
@@ -62,7 +62,7 @@ void GameScene::SubPostInit(void)
 
 	isChanging = false;
 	isClearSlow = false;
-	lockedEnemy = nullptr;
+	lockedEnemyId = EnemyBase::INVALID_ID;
 
 	// 前のシーンのスローが残っていても通常速度から始める
 	TimeScale::GetIns().ChangeDefaultTimeScale();
@@ -73,6 +73,9 @@ void GameScene::SubPostInit(void)
 	if (player && enemyManager)
 	{
 		enemyManager->SetTargetPos(&player->GetTrans().pos);
+
+		// 番号から敵を探す関数をプレイヤーに渡す（プレイヤーはEnemyManagerを知らずに済む）
+		player->SetEnemyFinder([enemyManager](int id) { return enemyManager->FindEnemy(id); });
 	}
 }
 
@@ -118,6 +121,9 @@ void GameScene::SubPostUpdate(void)
 
 	
 
+	// ロックオン中の敵（このフレームの中だけで使う）
+	const EnemyBase* lockedEnemy = enemyManager->FindEnemy(lockedEnemyId);
+
 	// 銃モード中は、ロックオン中の敵の方向にプレイヤーを向ける
 	if (gameCamera && gameCamera->IsGunMode() && lockedEnemy && !lockedEnemy->IsDead())
 	{
@@ -138,18 +144,22 @@ void GameScene::SubPostUpdate(void)
 
 		if (player && enemyManager)
 		{
-			lockedEnemy = enemyManager->GetNextNearestEnemy(player->GetTrans().pos, lockedEnemy);
+			lockedEnemyId = enemyManager->GetNextNearestEnemyId(player->GetTrans().pos, lockedEnemyId);
+			lockedEnemy = enemyManager->FindEnemy(lockedEnemyId);
 		}
 	}
 
-	// ロックオン中の敵をプレイヤーに伝える（スキル発動時の向き用）
+	// ロックオン中の敵の番号をプレイヤーに伝える（スキル発動時の向き・銃の照準用）
 	if (Player* player = ActorSerch<Player>(actors))
 	{
 		const bool isLock =
 			gameCamera && gameCamera->GetMode() != GameCamera::Mode::Remote &&
 			lockedEnemy && !lockedEnemy->IsDead();
 
-		player->SetLockOnTarget(isLock, isLock ? lockedEnemy->GetTrans().pos : Vector3());
+		player->SetLockOnTarget(isLock ? lockedEnemyId : EnemyBase::INVALID_ID);
+
+		// 構えているかをカメラに伝える（モードの切り替えはカメラが判断する）
+		if (gameCamera) { gameCamera->SetAiming(player->IsAiming()); }
 	}
 }
 
@@ -163,7 +173,7 @@ void GameScene::SubUiDraw(void)
 
 #pragma region 操作デバッグ表示
 
-	DrawString(0, 120, "操作：WASD・左スティック", 0xffffff);
+	/*DrawString(0, 120, "操作：WASD・左スティック", 0xffffff);
 	DrawString(0, 140, "ジャンプ：スペース・Aボタン【最大２回】", 0xffffff);
 	DrawString(0, 160, "回避：Rキー・Bボタン", 0xffffff);
 	DrawString(0, 180, "ロックオン：Eキー・右スティック押し込み", 0xffffff);
@@ -172,7 +182,7 @@ void GameScene::SubUiDraw(void)
 	DrawString(0, 240, "【 銃モード 】構え：右クリック・LT　長押し(ロックオンしている時のみ)", 0xffffff);
 	DrawString(0, 260, "【 銃モード 】発射：左クリック・RT (弾に当たり判定はないです）", 0xffffff);
 	DrawString(0, 340, "強攻撃：Fキー ・ Yボタン　長押し【タメ】離すと【攻撃】", 0xffffff);
-	DrawString(0, 360, "空中攻撃：ジャンプ２回目中に【 強攻撃 】　", 0xffffff);
+	DrawString(0, 360, "空中攻撃：ジャンプ２回目中に【 強攻撃 】　", 0xffffff);*/
 
 #pragma endregion
 
@@ -183,10 +193,6 @@ void GameScene::CreateCamera(void)
 	Player* player = ActorSerch<Player>(actors);
 	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
 
-	// カメラのターゲットをプレイヤーと敵の最も近い敵に設定
-	const EnemyBase* target =
-		enemyManager->GetNearestEnemy(player->GetTrans().pos);
-
 	auto* cam = new GameCamera(
 		&player->GetTrans().pos,
 		nullptr,
@@ -196,7 +202,7 @@ void GameScene::CreateCamera(void)
 		Vector3(),
 		350.0f, 400.0f,
 		80.0f * (DX_PI_F / 180.0f),
-		true,							// Remoteで開始
+		true,							// フリーモードで開始
 		KEY_TYPE::PlayerLockOn,			// ターゲットキー
 		KEY_TYPE::PlayerGunMode			// 銃キー
 		);
@@ -209,13 +215,15 @@ void GameScene::CreateCamera(void)
 			if (!enemyManager) { return false; }
 
 			bool locking = gameCamera->GetMode() != GameCamera::Mode::Remote;
-			if (!locking || lockedEnemy == nullptr || lockedEnemy->IsDead())
+			const EnemyBase* locked = enemyManager->FindEnemy(lockedEnemyId);
+			if (!locking || locked == nullptr || locked->IsDead())
 			{
-				lockedEnemy = enemyManager->GetNearestEnemy(player->GetTrans().pos);
+				lockedEnemyId = enemyManager->GetNearestEnemyId(player->GetTrans().pos);
+				locked = enemyManager->FindEnemy(lockedEnemyId);
 			}
 
-			if (!lockedEnemy) { return false; }
-			out = lockedEnemy->GetTrans().pos;
+			if (!locked) { return false; }
+			out = locked->GetTrans().pos;
 			return true;
 		});
 

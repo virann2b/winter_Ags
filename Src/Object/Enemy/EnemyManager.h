@@ -15,10 +15,17 @@ public:
 	//“Ç‚İ‚İ
 	void Load(void) override;
 
-	//w’è‚Ì‘ÎÛ‚©‚çÅ‚à‹ß‚¢“G‚ğæ“¾‚·‚é
-	const EnemyBase* GetNearestEnemy(const Vector3& from) const;
-	//¡‘ÎÛ‚É‚µ‚Ä‚¢‚é“G‚©‚ç•Ê‚Ì“G‚ÉØ‚è‘Ö‚¦
-	const EnemyBase* GetNextNearestEnemy(const Vector3& from, const EnemyBase* current) const;
+	//“G‚Ì¶¬”Ô†æ“¾—p
+	const EnemyBase* FindEnemy(int id) const;
+
+	//î•ñ‘‚«Š·‚¦—p
+	EnemyBase* FindEnemy(int id);
+
+	//w’è‚Ì‘ÎÛ‚©‚çÅ‚à‹ß‚¢¶‘¶’†‚Ì“G‚Ì”Ô†‚ğæ“¾‚·‚é
+	int GetNearestEnemyId(const Vector3& from) const;
+	//Ÿ‚É‹ß‚¢“G‚Ì”Ô†‚ÉØ‚è‘Ö‚¦
+	int GetNextNearestEnemyId(const Vector3& from, int currentId) const;
+
 	//“GÀ•Wæ“¾
 	void SetTargetPos(const Vector3* targetPos);
 
@@ -33,6 +40,9 @@ private:
 	EnemyBase* CreateEnemy(EnemyBase::ENEMY_TYPE type, const Vector3& pos);
 
 	std::vector<EnemyBase*> enemies;
+
+	//Ÿ‚ÉU‚é“G‚Ì”Ô†
+	int nextId = 0;
 
 	const Vector3* targetPos = nullptr;
 };
