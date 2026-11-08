@@ -12,6 +12,7 @@
 #include "State/ChilbiHitState.h"
 #include "State/ChilbiDieState.h"
 #include "State/ChilbiAttackState.h"
+#include "State/ChilbiStunState.h"
 
 #include "../../Skill/SkillFire/SkillFire.h"
 
@@ -51,8 +52,6 @@ void Chilbi::Load(void)
 
 	//加速度を調整
 	ACCEL_MAX = 5.5f;
-
-	hp = 10;
 
 #pragma endregion
 
@@ -151,6 +150,27 @@ void Chilbi::Load(void)
 		)
 	);
 
+	//硬直状態
+	AddState(
+		STATE::Stun,
+		new ChilbiStunState(
+			[&]()
+			{
+				//攻撃状態から遷移した場合の判定削除
+				punch->JudgeEnd();
+				//HITアニメーションを再生（途中で止める）
+				AnimePlay((int)ANIME_TYPE::Hit);
+			},
+			[&]() { return GetStunFrame(); },
+			[&]() { return GetAnimeRatio(); },
+			[&]() { return GetAnimeStep(); },
+			[&](float step) { SetAnimeStep(step); },
+			std::bind(&Chilbi::IsAnimeEnd, this),
+			[&]() { ChangeState(STATE::Idle); },
+			[&]() { EndStun(); }
+		)
+	);
+
 	//死亡状態
 	AddState(
 		STATE::Die,
@@ -188,6 +208,14 @@ void Chilbi::Load(void)
 
 #pragma endregion
 
+#pragma region ステータス
+
+	//ステータス初期化
+	InitStatus(MAX_HP, MAX_MP);
+
+#pragma endregion
+
+
 }
 
 
@@ -216,12 +244,17 @@ void Chilbi::EnemyUpdate(void)
 
 void Chilbi::EnemyDraw(void)
 {
-	DrawFormatString(0, 80, 0xffffff, "EnemyHp : %d", hp);
+	DrawFormatString(0, 80, 0xffffff, "EnemyHp : %d", status.hp);
 }
 
 void Chilbi::OnHit(void)
 {
 	ChangeState(STATE::Hit);
+}
+
+void Chilbi::OnStun(void)
+{
+	ChangeState(STATE::Stun);
 }
 
 void Chilbi::OnDie(void)

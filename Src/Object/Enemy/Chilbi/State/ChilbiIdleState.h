@@ -1,5 +1,7 @@
 #pragma once
+
 #include "../../../Common/CharacterBase/CharacterStateBase.h"
+
 class ChilbiIdleState : public CharacterStateBase
 {
 public:

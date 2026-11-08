@@ -34,8 +34,7 @@
 
 Player::Player()
 	:
-	CharacterBase(),
-	gunIsActive(false),
+	CharacterBase("Data/Parameter/Player/"),
 	swordIsActive(true),
 	gun(nullptr),
 	sword(nullptr),
@@ -43,10 +42,6 @@ Player::Player()
 	skillSlot(),
 	lockOnEnemyId(EnemyBase::INVALID_ID),
 	findEnemy(),
-	targetTime(0.0f),
-	bulletShotCount(0),
-	bullet(0),
-	isGunState(false),
 	state(STATE::None)
 {
 }
@@ -130,8 +125,11 @@ void Player::Load(void)
 	AddChildActor(sword);
 
 	//銃の生成
-	gun = new Gun(trans,gunIsActive);
+	gun = new Gun(trans); 
+
 	gun->SetEnemyFinder([&](int id) { return findEnemy ? findEnemy(id) : nullptr; });
+	gun->SetAddMp([this](int recovery) { AddMp(recovery); });
+
 	AddChildActor(gun);
 
 	//範囲攻撃の生成
@@ -325,8 +323,6 @@ void Player::Load(void)
 			},
 			10.0f,
 			ACCEL_MAX,
-			targetTime,
-			bulletShotCount,
 			//ロックオンしているか（銃に入れる条件・構えを続ける条件）
 			[&]() { return FindLockOnEnemy() != nullptr; }
 		)
@@ -397,7 +393,31 @@ void Player::Load(void)
 #pragma endregion
 
 
-	hp = 25;
+#pragma region ステータス設定・読み込み
+
+	//読み込みファイル
+	const std::string fileName = "PlayerStatus";
+
+	// maxHpパラメーター名
+	std::string parameterName = "MaxHp";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName))
+	{ MAX_HP =  GetParameterToInt(fileName, parameterName);}
+	
+	// maxHpパラメーター名
+	parameterName = "MaxMp";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName))
+	{ MAX_MP = GetParameterToInt(fileName, parameterName);}
+
+	//ステータス初期化
+	InitStatus(MAX_HP, MAX_MP);
+
+
+#pragma endregion
+
+
+	
 }
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
@@ -482,6 +502,9 @@ void Player::UseSkill(int slot)
 	SkillBase* skill = skillSlot[slot];
 	if (skill == nullptr || skill->IsActive()) { return; }
 
+	//MPを支払う（足りなければ撃てない）
+	if (!UseMp(skill->GetMpCost())) { return; }
+
 	//ロックオン中なら敵の方向を向いてから撃つ
 	if (const EnemyBase* enemy = FindLockOnEnemy())
 	{
@@ -522,8 +545,8 @@ void Player::SubDraw(void)
 
 	//DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 
-	DrawFormatString(0, 220, 0xffffff, "Bullet : %d", gun->GetBullet());
-	
+	DrawFormatString(0, 240, 0xffffff, "HP : %d / %d  MP : %d / %d",
+		status.hp, status.maxHp, status.mp, status.maxMp);
 
 
 	//DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);

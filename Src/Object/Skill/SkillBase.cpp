@@ -11,6 +11,7 @@ SkillBase::SkillBase
 ):
 	ActorBase(),
 	user(user),
+	mpCost(0),
 	scale(SCALE::None),
 	distance(DISTANCE::None),
 	step(STEP::None),

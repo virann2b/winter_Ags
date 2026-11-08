@@ -23,6 +23,8 @@ private:
 	static constexpr float FIRE_SPEED = 25.0f;
 	//火の玉の生存時間（フレーム数）
 	static constexpr float FIRE_ALIVE_TIME = 60.0f;
+	//消費MP
+	static constexpr int FIRE_MP_COST = 20;
 
 #pragma endregion
 

@@ -28,6 +28,9 @@ void SkillFire::Load(void)
 
 	//ê∂ë∂éûä‘
 	skillAliveTime = FIRE_ALIVE_TIME;
+
+	//è¡îÔMP
+	mpCost = FIRE_MP_COST;
 }
 
 void SkillFire::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)

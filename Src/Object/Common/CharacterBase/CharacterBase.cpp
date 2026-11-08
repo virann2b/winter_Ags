@@ -28,10 +28,48 @@ CharacterBase::CharacterBase(const std::string& parameterPath):
 {
 }
 
+void CharacterBase::InitStatus(int maxHp, int maxMp)
+{
+	//‘Ì—Í‚Æ–‚—Í‚Ì‰Šúİ’è
+	status.maxHp = maxHp;
+	status.hp = maxHp;
+
+	status.maxMp = maxMp;
+	status.mp = maxMp;
+
+}
+
 bool CharacterBase::TakeDamage(int damage)
 {
 	if (!GetJudgeFlg()) { return false; }
-	hp -= damage;
+
+	//‘Ì—ÍŒ¸­
+	status.hp = status.hp - damage;
+	if (status.hp <= 0) { status.hp = 0; }
+
+	return true;
+}
+
+void CharacterBase::AddHp(int recovery)
+{
+	//‘Ì—Í‚É‰ñ•œ—Ê‚ğ‰ÁZ
+	status.hp = status.hp + recovery;
+	if (status.hp >= status.maxHp) { status.hp = status.maxHp; }
+}
+
+void CharacterBase::AddMp(int recovery)
+{
+	status.mp = status.mp + recovery;
+	if (status.mp >= status.maxMp) { status.mp = status.maxMp; }
+}
+
+bool CharacterBase::UseMp(int cost)
+{
+	//–‚—Í‚ª‘«‚è‚È‚¢ê‡g—p•s‰Â
+	if (status.mp < cost) { return false; }
+
+	status.mp -= cost;
+	
 	return true;
 }
 

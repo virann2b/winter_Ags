@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerSkillState.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillFire\SkillFire.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
@@ -229,6 +230,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerSkillState.h" />
     <ClInclude Include="Src\Object\Skill\SkillFire\SkillFire.h" />
     <ClInclude Include="Src\Object\Skill\SkillManager.h" />

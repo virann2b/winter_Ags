@@ -7,19 +7,6 @@ class PlayerGunState : public CharacterStateBase
 {
 public:
 
-	//eó‘Ô
-	enum class STATE
-	{
-		None = -1,
-
-		Target,
-
-		Shot,
-
-		Relod,
-
-		Max,
-	};
 
 	PlayerGunState(
 		std::function<void(void)> PlayAnimeGun,
@@ -28,8 +15,6 @@ public:
 		std::function<void(void)> PlayShot,
 		float ACCEL_MAX,
 		float& accelMax,
-		float& targetTime,
-		int& bulletCount,
 		std::function<bool(void)> IsLockOn
 	);
 
@@ -44,11 +29,10 @@ public:
 	// XVˆ—
 	void Update(void)override;
 
+	//Œãn––
 	void Exit(void)override;
 
 private:
-
-
 
 #pragma region ó‚¯æ‚éQÆ•Ï”EŠÖ”
 
@@ -74,40 +58,12 @@ private:
 
 #pragma region ’è”
 
-
 	// ˆÚ“®‚ÌÅ‘åˆÚ“®‘¬“x
 	const float ACCEL_MAX;
 
-	//ˆê“x‚ÉŒ‚‚Ä‚éÅ‘å’e”
-	static constexpr int  MAX_BULLET = 6;
-
-	//Å‘å’eŠ”
-	static constexpr int  MAX_POSSESSION_BULLET = 48;
-
-	//”­Ë”‘‰ÁŠÔ
-	static constexpr float BULLET_COUNT_TIME = 15.0f;
-
-	//”­Ë”‘‰ÁÅ‘åŠÔ
-	static constexpr float BULLET_COUNT_MAX_TIME = 90.0f;
-
 #pragma endregion
 
-
-#pragma region •Ï”
-
-	//eó‘Ô
-	STATE state;
-
-	//“G‚ğ‘¨‚¦‚½ŠÔ
-	float& targetTime;
-	//”­Ë”
-	int& bulletCount;
-
-#pragma endregion
-
-	//ó‘Ô‘JˆÚ
-	void ChangeState(STATE state);
-	
+	//“ü—Í•ûŒü
 	Vector3 InputVec(void)const;
 
 };

@@ -218,21 +218,10 @@ private:
 	STATE state;
 
 	//武器切り替え
-	bool gunIsActive;
 	bool swordIsActive;
 
 	//ジャンプ回数最大フラグ
 	bool isMaxJump;
-	//銃状態
-	bool isGunState;
-
-	float targetTime;
-	//連続発射数
-	int bulletShotCount;
-	//現在所持段数
-	int bullet;
-	
-	
 
 #pragma endregion
 

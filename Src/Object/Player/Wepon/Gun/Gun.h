@@ -11,13 +11,14 @@ class Gun :public ActorBase
 {
 public:
 
-	Gun(const Transform& playerTrans,
-		bool isAlive);
+	Gun(const Transform& playerTrans);
 
 	~Gun() override = default;
 
 	//読み込み
 	void Load(void) override;
+	//初期化
+	void SubInit(void) override;
 
 	//弾情報の更新
 	void UpdateRecover(void);
@@ -43,6 +44,9 @@ public:
 	void FollowHand(void);
 	//照準のリセット
 	void ResetAim(void);
+
+	// MPを回復する関数を取得
+	void SetAddMp(std::function<void(int)> func) { addMp = func; }
 
 	//番号から敵を探す
 	void SetEnemyFinder(std::function<EnemyBase* (int) > finder) { findEnemy = finder; }
@@ -77,6 +81,7 @@ private:
 		int targetId;	// 敵の番号
 		int index;		// 何発目か
 		float timer;	// 着弾までの残りフレーム
+		bool isLast;	// 最後の1発か（硬直させる）
 	};
 
 #pragma region 定数
@@ -88,10 +93,17 @@ private:
 	// ずらす最大幅
 	static constexpr float SHOT_OFFSET_RANGE = 30.0f;  
 
-	static constexpr float AIM_DRAW_RADIUS = 16.0f;
+	static constexpr float AIM_DRAW_RADIUS = 32.0f;
 
-	float HIT_INTERVAL = 3.0f;		// 着弾の時間差（フレーム）
+	// 着弾の時間差（フレーム）
+	float HIT_INTERVAL = 3.0f;	
+
 	int damage = 2;
+
+	//1発目のMP回復量
+	int firstRecoveryMp = 2;
+	//一発ごとに加算されるMP回復量
+	int hitAddMp = 1;
 
 	//銃パラメータ
 	struct GunParams
@@ -102,7 +114,8 @@ private:
 		int MAX_AMMO = 48;					//最大弾所持数
 		int MAX_SHOT= 6;					//一度に打てる最大弾数
 		float AIM_TIME_DECREASE = 1.0f;		//照準の減少時間
-		float AIM_SPREAD = 60.0f;			//照準の広がり
+		float AIM_SPREAD = 60.0f;			//照準の広がり（画面上のピクセル。距離で変わらない）
+		float STUN_TIME = 120.0f;			//最後の1発で敵を硬直させる時間（フレーム）
 	};
 
 
@@ -113,6 +126,9 @@ private:
 
 	// 番号から敵を探す関数
 	std::function< EnemyBase*(int)> findEnemy;
+
+	// MPを回復する関数
+	std::function<void(int)> addMp;
 
 	std::vector<Hit> hitBullet;
 
@@ -129,6 +145,9 @@ private:
 	//武器切り替えフラグ
 	bool isActive;
 
+	//照準画像ハンドル
+	int aimImage;
+
 	//照準を置いている敵の番号
 	int aimTargetId;
 
@@ -142,6 +161,9 @@ private:
 	//照準時間
 	float aimingTimer;
 
+	//照準の画像倍率
+	float aimImageScale = 2.0f;
+
 	int debugHitCount = 0;
 
 	//1フレーム前のプレイヤー座標
@@ -149,6 +171,8 @@ private:
 
 	//派生クラス更新
 	void SubUpdate(void) override;
+	//派生クラス解放
+	void SubRelease(void) override;
 
 	/// <summary>
 	///照準を置くまでの時間
@@ -157,7 +181,7 @@ private:
 	/// <returns></returns>
 	float GetAimTime(int aimCount) const;
 
-	//照準のワールド座標
-	Vector3 GetAimWorldPos(const EnemyBase& enemy, int index) const;
+	//index番目の照準の、敵の中心からの画面上のずれ（ピクセル）
+	void GetAimScreenOffset(int index, float& offsetX, float& offsetY) const;
 
 };

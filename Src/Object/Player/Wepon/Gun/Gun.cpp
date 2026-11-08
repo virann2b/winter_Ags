@@ -10,11 +10,8 @@
 
 
 
-
-
 Gun::Gun(
-	const Transform& playerTrans,
-	bool isAlive)
+	const Transform& playerTrans)
 	:
 	ActorBase("Data/Parameter/Wepon/"),
 	playerTrans(playerTrans),
@@ -24,6 +21,7 @@ Gun::Gun(
 	aimTargetId(EnemyBase::INVALID_ID),
 	aimCount(0),
 	aimingTimer(0.0f),
+	aimImage(0),
 	prevPlayerPos()
 {
 }
@@ -86,15 +84,39 @@ void Gun::Load(void)
 	if (IsParameterExist(fileName, parameterName))
 	{ loadParams.AIM_SPREAD = GetParameter(fileName, parameterName);}
 
+	// STUN_TIMEパラメーター名
+	parameterName = "StunTime";
+	// そのパラメータが存在するかどうか
+	if (IsParameterExist(fileName, parameterName))
+	{ loadParams.STUN_TIME = GetParameter(fileName, parameterName); }
+
 	params = loadParams;
 
+#pragma endregion
+
+#pragma region 照準画像読み込み
+
+	//画像ハンドル読み込み
+	aimImage = LoadGraph("Data/Image/Gun/Aim.png");
+
+	// 画像の幅を、照準の直径（AIM_DRAW_RADIUS × 2）に合わせる
+	int width = 0, height = 0;
+	GetGraphSize(aimImage, &width, &height);
+	const int shortSide = (std::min)(width, height);
+	if (shortSide > 0) { aimImageScale = (AIM_DRAW_RADIUS * 2.0f) / shortSide; }
+
+#pragma endregion
+
+
+}
+
+void Gun::SubInit(void)
+{
 	//初期最大所持数初期化
 	remainingBullet = params.MAX_AMMO;
 
 	//弾の回復時間の初期化
 	recoverTimer = 0.0f;
-
-#pragma endregion
 
 }
 
@@ -111,7 +133,14 @@ void Gun::UseBullet(int useBullet)
 
 void Gun::SubUpdate(void)
 {
+	
 	SetIsDraw(isActive);
+}
+
+void Gun::SubRelease(void)
+{
+	//画像解放
+	DeleteGraph(aimImage);
 }
 
 float Gun::GetAimTime(int aimCount) const
@@ -123,22 +152,17 @@ float Gun::GetAimTime(int aimCount) const
 	return aimTime;
 }
 
-Vector3 Gun::GetAimWorldPos(const EnemyBase& enemy, int index) const
+void Gun::GetAimScreenOffset(int index, float& offsetX, float& offsetY) const
 {
 	// 置く順：中心 → 上 → 左 → 右 → 左下 → 右下（AIMING_POS の順）
-	// x = カメラから見た右、y = カメラから見た上 への割合
+	// x = 画面の右、y = 画面の上 への割合
 	static const float OFFSET_X[(int)AIMING_POS::Max] = { 0.0f, 0.0f, -1.0f, 1.0f, -0.6f,  0.6f };
 	static const float OFFSET_Y[(int)AIMING_POS::Max] = { 0.0f, 1.0f,  0.0f, 0.0f, -0.9f, -0.9f };
 
-	// カメラ基準の右・上
-	const VECTOR r = GetCameraRightVector();
-	const VECTOR u = GetCameraUpVector();
-	const Vector3 right(r.x, r.y, r.z);
-	const Vector3 up(u.x, u.y, u.z);
-
-	return enemy.GetTrans().pos
-		+ right * (OFFSET_X[index] * params.AIM_SPREAD)
-		+ up * (OFFSET_Y[index] * params.AIM_SPREAD);
+	// 画面上のピクセルでずらす（敵との距離で広がりが変わらない）
+	// 画面座標は下がプラスなので、上方向は符号を反転する
+	offsetX = OFFSET_X[index] * params.AIM_SPREAD;
+	offsetY = -OFFSET_Y[index] * params.AIM_SPREAD;
 }
 
 void Gun::UpdateRecover(void)
@@ -207,7 +231,14 @@ void Gun::UpdateHit(void)
 		EnemyBase* enemy = findEnemy ? findEnemy(hit.targetId) : nullptr;
 		if (enemy == nullptr || enemy->IsDead()) { continue; }
 
+		//ダメージ処理
 		enemy->TakeGunDamege(damage);
+
+		//MP回復 : 初弾は２回復、２発目以降は加算
+		if (addMp) { addMp(firstRecoveryMp + hitAddMp * hit.index); }
+
+		//最後の1発で、まだ生きていれば硬直させる
+		if (hit.isLast && !enemy->IsDead()) { enemy->Stun(params.STUN_TIME); }
 
 		// 手順6でここをダメージ、手順7でMP回復に置き換える
 		debugHitCount++;
@@ -289,7 +320,9 @@ void Gun::Shot(void)
 	for (int i = 0; i < aimCount; ++i)
 	{
 		// 1発目は0フレーム後（すぐ）、以降 HIT_INTERVAL ずつ遅れて着弾
-		hitBullet.push_back({ aimTargetId, i, HIT_INTERVAL * i });
+		// 最後の1発だけ硬直させる
+		const bool isLast = (i == aimCount - 1);
+		hitBullet.push_back({ aimTargetId, i, HIT_INTERVAL * i, isLast });
 
 		// 1発ごとに所持弾を1減らす（照準は所持弾の数までしか置けないので0未満にはならない）
 		remainingBullet--;
@@ -345,17 +378,26 @@ void Gun::DrawAimUI(void) const
 	const EnemyBase* enemy = findEnemy(aimTargetId);
 	if (enemy == nullptr || enemy->IsDead()) { return; }
 
+	// 敵の中心を画面座標に変換（照準はここを基準に画面上で並べる）
+	const VECTOR center = ConvWorldPosToScreenPos(enemy->GetTrans().pos.ToVECTOR());
+	// カメラの後ろ側なら描かない
+	if (center.z <= 0.0f || center.z >= 1.0f) { return; }
+
 	for (int i = 0; i < aimCount; ++i)
 	{
-		// ワールド座標 → 画面座標
-		const VECTOR screen = ConvWorldPosToScreenPos(GetAimWorldPos(*enemy, i).ToVECTOR());
-		// カメラの後ろ側は描かない
-		if (screen.z <= 0.0f || screen.z >= 1.0f) { continue; }
+		// 敵の中心から画面上でずらした位置
+		float offsetX = 0.0f, offsetY = 0.0f;
+		GetAimScreenOffset(i, offsetX, offsetY);
 
-		const float x = screen.x, y = screen.y, rad = AIM_DRAW_RADIUS;
+		const float x = center.x + offsetX, y = center.y + offsetY;
+
+		// 画像の中心を照準の位置に合わせて描く（第5引数 TRUE = 透過あり）
+		DrawRotaGraphF(x, y, aimImageScale, 0.0, aimImage, true);
+
+		/*const float x = screen.x, y = screen.y, rad = AIM_DRAW_RADIUS;
 		DrawCircleAA(x, y, rad, 32, 0xffffff, FALSE, 2.0f);
 		DrawLineAA(x - rad * 1.4f, y, x + rad * 1.4f, y, 0xffffff, 2.0f);
-		DrawLineAA(x, y - rad * 1.4f, x, y + rad * 1.4f, 0xffffff, 2.0f);
+		DrawLineAA(x, y - rad * 1.4f, x, y + rad * 1.4f, 0xffffff, 2.0f);*/
 	}
 
 	DrawFormatString(0, 260, 0xffffff, "Hit : %d", debugHitCount);

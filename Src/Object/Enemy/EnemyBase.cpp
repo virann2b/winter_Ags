@@ -37,7 +37,20 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 
 	//攻撃被弾時の処理
 	if (IsDead()) { OnDie(); }
-	else { OnHit(); }
+	//硬直中はのけぞらない（ダメージだけ受ける）
+	else if (!isStunned) { OnHit(); }
+}
+
+void EnemyBase::Stun(float frame)
+{
+	//死亡中・すでに硬直中なら受け付けない（重ねがけなし）
+	if (IsDead() || isStunned) { return; }
+
+	isStunned = true;
+	stunFrame = frame;
+
+	//敵ごとの硬直の見せ方
+	OnStun();
 }
 
 void EnemyBase::TakeGunDamege(int damage)
@@ -122,6 +135,10 @@ void EnemyBase::SubInit(void)
 
 	//死亡終了フラグ
 	isDieEnd = false;
+
+	//硬直
+	isStunned = false;
+	stunFrame = 0.0f;
 
 	EnemyInit();
 }

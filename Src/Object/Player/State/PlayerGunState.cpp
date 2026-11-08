@@ -12,8 +12,6 @@ PlayerGunState::PlayerGunState(
 	std::function<void(void)> PlayShot,
 	float ACCEL_MAX,
 	float& accelMax,
-	float& targetTime,
-	int& bulletCount,
 	std::function<bool(void)> IsLockOn
 ):
 	PlayAnimeGun(PlayAnimeGun),
@@ -22,10 +20,7 @@ PlayerGunState::PlayerGunState(
 	PlayShot(PlayShot),
 	ACCEL_MAX(ACCEL_MAX),
 	accelMax(accelMax),
-	targetTime(targetTime),
-	bulletCount(bulletCount),
-	IsLockOn(IsLockOn),
-	state(STATE::None)
+	IsLockOn(IsLockOn)
 {
 }
 
@@ -43,14 +38,6 @@ void PlayerGunState::Enter(void)
 {
 	//銃アニメーション再生
 	PlayAnimeGun();
-
-	//初期状態
-	state = STATE::Target;
-
-	//ターゲットタイムリセット
-	targetTime = 0.0f;
-
-	//カメラの銃モードへの切り替えは、GameSceneから伝わった「構えている」をもとにカメラが行う
 }
 
 void PlayerGunState::Update(void)
@@ -95,11 +82,6 @@ void PlayerGunState::Exit(void)
 	accelMax = ACCEL_MAX;
 
 	//カメラを元のモードに戻すのも、GameSceneから伝わった「構えていない」をもとにカメラが行う
-}
-
-void PlayerGunState::ChangeState(STATE state_)
-{
-	state = state_;
 }
 
 Vector3 PlayerGunState::InputVec(void) const

@@ -75,6 +75,9 @@ public:
 	//スキル使用者の取得
 	SKILL_USER GetUser(void) const { return user; }
 
+	//消費MPの取得（プレイヤー・お友達のみ支払う。敵は支払わない）
+	int GetMpCost(void) const { return mpCost; }
+
 protected:
 
 	enum class STEP
@@ -139,6 +142,9 @@ protected:
 
 	//スキル使用者
 	SKILL_USER user;
+
+	//消費MP
+	int mpCost;
 
 	//スキルサイズ
 	SCALE scale;

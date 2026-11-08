@@ -20,19 +20,52 @@ public:
 	// ステートの取得
 	int GetState(void)const { return state; }
 
-#pragma region 体力関連
+#pragma region ステータス関連
+
+
+	//ステータス
+	struct CharacterStatus
+	{
+		int hp = 0;		//現在の体力
+		int maxHp = 0;	//最大体力
+
+		int mp = 0;		//現在の魔力
+		int maxMp = 0;	//最大魔力(MPを使用しないキャラはそのままで)
+	};
+
+	//ステータス取得
+	const CharacterStatus& GetStatus(void) const { return status; }
+		
+
+	//ステータスの初期化
+	void InitStatus(int maxHp, int maxMp);
 
 	//ダメージ処理
 	bool TakeDamage(int damage)override;
 
-	//MAXHPの設定
-	void SetMaxHp(int HP) { hp = HP; };
+	/// <summary>
+	/// 体力の回復
+	/// </summary>
+	/// <param name="recovery">回復量</param>
+	void AddHp(int recovery);
+	/// <summary>
+	/// 魔力の回復
+	/// </summary>
+	/// <param name="recovery">回復量</param>
+	void AddMp(int recovery);
+
+	/// <summary>
+	/// 魔力の消費
+	/// </summary>
+	/// <param name="cost">消費魔力</param>
+	/// <returns></returns>
+	bool UseMp(int cost);
 
 	//現在体力の取得
-	int GetHp(void) const { return hp; };
+	int GetHp(void) const { return status.hp; };
 
 	//死亡判定の取得
-	bool IsDead(void) const { return hp <= 0; };
+	bool IsDead(void) const { return status.hp <= 0; };
 
 #pragma endregion
 
@@ -66,8 +99,16 @@ protected:
 	// アニメーションコントローラーのインスタンス
 	AnimationController* anime;
 
+	//ステータス
+	CharacterStatus status;
+
 	//体力
 	int hp;
+
+	//最大体力
+	int MAX_HP = 50;
+	//最大魔力
+	int MAX_MP = 0;
 
 	//被弾後の無敵時間
 	float invincibleCounter;

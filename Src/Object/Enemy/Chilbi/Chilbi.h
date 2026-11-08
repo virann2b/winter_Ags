@@ -34,6 +34,8 @@ private:
 
 		Die,
 
+		Stun,	
+
 		Max
 	};
 
@@ -118,6 +120,7 @@ private:
 
 	void OnHit(void)override;
 	void OnDie(void)override;
+	void OnStun(void)override;
 
 	
 	//チルビーの重さ

@@ -46,6 +46,11 @@ public:
 	//銃専陽ダメージ処理
 	void TakeGunDamege(int damage);
 
+	// 硬直させる（死亡中・硬直中は受け付けない＝重ねがけなし）
+	void Stun(float frame);
+	// 硬直中か
+	bool IsStunned(void) const { return isStunned; }
+
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
 
@@ -100,6 +105,13 @@ protected:
 	virtual void OnHit(void) = 0;
 	// 死亡時
 	virtual void OnDie(void) = 0;
+	// 硬直開始時（敵ごとに見せ方を決める。硬直ステートへ遷移するなど）
+	virtual void OnStun(void) {}
+
+	// 硬直させる時間（フレーム）の取得（硬直ステートが使う）
+	float GetStunFrame(void) const { return stunFrame; }
+	// 硬直の終了（硬直ステートの終了時に呼ぶ）
+	void EndStun(void) { isStunned = false; }
 
 	//無敵中か
 	bool IsInvincible(void) const { return invincibleCounter > 0.0f; }
@@ -169,6 +181,11 @@ private:
 
 	// 死亡アニメーションまで終わったか
 	bool isDieEnd = false;
+
+	// 硬直中か
+	bool isStunned = false;
+	// 硬直させる時間（フレーム）
+	float stunFrame = 0.0f;
 
 	// スキル枠
 	struct SkillSlot
