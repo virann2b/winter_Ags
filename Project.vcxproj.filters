@@ -187,6 +187,7 @@
     <ClInclude Include="Src\Object\Skill\SkillFire\SkillFire.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerSkillState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />
+    <ClInclude Include="Src\Object\Skill\ElementDefine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

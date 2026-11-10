@@ -36,17 +36,19 @@ void Sword::Load(void)
 
 	//サイズ設定
 	trans.scale = 0.7f;
-
+	//ずれ補正
 	trans.centerDiff = Vector3::Xonly(-50.0f);
 
-	AddCollider(
-		new CapsuleCollider(
-			COLLIDER_TAG::PlayerSword,
+	//コライダーの追加
+	CapsuleCollider* swordColl =
+		new CapsuleCollider(COLLIDER_TAG::PlayerSword,
 			Vector3::Xonly(15.0f) * trans.scale,
 			Vector3::Xonly(160.0f) * trans.scale,
 			60.0f * trans.scale.MaxElementF()
-		)
-	);
+		);
+	//属性の登録
+	swordColl->SetElement(ELEMENT::Physics);
+	AddCollider(swordColl);
 
 	//角度の調整
 	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));

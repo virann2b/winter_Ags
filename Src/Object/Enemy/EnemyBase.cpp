@@ -10,10 +10,12 @@
 
 EnemyBase::EnemyBase(const Vector3& initPos)
 	:
-	CharacterBase(),
+	CharacterBase("Data/Parameter/Enemy/"),
 	initPos(initPos),
 	attackCoolTime(0.0f)
 {
+	//初期耐性
+	resistTable.fill(ELEMENT_RESIST::Normal);
 }
 
 void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
@@ -31,26 +33,36 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 		return;
 	}
 
+	// 最後に受けた攻撃の属性取得
+	lastHitElement = other.GetElement();
+
 	//ダメージ処理
-	TakeDamage(GetDamage(otherTag));
+	TakeDamage(WeakDamage(GetDamage(otherTag)));
+
+	//無敵判定開始
 	StartInvincible();
 
 	//攻撃被弾時の処理
 	if (IsDead()) { OnDie(); }
-	//硬直中はのけぞらない（ダメージだけ受ける）
+	else if (IsWeak(lastHitElement)) { WeakStun(); }
+	//硬直中はのけぞらない
 	else if (!isStunned) { OnHit(); }
 }
 
 void EnemyBase::Stun(float frame)
 {
-	//死亡中・すでに硬直中なら受け付けない（重ねがけなし）
+	//死亡中・すでに硬直中なら受け付けない
 	if (IsDead() || isStunned) { return; }
 
-	isStunned = true;
-	stunFrame = frame;
+	StartStun(frame, false);
+}
 
-	//敵ごとの硬直の見せ方
-	OnStun();
+void EnemyBase::WeakStun(void)
+{
+	//死亡・すでに弱点を疲れている場合は受け付けない
+	if (IsDead() || isWeakStun) { return; }
+
+	StartStun(WEAK_STUN_FRAME, true);
 }
 
 void EnemyBase::TakeGunDamege(int damage)
@@ -58,9 +70,10 @@ void EnemyBase::TakeGunDamege(int damage)
 	// すでに倒れている敵には当てない
 	if (IsDead()) { return; }
 
+	//ダメージ処理
 	TakeDamage(damage);
 
-	// 倒したときだけ死亡処理（生きていても OnHit は呼ばない＝のけぞらない）
+	// 倒したときだけ死亡処理
 	if (IsDead()) { OnDie(); }
 }
 
@@ -123,6 +136,36 @@ Vector3 EnemyBase::GetDirectionToTarget(void) const
 	if (len <= 0.0001f) { return Vector3(); }
 
 	return Vector3(dx / len, 0.0f, dz / len);
+}
+
+void EnemyBase::LoadResist(const std::string& enemyName)
+{
+	// その回のパラメータ
+	std::string FileName = "ElementResist";
+
+	// そのパラメータが存在するかどうか
+	if (!IsParameterExist(FileName, enemyName)) { return; }
+	
+	//csvから値を取得
+	const std::vector<float>& values = GetParameterArray(FileName, enemyName);
+
+	//属性耐性テーブルに登録
+	for (int i = 0; i < (int)ELEMENT::Max && i < (int)values.size(); ++i)
+	{
+		resistTable[i] = static_cast<ELEMENT_RESIST>((int)values[i]);
+	}
+}
+
+bool EnemyBase::IsWeak(ELEMENT element) const
+{
+	//属性なし
+	if (element == ELEMENT::None || element == ELEMENT::Max)
+	{
+		return false;
+	}
+
+	//属性弱点を取得
+	return resistTable[(int)element] == ELEMENT_RESIST::Weak;
 }
 
 void EnemyBase::SubInit(void)
@@ -236,4 +279,25 @@ void EnemyBase::SkillCoolTimeUpdate(void)
 		if (slot.coolCount > 0.0f) { slot.coolCount -= TimeScale::Get(); }
 		if (slot.coolCount < 0.0f) { slot.coolCount = 0.0f; }
 	}
+}
+
+void EnemyBase::StartStun(float frame, bool isWeak)
+{
+	//硬直時間
+	stunFrame = frame;
+
+	//敵ごとの硬直
+	OnStun();
+
+	isStunned = true;
+	isWeakStun = isWeak;
+}
+
+int EnemyBase::WeakDamage(int damage) const
+{
+	//弱点硬直してない場合は何もしない
+	if (!isWeakStun) { return damage; }
+
+	//ダメージ倍率をかけ、四捨五入
+	return (int)std::round(damage * WEAK_DAMAGE_RATE);
 }

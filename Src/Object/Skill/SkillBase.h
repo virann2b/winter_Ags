@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common/ActorBase/ActorBase.h"
+#include "ElementDefine.h"
 
 class SkillBase : public ActorBase
 {
@@ -34,21 +35,6 @@ public:
 		Max
 	};
 
-	//スキルの属性（今は未使用）
-	enum class SKILL_TYPE
-	{
-		None = -1,
-
-		Physics,
-
-		Fire,
-
-		Ice,
-
-		Wind,
-
-		Max
-	};
 
 	//スキルの名前
 	enum class SKILL_NAME
@@ -77,6 +63,9 @@ public:
 
 	//消費MPの取得（プレイヤー・お友達のみ支払う。敵は支払わない）
 	int GetMpCost(void) const { return mpCost; }
+
+	//属性取得
+	ELEMENT GetElement(void) const { return element; }
 
 protected:
 
@@ -140,11 +129,10 @@ protected:
 
 #pragma region 変数
 
+	ELEMENT element;
+
 	//スキル使用者
 	SKILL_USER user;
-
-	//消費MP
-	int mpCost;
 
 	//スキルサイズ
 	SCALE scale;
@@ -155,6 +143,9 @@ protected:
 
 	//スキルの進む向き
 	Vector3 moveDir;
+
+	//消費MP
+	int mpCost;
 
 	//スキルの生存時間（フレーム数・派生先のLoadで設定）
 	float skillAliveTime;

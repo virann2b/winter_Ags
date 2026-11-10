@@ -34,6 +34,8 @@ void Chilbi::Load(void)
 	//オブジェクト初期設定
 	SetupEnemyObject(CHILIBI_WEIGHT);
 
+	//属性耐性の読み込み
+	LoadResist("Chilbi");
 
 	// モデルの読み込み
 	trans.LoadModel("Enemy/Chilbi/Chilbi");
@@ -245,6 +247,14 @@ void Chilbi::EnemyUpdate(void)
 void Chilbi::EnemyDraw(void)
 {
 	DrawFormatString(0, 80, 0xffffff, "EnemyHp : %d", status.hp);
+
+	DrawFormatString(0, 500, 0xffffff, "LastElement : %d", (int)lastHitElement);
+
+	DrawFormatString(0, 520, 0xffffff, "IsWeak : %d", (int)IsWeak(lastHitElement));
+
+	DrawFormatString(0, 540, 0xffffff, "WeakStun : %d", (int)IsWeakStun());
+
+
 }
 
 void Chilbi::OnHit(void)

@@ -1,5 +1,6 @@
 #pragma once
 #include "../Common/CharacterBase/CharacterBase.h"
+#include "../Skill/ElementDefine.h"
 
 #include <vector>
 
@@ -46,10 +47,15 @@ public:
 	//銃専陽ダメージ処理
 	void TakeGunDamege(int damage);
 
-	// 硬直させる（死亡中・硬直中は受け付けない＝重ねがけなし）
+	// 硬直
 	void Stun(float frame);
-	// 硬直中か
+	// 弱点硬直
+	void WeakStun(void);
+
+	// 硬直中判定
 	bool IsStunned(void) const { return isStunned; }
+	//　弱点硬直判定
+	bool IsWeakStun(void) const { return isWeakStun; }
 
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
@@ -66,11 +72,17 @@ protected:
 
 #pragma region 定数・変数
 
-	// 無敵時間(フレーム)
+	// 無敵時間
 	static constexpr float DEFAULT_INVINCIBLE_FRAME = 60.0f;
 
-	// 攻撃クールタイム（フレーム）
+	// 攻撃クールタイム
 	static constexpr float DEFAULT_ATTACK_COOLTIME = 120.0f;
+
+	// 弱点硬直の時間
+	static constexpr float WEAK_STUN_FRAME = 360.0f;
+
+	// 弱点硬直中の被ダメージ倍率
+	static constexpr float WEAK_DAMAGE_RATE = 1.5f;
 
 	// プレイヤーの攻撃で受けるダメージ
 	static constexpr int DEFAULT_DAMAGE = 1;
@@ -85,6 +97,9 @@ protected:
 
 	// カウント用攻撃クールタイム
 	float attackCoolTime;
+
+	//最後に受けた攻撃属性
+	ELEMENT lastHitElement = ELEMENT::None;
 
 #pragma endregion
 
@@ -101,17 +116,21 @@ protected:
 	// プレイヤーの攻撃を受けたときのダメージ量(必要なら上書き)
 	virtual int GetDamage(COLLIDER_TAG otherTag) const;
 
-	// 被弾時(死亡していない場合)
+	// 被弾時
 	virtual void OnHit(void) = 0;
+
 	// 死亡時
 	virtual void OnDie(void) = 0;
-	// 硬直開始時（敵ごとに見せ方を決める。硬直ステートへ遷移するなど）
+
+	// 硬直開始時
 	virtual void OnStun(void) {}
 
-	// 硬直させる時間（フレーム）の取得（硬直ステートが使う）
+	// 硬直させる時間
 	float GetStunFrame(void) const { return stunFrame; }
-	// 硬直の終了（硬直ステートの終了時に呼ぶ）
-	void EndStun(void) { isStunned = false; }
+;
+	//硬直終了
+	void EndStun(void) { isStunned = false; isWeakStun = false; }
+
 
 	//無敵中か
 	bool IsInvincible(void) const { return invincibleCounter > 0.0f; }
@@ -154,12 +173,30 @@ protected:
 	// どれかのスキルが発動中か
 	bool IsSkillActive(void) const;
 
+	/// <summary>
+	/// 属性耐性テーブル読み込み
+	/// </summary>
+	/// <param name="enemyName">取得する敵の名前</param>
+	void LoadResist(const std::string& enemyName);
+
+
+	/// <summary>
+	/// 属性の弱点判定
+	/// </summary>
+	/// <param name="weakelememt">う</param>
+	/// <returns></returns>
+	bool IsWeak(ELEMENT element) const;
+
+
 #pragma endregion
 
 private:
 
 	// 番号を振れるのはEnemyManagerだけ
 	friend class EnemyManager;
+
+	//属性耐性テーブル
+	ElementResistTable resistTable;
 
 	// 敵の番号
 	int id = INVALID_ID;
@@ -179,11 +216,15 @@ private:
 	// 攻撃対象の座標
 	const Vector3* targetPos = nullptr;
 
-	// 死亡アニメーションまで終わったか
+	// 死亡アニメーションフラグ
 	bool isDieEnd = false;
 
-	// 硬直中か
+	// 硬直中フラグ
 	bool isStunned = false;
+
+	//弱点硬直フラグ
+	bool isWeakStun = false;
+
 	// 硬直させる時間（フレーム）
 	float stunFrame = 0.0f;
 
@@ -200,6 +241,12 @@ private:
 
 	// スキルのクールタイム更新
 	void SkillCoolTimeUpdate(void);
+
+	// 硬直開始の共通処理
+	void StartStun(float frame, bool isWeak);
+
+	//弱点時のダメージ
+	int WeakDamage(int damege) const;
 
 };
 

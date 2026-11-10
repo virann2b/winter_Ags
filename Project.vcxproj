@@ -232,6 +232,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
   <ItemGroup>
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerSkillState.h" />
+    <ClInclude Include="Src\Object\Skill\ElementDefine.h" />
     <ClInclude Include="Src\Object\Skill\SkillFire\SkillFire.h" />
     <ClInclude Include="Src\Object\Skill\SkillManager.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiMoveState.h" />

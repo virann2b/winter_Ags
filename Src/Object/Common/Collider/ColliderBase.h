@@ -12,6 +12,8 @@
 
 #include "ColliderTagDefine.h"
 
+#include "../../Skill/ElementDefine.h"
+
 
 // 衝突結果構造体
 struct CollisionResult
@@ -88,6 +90,9 @@ public:
 	// 接地判定通知用関数セット
 	void SetOnGroundedFunc(std::function<void(COLLIDER_TAG, const ColliderBase&)> OnGroundedFunc);
 
+	// 属性のセット
+	void SetElement(ELEMENT setElement) { element = setElement; }
+
 #pragma endregion
 
 
@@ -138,6 +143,9 @@ public:
 	// 自分が占有している範囲
 	virtual AABB GetAABB(void) const = 0;
 
+	//コライダーの属性(攻撃用)
+	ELEMENT GetElement(void) const { return element; }
+
 #pragma endregion
 
 
@@ -157,6 +165,9 @@ private:
 
 	// モデル制御情報
 	Transform* trans;
+
+	// 攻撃の属性
+	ELEMENT element = ELEMENT::None;
 
 	// オブジェクト側から直接参照する情報
 	const bool* dynamicFlg;

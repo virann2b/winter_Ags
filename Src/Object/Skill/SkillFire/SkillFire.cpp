@@ -23,6 +23,9 @@ void SkillFire::Load(void)
 	//オブジェクト初期設定
 	SetUpSkillObject();
 
+	//属性登録
+	element = ELEMENT::Fire;
+
 	//当たり判定の追加
 	AddSkillCollider(FIRE_RADIUS);
 

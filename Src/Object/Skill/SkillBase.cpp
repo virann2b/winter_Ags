@@ -61,7 +61,13 @@ void SkillBase::AddSkillCollider(float radius)
 	const COLLIDER_TAG tag =
 		(user == SKILL_USER::Enemy) ? COLLIDER_TAG::EnemySkill : COLLIDER_TAG::PlayerSkill;
 
-	AddCollider(new SphereCollider(tag, radius, trans.pos));
+	//コライダーの追加
+	SphereCollider* coll = new SphereCollider(tag, radius, trans.pos);
+
+	//属性の設定
+	coll->SetElement(element);
+
+	AddCollider(coll);
 
 	//当たり判定オフ（コライダー追加後でないと効かない）
 	SetJudgeFlg(false);

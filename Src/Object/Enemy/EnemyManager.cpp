@@ -12,7 +12,7 @@ void EnemyManager::Load(void)
 {
 	CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(1300, 50, 200));
 
-	CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(300, 50, 1000));
+	//CreateEnemy(EnemyBase::ENEMY_TYPE::Chilbi, Vector3(300, 50, 1000));
 }
 
 const EnemyBase* EnemyManager::FindEnemy(int id) const

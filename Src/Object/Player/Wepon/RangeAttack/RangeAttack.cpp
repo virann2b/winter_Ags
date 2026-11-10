@@ -54,9 +54,13 @@ void RangeAttack::Load(void)
 	scaleSize = scaleSizeBig;
 
 
-	// 生成、メンバ変数にポインタを保持
+	// 生成、ポインタ保持
 	attackCollRef = new SphereCollider(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos);
-	// 生成したコライダーをアクター所有コライダーに追加
+	
+	//属性の登録
+	attackCollRef->SetElement(ELEMENT::Physics);
+	
+	// コライダーの生成
 	AddCollider(attackCollRef);
 
 	//当たり判定OFF
