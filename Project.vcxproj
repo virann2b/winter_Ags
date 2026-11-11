@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerSkillState.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillFire\SkillFire.cpp" />
@@ -228,8 +229,11 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Scene\SceneManager.cpp" />
     <ClCompile Include="Src\Scene\Title\TitleScene.cpp" />
     <ClCompile Include="Src\Object\Player\Wepon\Sword\Sword.cpp" />
+    <ClCompile Include="Src\Object\UI\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />
+    <ClInclude Include="Src\Object\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerSkillState.h" />
     <ClInclude Include="Src\Object\Skill\ElementDefine.h" />
@@ -335,6 +339,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClInclude Include="Src\Scene\Title\TitleScene.h" />
     <ClInclude Include="Src\Utility\Utility.h" />
     <ClInclude Include="Src\Object\Player\Wepon\Sword\Sword.h" />
+    <ClInclude Include="Src\Object\UI\UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

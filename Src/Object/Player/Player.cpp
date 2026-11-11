@@ -545,13 +545,9 @@ void Player::SubDraw(void)
 
 	//DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
 
-	DrawFormatString(0, 240, 0xffffff, "HP : %d / %d  MP : %d / %d",
-		status.hp, status.maxHp, status.mp, status.maxMp);
+	//DrawFormatString(0, 240, 0xffffff, "HP : %d / %d  MP : %d / %d",
+	//	status.hp, status.maxHp, status.mp, status.maxMp);
 
-
-	//DrawFormatString(0, 150, 0xffffff, "time : %.2f", targetTime);
-	/*DrawFormatString(0, 220, 0xffffff, "isMaxJump : %d", isMaxJump);
-	DrawFormatString(0, 240, 0xffffff, "isGround : %d", isGround);*/
 
 }
 

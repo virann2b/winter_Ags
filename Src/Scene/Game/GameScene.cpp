@@ -28,6 +28,8 @@
 #include "../../Object/Enemy/EnemyManager.h"
 #include "../../Object/Enemy/EnemyBase.h"
 
+#include "../../Object/UI/UIManager.h"
+#include "../../Object/UI/Player/PlayerStatusUI.h"
 
 #include "../../Object/Water.h"
 
@@ -51,6 +53,9 @@ void GameScene::SubPostLoad(void)
 
 	//プレイヤー
 	AddActor(new Player);
+
+	//UI
+	AddActor(new UIManager);
 
 
 }
@@ -76,6 +81,13 @@ void GameScene::SubPostInit(void)
 
 		// 番号から敵を探す関数をプレイヤーに渡す（プレイヤーはEnemyManagerを知らずに済む）
 		player->SetEnemyFinder([enemyManager](int id) { return enemyManager->FindEnemy(id); });
+	}
+
+	UIManager* uiManager = ActorSerch<UIManager>(actors);
+
+	if (player && uiManager)
+	{
+		uiManager->AddUI(new PlayerStatusUI(player->GetStatus()));
 	}
 }
 

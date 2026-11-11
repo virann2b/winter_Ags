@@ -31,5 +31,6 @@ enum class ELEMENT_RESIST
 	Weak,		//弱点
 };
 
+
 //属性ごとの耐性テーブル
 using ElementResistTable = std::array<ELEMENT_RESIST, (int)ELEMENT::Max>;

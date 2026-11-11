@@ -81,6 +81,8 @@
     <ClCompile Include="Src\Object\Skill\SkillFire\SkillFire.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerSkillState.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.cpp" />
+    <ClCompile Include="Src\Object\UI\UIManager.cpp" />
+    <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -188,6 +190,9 @@
     <ClInclude Include="Src\Object\Player\State\PlayerSkillState.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />
     <ClInclude Include="Src\Object\Skill\ElementDefine.h" />
+    <ClInclude Include="Src\Object\UI\UIBase.h" />
+    <ClInclude Include="Src\Object\UI\UIManager.h" />
+    <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />
