@@ -12,13 +12,15 @@ SkillBase::SkillBase
 	ActorBase(),
 	user(user),
 	mpCost(0),
+	damage(1),
 	scale(SCALE::None),
 	distance(DISTANCE::None),
 	step(STEP::None),
 	moveDir(),
 	skillAliveTime(60.0f),
 	skillAliveCount(0.0f),
-	userTrans(userTrans)
+	userTrans(userTrans),
+	element(ELEMENT::None)
 {
 }
 
@@ -66,6 +68,9 @@ void SkillBase::AddSkillCollider(float radius)
 
 	//‘®«‚ÌÝ’è
 	coll->SetElement(element);
+
+	//ƒ_ƒ[ƒW—Ê‚ÌÝ’è
+	coll->SetDamage(damage);
 
 	AddCollider(coll);
 

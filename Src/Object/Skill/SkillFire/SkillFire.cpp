@@ -26,11 +26,17 @@ void SkillFire::Load(void)
 	//属性登録
 	element = ELEMENT::Fire;
 
+	//ダメージ量登録（コライダー追加より前に設定する）
+	damage = FIRE_DAMAGE;
+
 	//当たり判定の追加
 	AddSkillCollider(FIRE_RADIUS);
 
 	//生存時間
 	skillAliveTime = FIRE_ALIVE_TIME;
+
+	//スキルアイコン登録
+	iconTag = Img::IMAGE_TAG::Element_Fire;
 
 	//消費MP
 	mpCost = FIRE_MP_COST;

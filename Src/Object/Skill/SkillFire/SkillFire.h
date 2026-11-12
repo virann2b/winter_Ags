@@ -25,6 +25,8 @@ private:
 	static constexpr float FIRE_ALIVE_TIME = 60.0f;
 	//è¡îÔMP
 	static constexpr int FIRE_MP_COST = 20;
+	//É_ÉÅÅ[ÉWó 
+	static constexpr int FIRE_DAMAGE = 10;
 
 #pragma endregion
 

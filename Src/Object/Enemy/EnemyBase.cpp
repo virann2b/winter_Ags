@@ -37,7 +37,7 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	lastHitElement = other.GetElement();
 
 	//ダメージ処理
-	TakeDamage(WeakDamage(GetDamage(otherTag)));
+	TakeDamage(WeakDamage(other.GetDamage()));
 
 	//無敵判定開始
 	StartInvincible();
@@ -46,13 +46,13 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	if (IsDead()) { OnDie(); }
 	else if (IsWeak(lastHitElement)) { WeakStun(); }
 	//硬直中はのけぞらない
-	else if (!isStunned) { OnHit(); }
+	else if (!isStunned_) { OnHit(); }
 }
 
 void EnemyBase::Stun(float frame)
 {
 	//死亡中・すでに硬直中なら受け付けない
-	if (IsDead() || isStunned) { return; }
+	if (IsDead() || isStunned_) { return; }
 
 	StartStun(frame, false);
 }
@@ -60,9 +60,12 @@ void EnemyBase::Stun(float frame)
 void EnemyBase::WeakStun(void)
 {
 	//死亡・すでに弱点を疲れている場合は受け付けない
-	if (IsDead() || isWeakStun) { return; }
+	if (IsDead() || isWeakStun_) { return; }
 
 	StartStun(WEAK_STUN_FRAME, true);
+
+	//弱点硬直を起こした属性を保存
+	weakStunElement = lastHitElement;
 }
 
 void EnemyBase::TakeGunDamege(int damage)
@@ -95,14 +98,9 @@ void EnemyBase::SetupEnemyObject(int pushWeight)
 	SetJudgeFlg(true);
 }
 
-int EnemyBase::GetDamage(COLLIDER_TAG otherTag) const
-{
-	return DEFAULT_DAMAGE;
-}
-
 void EnemyBase::DieEnd(void)
 {
-	isDieEnd = true;
+	isDieEnd_ = true;
 
 	//画面から消す
 	SetIsDraw(false);
@@ -177,10 +175,10 @@ void EnemyBase::SubInit(void)
 	attackCoolTime = 0.0f;
 
 	//死亡終了フラグ
-	isDieEnd = false;
+	isDieEnd_ = false;
 
 	//硬直
-	isStunned = false;
+	isStunned_ = false;
 	stunFrame = 0.0f;
 
 	EnemyInit();
@@ -285,18 +283,20 @@ void EnemyBase::StartStun(float frame, bool isWeak)
 {
 	//硬直時間
 	stunFrame = frame;
+	//残り硬直時間
+	stunRemain = frame;
 
 	//敵ごとの硬直
 	OnStun();
 
-	isStunned = true;
-	isWeakStun = isWeak;
+	isStunned_ = true;
+	isWeakStun_ = isWeak;
 }
 
 int EnemyBase::WeakDamage(int damage) const
 {
 	//弱点硬直してない場合は何もしない
-	if (!isWeakStun) { return damage; }
+	if (!isWeakStun_) { return damage; }
 
 	//ダメージ倍率をかけ、四捨五入
 	return (int)std::round(damage * WEAK_DAMAGE_RATE);

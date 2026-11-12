@@ -93,6 +93,9 @@ public:
 	// 属性のセット
 	void SetElement(ELEMENT setElement) { element = setElement; }
 
+	// ダメージ量のセット
+	void SetDamage(int setDamage) { damage = setDamage; }
+
 #pragma endregion
 
 
@@ -146,6 +149,9 @@ public:
 	//コライダーの属性(攻撃用)
 	ELEMENT GetElement(void) const { return element; }
 
+	//コライダーのダメージ量(攻撃用)
+	int GetDamage(void) const { return damage; }
+
 #pragma endregion
 
 
@@ -168,6 +174,9 @@ private:
 
 	// 攻撃の属性
 	ELEMENT element = ELEMENT::None;
+
+	// 攻撃のダメージ量（設定しなければ1）
+	int damage = 1;
 
 	// オブジェクト側から直接参照する情報
 	const bool* dynamicFlg;

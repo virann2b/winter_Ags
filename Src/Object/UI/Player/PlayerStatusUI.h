@@ -16,6 +16,10 @@ public:
 
 	void Init(void) override;
 
+
+	//更新
+	void Update(void) override;
+
 	// 描画
 	void Draw(void) override;
 
@@ -64,21 +68,28 @@ private:
 	// バーと数値の隙間
 	static constexpr int TEXT_SPACE = 2;
 
-	// 色
-	static constexpr unsigned int HP_COLOR = 0xffd800;		// 黄色
-	static constexpr unsigned int MP_COLOR = 0x30d050;		// 緑
-	static constexpr unsigned int BACK_COLOR = 0x303030;	// 背景（暗い灰色）
 	static constexpr unsigned int TEXT_COLOR = 0xffffff;	// 数値
+
+	// 赤いバーが減り始めるまでの待ち時間（フレーム）
+	static constexpr float DELAY_WAIT_FRAME = 30.0f;
+	// 赤いバーが減る速さ（1フレームで最大HPの何割減るか）
+	static constexpr float DELAY_DECREASE_RATE = 0.01f;
 
 #pragma endregion
 
 	// 表示するステータス（プレイヤーのものを参照するだけ）
 	const CharacterBase::CharacterStatus& status;
 
-	void DrawValue(int right, int top, int value)const;
+	// 赤いバーの画像
+	Img::ImageData hpDelay;
 
-	// 画像のバーを割合分描く
-	void DrawGaugeImage(int left, int top, int width, int height,
-		int value, int maxValue, const Img::ImageData& image) const;
+	// 赤いバーが表しているHP
+	float delayHp = 0.0f;
+	// 減り始めるまでの残り時間
+	float delayWaitCount = 0.0f;
+	// 前のフレームのHP
+	int prevHp = 0;
+
+	void DrawValue(int right, int top, int value)const;
 
 };

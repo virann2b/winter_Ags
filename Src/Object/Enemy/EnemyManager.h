@@ -34,6 +34,9 @@ public:
 	//全ての敵の死亡アニメーション判定
 	bool IsAllDieAnimEnd(void) const;
 
+	//敵一覧
+	const std::vector<EnemyBase*>& GetEnemies(void) const { return enemies; }
+
 private:
 
 	//敵の種類・座標を指定して敵を生成する

@@ -5,6 +5,8 @@
 ChilbiStunState::ChilbiStunState(
 	std::function<void(void)> playAnimeHit,
 	std::function<float(void)> getStunFrame,
+	std::function<float(void)> getStunRemain,
+	std::function<void(float)> countStun,
 	std::function<float(void)> getAnimeRatio,
 	std::function<float(void)> getAnimeStep,
 	std::function<void(float)> setAnimeStep,
@@ -14,6 +16,8 @@ ChilbiStunState::ChilbiStunState(
 	:
 	playAnimeHit(playAnimeHit),
 	getStunFrame(getStunFrame),
+	getStunRemain(getStunRemain),
+	countStun(countStun),
 	getAnimeRatio(getAnimeRatio),
 	getAnimeStep(getAnimeStep),
 	setAnimeStep(setAnimeStep),
@@ -28,7 +32,6 @@ void ChilbiStunState::Enter(void)
 	//HITアニメーション再生
 	playAnimeHit();
 
-	stunCounter = getStunFrame();
 	isStop = false;
 	stopStep = 0.0f;
 }
@@ -36,7 +39,7 @@ void ChilbiStunState::Enter(void)
 void ChilbiStunState::Update(void)
 {
 	//硬直時間が残っている間
-	if (stunCounter > 0.0f)
+	if (getStunRemain() > 0.0f)
 	{
 		//止める位置まで来たら、その再生位置で止める
 		if (!isStop && getAnimeRatio() >= STOP_RATIO)
@@ -49,7 +52,8 @@ void ChilbiStunState::Update(void)
 		{
 			//毎フレーム同じ再生位置に戻して止める
 			setAnimeStep(stopStep);
-			stunCounter -= TimeScale::Get();
+			//残り硬直時間の減少
+			countStun(TimeScale::Get());
 		}
 		return;
 	}

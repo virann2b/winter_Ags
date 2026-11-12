@@ -45,6 +45,13 @@ public:
 	//銃を構えているか
 	bool IsAiming(void) const;
 
+	// スキルスロットの取得（読むだけ・空き枠はnullptr）
+	const SkillBase* GetSkill(int slot) const;
+	// スキルスロットの数
+	static constexpr int GetSkillSlotMax(void) { return SKILL_SLOT_MAX; }
+	// スキルメニューを開いているか（スキルキーを押している間）
+	bool IsSkillMenuOpen(void) const;
+
 private:
 
 
@@ -204,10 +211,13 @@ private:
 
 #pragma region 変数
 
+	//剣
 	Sword* sword;
+	//銃
 	Gun* gun;
+	//範囲攻撃
 	RangeAttack* rangeAttack;
-	//スキル枠（Shift+Q/E/R/F ・ LB+X/A/B/Y）
+	//スキル枠
 	SkillBase* skillSlot[SKILL_SLOT_MAX];
 
 	//ロックオン中の敵の番号

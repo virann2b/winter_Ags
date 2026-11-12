@@ -174,6 +174,8 @@ void SceneBase::Draw(void)
 	// 1ŒÂˆÈã‚È‚çÅŒã‚É¶¬‚³‚ê‚½tempScreen‚ª“ü‚Á‚Ä‚¢‚é
 	DrawGraph(0, 0, srcScreen, true);
 
+	if (camera != nullptr) { camera->Apply(); }
+
 #pragma region UI•`‰æ
 
 	ActorsDraw(actors, ACTOR_DRAW_TYPE::Ui);

@@ -9,6 +9,8 @@ public:
 	ChilbiStunState(
 		std::function<void(void)> playAnimeHit,
 		std::function<float(void)> getStunFrame,
+		std::function<float(void)> getStunRemain,
+		std::function<void(float)> countStun,
 		std::function<float(void)> getAnimeRatio,
 		std::function<float(void)> getAnimeStep,
 		std::function<void(float)> setAnimeStep,
@@ -37,6 +39,10 @@ private:
 	const std::function<void(void)> playAnimeHit;
 	// 硬直させる時間（フレーム）の取得
 	const std::function<float(void)> getStunFrame;
+	// 弱点硬直時間の残り割合取得
+	const std::function<float(void)> getStunRemain;
+	// 硬直残り時間
+	const std::function<void(float)> countStun;
 	// アニメーションの再生比率の取得
 	const std::function<float(void)> getAnimeRatio;
 	// アニメーションの再生位置の取得・設定
@@ -51,8 +57,6 @@ private:
 
 #pragma endregion
 
-	// 硬直の残り時間（フレーム）
-	float stunCounter = 0.0f;
 	// アニメーションを止めているか
 	bool isStop = false;
 	// 止めている再生位置

@@ -1,5 +1,8 @@
 #pragma once
 #include "../Common/ActorBase/ActorBase.h"
+
+#include "../../Manager/Image/ImageManager.h"
+
 #include "ElementDefine.h"
 
 class SkillBase : public ActorBase
@@ -66,6 +69,9 @@ public:
 
 	//属性取得
 	ELEMENT GetElement(void) const { return element; }
+
+	// スキルアイコンのタグ
+	Img::IMAGE_TAG GetIconTag(void) const { return iconTag; }
 
 protected:
 
@@ -141,11 +147,17 @@ protected:
 	//ステップ
 	STEP step;
 
+	// スキルアイコン
+	Img::IMAGE_TAG iconTag = Img::IMAGE_TAG::Max;
+
 	//スキルの進む向き
 	Vector3 moveDir;
 
 	//消費MP
 	int mpCost;
+
+	//ダメージ量（派生先のLoadで設定）
+	int damage;
 
 	//スキルの生存時間（フレーム数・派生先のLoadで設定）
 	float skillAliveTime;

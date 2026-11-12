@@ -32,6 +32,8 @@
 #include "../../Object/UI/Player/PlayerStatusUI.h"
 #include "../../Object/UI/Player/PlayerOperationUI.h"
 
+#include "../../Object/UI/Enemy/EnemyStatusUI.h"
+
 #include "../../Object/Water.h"
 
 GameScene::GameScene()
@@ -84,14 +86,28 @@ void GameScene::SubPostInit(void)
 		player->SetEnemyFinder([enemyManager](int id) { return enemyManager->FindEnemy(id); });
 	}
 
+
+#pragma region 描画
+
 	UIManager* uiManager = ActorSerch<UIManager>(actors);
 
-	uiManager->AddUI(new PlayerOperationUI());
+
+	if (uiManager && enemyManager)
+	{
+		//敵ステータス関連UI
+		uiManager->AddUI(new EnemyStatusUI(enemyManager->GetEnemies()));
+	}
 
 	if (player && uiManager)
 	{
+		//操作方法UI
+		uiManager->AddUI(new PlayerOperationUI(*player));
+
+		//プレイヤーステータス関連UI
 		uiManager->AddUI(new PlayerStatusUI(player->GetStatus()));
 	}
+
+#pragma endregion
 
 }
 

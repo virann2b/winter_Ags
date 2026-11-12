@@ -21,12 +21,17 @@ void ImageManager::Init(void)
 		//読み込み
 		data.handle = LoadGraph(PATH_TABLE[i]);
 
+	#ifdef _DEBUG
+
 		//読み込み失敗（パスの間違いなど）
 		if (data.handle == -1)
 		{
 			printfDx("画像の読み込みに失敗しました : %s\n", PATH_TABLE[i]);
 			continue;
 		}
+
+	#endif // DEBUG
+
 
 		//大きさの取得
 		GetGraphSize(data.handle, &data.sizeX, &data.sizeY);

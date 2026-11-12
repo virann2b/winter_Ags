@@ -55,6 +55,8 @@ void Chilbi::Load(void)
 	//加速度を調整
 	ACCEL_MAX = 5.5f;
 
+	uiOffsetY = 100.0f;
+
 #pragma endregion
 
 #pragma region アニメーション読み込み
@@ -164,6 +166,8 @@ void Chilbi::Load(void)
 				AnimePlay((int)ANIME_TYPE::Hit);
 			},
 			[&]() { return GetStunFrame(); },
+			[&]() { return GetStunRemain(); },
+			[&](float frame) { CountStun(frame); },
 			[&]() { return GetAnimeRatio(); },
 			[&]() { return GetAnimeStep(); },
 			[&](float step) { SetAnimeStep(step); },
@@ -271,4 +275,20 @@ void Chilbi::OnDie(void)
 {
 	ChangeState(STATE::Die);
 
+}
+
+void EnemyBase::CountStun(float frame)
+{
+	stunRemain -= frame;
+
+	if (stunRemain < 0.0f) { stunRemain = 0.0f; }
+}
+
+float EnemyBase::GetWeakStunRate(void) const
+{
+	//弱点硬直でなければ0のまま
+	if (!isWeakStun_ || stunFrame <= 0.0f) { return 0.0f; }
+
+	//残り硬直時間の割合
+	return stunRemain / stunFrame;
 }

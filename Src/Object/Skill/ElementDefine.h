@@ -34,3 +34,4 @@ enum class ELEMENT_RESIST
 
 //‘®«‚²‚Æ‚Ì‘Ï«ƒe[ƒuƒ‹
 using ElementResistTable = std::array<ELEMENT_RESIST, (int)ELEMENT::Max>;
+

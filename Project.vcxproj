@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\UI\Enemy\EnemyStatusUI.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerOperationUI.cpp" />
     <ClCompile Include="Src\Manager\Image\ImageManager.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
@@ -218,6 +219,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Player\State\PlayerIdleState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerJumpState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerMoveState.cpp" />
+    <ClCompile Include="Src\Object\UI\UIBase.cpp" />
     <ClCompile Include="Src\Scene\Common\PostEffect\CRTPostEffect\CRTPostEffect.cpp" />
     <ClCompile Include="Src\Scene\Common\PostEffect\FocusLinesPostEffect\FocusLinesPostEffect.cpp" />
     <ClCompile Include="Src\Scene\Common\PostEffect\GrayScalePostEffect\GrayScalePostEffect.cpp" />
@@ -234,6 +236,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\UI\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\UI\Enemy\EnemyStatusUI.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerOperationUI.h" />
     <ClInclude Include="Src\Manager\Image\ImageManager.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />

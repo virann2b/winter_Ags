@@ -441,7 +441,8 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 	//敵のスキル
 	case COLLIDER_TAG::EnemySkill:
 	{
-		TakeDamage(1);
+		//スキル側のコライダーに設定されたダメージ
+		TakeDamage(other.GetDamage());
 		ChangeState(STATE::Hit);
 
 		break;
@@ -536,6 +537,20 @@ const EnemyBase* Player::FindLockOnEnemy(void) const
 bool Player::IsAiming(void) const
 {
 	return GetState() == (int)STATE::Gun;
+}
+
+const SkillBase* Player::GetSkill(int slot) const
+{
+	//スキルがセットされていない場合は何もしない
+	if (slot < 0 || slot >= SKILL_SLOT_MAX) { return nullptr; }
+
+	return skillSlot[slot];
+}
+
+bool Player::IsSkillMenuOpen(void) const
+{
+	//スキルメニューを押している間
+	return Input::GetIns().GetInfo(KEY_TYPE::PlayerSkillMenu).now;
 }
 
 void Player::SubDraw(void)

@@ -53,18 +53,27 @@ public:
 	void WeakStun(void);
 
 	// 硬直中判定
-	bool IsStunned(void) const { return isStunned; }
+	bool IsStunned(void) const { return isStunned_; }
 	//　弱点硬直判定
-	bool IsWeakStun(void) const { return isWeakStun; }
+	bool IsWeakStun(void) const { return isWeakStun_; }
 
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
 
 	// 死亡アニメーションまで終わったか（画面から消えたか）
-	bool IsDieEnd(void) const { return isDieEnd; }
+	bool IsDieEnd(void) const { return isDieEnd_; }
 
 	// 敵の番号（EnemyManagerが生成時に振る。同じ番号は二度と使われない）
 	int GetId(void) const { return id; }
+
+	//頭上にUIを出す位置
+	Vector3 GetUIPos(void) const { return trans.pos + Vector3::Yonly(uiOffsetY); }
+
+	//硬直時間の残り割合
+	float GetWeakStunRate(void) const;
+
+	//弱点硬直を起こした
+	ELEMENT GetWeakStunElement(void) const { return weakStunElement; }
 ;
 
 protected:
@@ -84,9 +93,6 @@ protected:
 	// 弱点硬直中の被ダメージ倍率
 	static constexpr float WEAK_DAMAGE_RATE = 1.5f;
 
-	// プレイヤーの攻撃で受けるダメージ
-	static constexpr int DEFAULT_DAMAGE = 1;
-
 	// 距離の区分
 	static constexpr float NEAR_RANGE = 200.0f;
 	static constexpr float MIDDLE_RANGE = 500.0f;
@@ -95,11 +101,17 @@ protected:
 	// 停止距離
 	static constexpr float DEFAULT_STOP_RANGE = 200.0f;
 
+	// UIを出す高さ
+	float uiOffsetY = 200.0f;
+
 	// カウント用攻撃クールタイム
 	float attackCoolTime;
 
 	//最後に受けた攻撃属性
 	ELEMENT lastHitElement = ELEMENT::None;
+
+	// 弱点硬直を起こした属性
+	ELEMENT weakStunElement = ELEMENT::None;
 
 #pragma endregion
 
@@ -113,9 +125,6 @@ protected:
 	// 描画
 	virtual void EnemyDraw(void) {}
 
-	// プレイヤーの攻撃を受けたときのダメージ量(必要なら上書き)
-	virtual int GetDamage(COLLIDER_TAG otherTag) const;
-
 	// 被弾時
 	virtual void OnHit(void) = 0;
 
@@ -127,9 +136,14 @@ protected:
 
 	// 硬直させる時間
 	float GetStunFrame(void) const { return stunFrame; }
+
+	// 残り硬直時間
+	float GetStunRemain(void) const { return stunRemain; }
+	// 硬直時間減少
+	void CountStun(float frame);
 ;
 	//硬直終了
-	void EndStun(void) { isStunned = false; isWeakStun = false; }
+	void EndStun(void) { isStunned_ = false; isWeakStun_ = false; }
 
 
 	//無敵中か
@@ -217,16 +231,19 @@ private:
 	const Vector3* targetPos = nullptr;
 
 	// 死亡アニメーションフラグ
-	bool isDieEnd = false;
+	bool isDieEnd_ = false;
 
 	// 硬直中フラグ
-	bool isStunned = false;
+	bool isStunned_ = false;
 
 	//弱点硬直フラグ
-	bool isWeakStun = false;
+	bool isWeakStun_ = false;
 
-	// 硬直させる時間（フレーム）
+	// 硬直させる時間
 	float stunFrame = 0.0f;
+
+	// 硬直の残り時間
+	float stunRemain = 0.0f;
 
 	// スキル枠
 	struct SkillSlot

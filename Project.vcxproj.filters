@@ -85,6 +85,8 @@
     <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
     <ClCompile Include="Src\Manager\Image\ImageManager.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerOperationUI.cpp" />
+    <ClCompile Include="Src\Object\UI\Enemy\EnemyStatusUI.cpp" />
+    <ClCompile Include="Src\Object\UI\UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -197,6 +199,7 @@
     <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />
     <ClInclude Include="Src\Manager\Image\ImageManager.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerOperationUI.h" />
+    <ClInclude Include="Src\Object\UI\Enemy\EnemyStatusUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

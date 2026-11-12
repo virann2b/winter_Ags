@@ -16,7 +16,34 @@ PlayerStatusUI::PlayerStatusUI(
 
 void PlayerStatusUI::Init(void)
 {
+	hpDelay = Img::GetIns().GetImage(Img::IMAGE_TAG::HpDelay);
 
+	//赤いバーは今のHPから始める
+	delayHp = (float)status.hp;
+	prevHp = status.hp;
+	delayWaitCount = 0.0f;
+}
+
+void PlayerStatusUI::Update(void)
+{
+	if (status.hp < prevHp) { delayWaitCount = DELAY_WAIT_FRAME; }
+	//前フレームHP更新
+	prevHp = status.hp;
+
+	if (delayHp <= (float)status.hp)
+	{
+		delayHp = (float)status.hp;
+		return;
+	}
+
+	if (delayWaitCount > 0.0f)
+	{
+		delayWaitCount -= 1.0f;
+		return;
+	}
+	//HPの減少
+	delayHp -= status.hp * DELAY_DECREASE_RATE;
+	if (delayHp < (float)status.hp) { delayHp = (float)status.hp; }
 }
 
 void PlayerStatusUI::Draw(void)
@@ -68,7 +95,9 @@ void PlayerStatusUI::Draw(void)
 	const int hpFillH = (int)(hpFill.sizeY * hpScale);
 
 	//バー
-	DrawGaugeImage(hpFillLeft, hpFillTop, hpFillW, hpFillH, status.hp, status.maxHp, hpFill);
+	DrawFillRate(hpFillLeft, hpFillTop, hpFillW, hpFillH, GetRate(delayHp, (float)status.maxHp), hpDelay);
+
+	DrawFillRate(hpFillLeft, hpFillTop, hpFillW, hpFillH, GetRate((float)status.hp, (float)status.maxHp), hpFill);
 
 	//数値（バーの右端・枠の上）
 	DrawValue(hpFillLeft + hpFillW, hpFrameTop, status.hp);
@@ -97,7 +126,7 @@ void PlayerStatusUI::Draw(void)
 	const int mpFillW = (int)(MP_FILL_W * mpScale);
 	const int mpFillH = (int)(MP_FILL_H * mpScale);
 
-	DrawGaugeImage(mpFillLeft, mpFillTop, mpFillW, mpFillH, status.mp, status.maxMp, mpFill);
+	DrawFillRate(mpFillLeft, mpFillTop, mpFillW, mpFillH, GetRate((float)status.mp, (float)status.maxMp), mpFill);
 	DrawValue(mpFillLeft + mpFillW, mpFrameTop, status.mp);
 
 #pragma endregion
@@ -115,24 +144,4 @@ void PlayerStatusUI::DrawValue(int right, int top, int value) const
 
 	//バーの上端から文字の高さ分上に描く
 	DrawString(right - width, top - TEXT_SPACE - GetFontSize(), text.c_str(), TEXT_COLOR);
-}
-
-void PlayerStatusUI::DrawGaugeImage(int left, int top, int width, int height, int value, int maxValue, const Img::ImageData& image) const
-{
-	//最大値が0なら描かない（0除算防止）
-	if (maxValue <= 0) { return; }
-
-	//残りの割合（0～1におさめる）
-	const float rate = std::clamp((float)value / (float)maxValue, 0.0f, 1.0f);
-
-	//画像の左から割合分の幅
-	const int srcW = (int)(image.sizeX * rate);
-	//0のときは描かない
-	if (srcW <= 0) { return; }
-
-	//画像の左から切り取って、画面にも割合分の幅で描く
-	DrawRectExtendGraph(
-		left, top, left + (int)(width * rate), top + height,
-		0, 0, srcW, image.sizeY,
-		image.handle, true);
 }

@@ -31,17 +31,28 @@ public:
 	enum class IMAGE_TAG
 	{
 
-		Operation_1,	//操作方法1
-		Operation_2,	//操作方法2
+		Operation_1,			//操作方法1
+		Operation_2,			//操作方法2
 
-		HpFrame,		// HPの枠
-		HpFill,			// HPバーの中身
-		HpDelay,		// HPが遅れて減る部分
+		Element_Physics,		// 物理アイコン
+		Element_Fire,			// 火アイコン
+		Element_Ice,			// 氷アイコン
+		Element_Wind,			// 風アイコン
+		Element_Thunder,		// 雷アイコン
 
-		MpFrame,		// HPの枠
-		MpFill,			// HPバーの中身
+		HpFrame,				// HPの枠
+		HpFill,					// HPバーの中身
+		HpDelay,				// HPが遅れて減る部分
 
-		GunAim,			// 銃の照準
+		MpFrame,				// HPの枠
+		MpFill,					// HPバーの中身
+
+		Weak,					// 弱点！！
+		WeakFrame,				// 弱点硬直時間の枠
+		WeakFill,				// 弱点時間のバーの中身
+		WeakElementFrame,		// 弱点属性の枠
+
+		GunAim,					// 銃の照準
 
 		Max
 	};
@@ -59,9 +70,9 @@ public:
 
 private:
 
-	// 初期化（全部読み込む）
+	// 初期化
 	void Init(void);
-	// 解放（全部削除する）
+	// 解放
 	void Release(void);
 
 	// 読み込んだ画像
@@ -73,14 +84,26 @@ private:
 		"Data/Image/Player/Operation_1.png",			// Operation_1
 		"Data/Image/Player/Operation_2.png",			// Operation_2
 
-		"Data/Image/Player/HPFrame.png",			// HpFrame
-		"Data/Image/Player/hp_bar_fill_yellow.png",	// HpFill
-		"Data/Image/Player/hp_bar_fill_red.png",	// HpDelay
+		"Data/Image/Skill/Battle.png",					// Element_Physics
+		"Data/Image/Skill/Fire.png",					// Element_Fire
+		"Data/Image/Skill/Ice.png",						// Element_Ice
+		"Data/Image/Skill/Wind.png",					// Element_Wind
+		"Data/Image/Skill/Thunder.png",					// Element_Thunder
 
-		"Data/Image/Player/MPFrame.png",			// MpFrame
-		"Data/Image/Player/mp_bar_fill_green.png",	// MpFill
 
-		"Data/Image/Gun/Aim.png",					// GunAim
+		"Data/Image/Player/HPFrame.png",				// HpFrame
+		"Data/Image/Player/hp_bar_fill_yellow.png",		// HpFill
+		"Data/Image/Player/hp_bar_fill_red.png",		// HpDelay
+
+		"Data/Image/Player/MPFrame.png",				// MpFrame
+		"Data/Image/Player/mp_bar_fill_green.png",		// MpFill
+
+		"Data/Image/Enemy/Weak.png",					// Weak
+		"Data/Image/Enemy/Weak_Frame.png",				// WeakFrame
+		"Data/Image/Enemy/Weak_Fill.png",				// WeakFill
+		"Data/Image/Enemy/Weak_Element_Frame.png",		// WeakElementFrame
+
+		"Data/Image/Gun/Aim.png",						// GunAim
 	};
 };
 
