@@ -11,6 +11,7 @@ PlayerAttackAirState::PlayerAttackAirState(
 	std::function<void(void)> playAnimAirAttackStart, 
 	std::function<void(void)> playAnimAirAttackEnd, 
 	std::function<void(void)> arriveAttackRange,
+	std::function<void(void)> endAttackRange,
 	std::function<float(void)> animRate,
 	std::function<bool(void)> isAnimeEnd,
 	std::function<void(void)> ChangeStateIdle
@@ -20,6 +21,7 @@ PlayerAttackAirState::PlayerAttackAirState(
 	playAnimAirAttackStart(playAnimAirAttackStart),
 	playAnimAirAttackEnd(playAnimAirAttackEnd),
 	arriveAttackRange(arriveAttackRange),
+	endAttackRange(endAttackRange),
 	animRate(animRate),
 	isAnimeEnd(isAnimeEnd),
 	ChangeStateIdle(ChangeStateIdle),
@@ -87,4 +89,10 @@ void PlayerAttackAirState::Update(void)
 		break;
 	}
 	}
+}
+
+void PlayerAttackAirState::Exit(void)
+{
+	//îÕàÕçUåÇîªíËOFF
+	endAttackRange();
 }

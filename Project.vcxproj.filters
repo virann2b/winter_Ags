@@ -83,6 +83,8 @@
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.cpp" />
     <ClCompile Include="Src\Object\UI\UIManager.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
+    <ClCompile Include="Src\Manager\Image\ImageManager.cpp" />
+    <ClCompile Include="Src\Object\UI\Player\PlayerOperationUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -193,6 +195,8 @@
     <ClInclude Include="Src\Object\UI\UIBase.h" />
     <ClInclude Include="Src\Object\UI\UIManager.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />
+    <ClInclude Include="Src\Manager\Image\ImageManager.h" />
+    <ClInclude Include="Src\Object\UI\Player\PlayerOperationUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

@@ -8,6 +8,7 @@
 #include "../Manager/Sound/SoundManager.h"
 #include "../Manager/Font/FontManager.h"
 #include "../Manager/Shader/ShaderResourceManager.h"
+#include "../Manager/Image/ImageManager.h"
 #include "../Scene/SceneManager.h"
 
 Application* Application::ins = nullptr;
@@ -80,6 +81,9 @@ void Application::Init(void)
 	// フォントデータ生成 / 初期化処理
 	Font::CreateIns();
 
+	//画像管理クラスの生成 / 初期化処理
+	Img::CreateIns();
+
 	// シェーダーデータ生成
 	ShaderResourceManager::CreateIns();
 
@@ -138,6 +142,9 @@ void Application::Release(void)
 
 	// シェーダーデータの削除
 	ShaderResourceManager::DeleteIns();
+
+	//画像管理解放・削除
+	Img::DeleteIns();
 
 	// フォントデータの削除
 	Font::DeleteIns();

@@ -30,6 +30,7 @@
 
 #include "../../Object/UI/UIManager.h"
 #include "../../Object/UI/Player/PlayerStatusUI.h"
+#include "../../Object/UI/Player/PlayerOperationUI.h"
 
 #include "../../Object/Water.h"
 
@@ -85,10 +86,13 @@ void GameScene::SubPostInit(void)
 
 	UIManager* uiManager = ActorSerch<UIManager>(actors);
 
+	uiManager->AddUI(new PlayerOperationUI());
+
 	if (player && uiManager)
 	{
 		uiManager->AddUI(new PlayerStatusUI(player->GetStatus()));
 	}
+
 }
 
 void GameScene::SubPostUpdate(void)

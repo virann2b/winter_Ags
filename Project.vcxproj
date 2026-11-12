@@ -148,6 +148,8 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\UI\Player\PlayerOperationUI.cpp" />
+    <ClCompile Include="Src\Manager\Image\ImageManager.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerSkillState.cpp" />
@@ -232,6 +234,8 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\UI\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\UI\Player\PlayerOperationUI.h" />
+    <ClInclude Include="Src\Manager\Image\ImageManager.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />
     <ClInclude Include="Src\Object\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />

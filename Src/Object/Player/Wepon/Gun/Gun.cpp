@@ -3,6 +3,7 @@
 #include "../../../../Utility/Utility.h"
 
 #include "../../../../Manager/TimeScale/TimeScale.h"
+#include "../../../../Manager/Image/ImageManager.h"
 
 #include "../../../Enemy/EnemyBase.h"
 
@@ -97,12 +98,11 @@ void Gun::Load(void)
 #pragma region 照準画像読み込み
 
 	//画像ハンドル読み込み
-	aimImage = LoadGraph("Data/Image/Gun/Aim.png");
+	const Img::ImageData& aim = Img::GetIns().GetImage(Img::IMAGE_TAG::GunAim);
+	aimImage = aim.handle;
 
 	// 画像の幅を、照準の直径（AIM_DRAW_RADIUS × 2）に合わせる
-	int width = 0, height = 0;
-	GetGraphSize(aimImage, &width, &height);
-	const int shortSide = (std::min)(width, height);
+	const int shortSide = (std::min)(aim.sizeX, aim.sizeY);
 	if (shortSide > 0) { aimImageScale = (AIM_DRAW_RADIUS * 2.0f) / shortSide; }
 
 #pragma endregion
@@ -133,15 +133,9 @@ void Gun::UseBullet(int useBullet)
 
 void Gun::SubUpdate(void)
 {
-	
 	SetIsDraw(isActive);
 }
 
-void Gun::SubRelease(void)
-{
-	//画像解放
-	DeleteGraph(aimImage);
-}
 
 float Gun::GetAimTime(int aimCount) const
 {

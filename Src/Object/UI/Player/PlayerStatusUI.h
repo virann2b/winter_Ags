@@ -1,7 +1,10 @@
 #pragma once
 
 #include "../UIBase.h"
+
 #include "../../Common/CharacterBase/CharacterBase.h"
+
+#include "../../../Manager/Image/ImageManager.h"
 
 class PlayerStatusUI : public UIBase
 {
@@ -10,6 +13,8 @@ public:
 
 	PlayerStatusUI(const CharacterBase::CharacterStatus& status);
 	~PlayerStatusUI(void) override = default;
+
+	void Init(void) override;
 
 	// 描画
 	void Draw(void) override;
@@ -22,6 +27,33 @@ private:
 	static constexpr int BAR_WIDTH = 480;
 	// HPバーの高さ
 	static constexpr int HP_BAR_HEIGHT = 14;
+
+	// HP・MP枠を画面に表示する横幅
+	static constexpr int FRAME_DRAW_WIDTH = 480;
+
+	// HPFrame.pngの中で枠として使う部分（画像のピクセル）
+	static constexpr int HP_FRAME_SRC_X = 214;
+	static constexpr int HP_FRAME_SRC_Y = 411;
+	static constexpr int HP_FRAME_SRC_W = 1250;
+	static constexpr int HP_FRAME_SRC_H = 91;
+
+	// HPFrame.pngの中でバーを置く位置（画像のピクセル）
+	static constexpr int HP_FILL_X = 363;
+	static constexpr int HP_FILL_Y = 432;
+
+
+	// MPFrame.pngの中で枠として使う部分（画像のピクセル）
+	static constexpr int MP_FRAME_SRC_X = 147;
+	static constexpr int MP_FRAME_SRC_Y = 297;
+	static constexpr int MP_FRAME_SRC_W = 1878;
+	static constexpr int MP_FRAME_SRC_H = 133;
+
+	// MPFrame.pngの中でバーを置く範囲（画像のピクセル）
+	static constexpr int MP_FILL_X = 361;
+	static constexpr int MP_FILL_Y = 326;
+	static constexpr int MP_FILL_W = 1638;
+	static constexpr int MP_FILL_H = 71;
+
 	// MPバーの高さ
 	static constexpr int MP_BAR_HEIGHT = 10;
 
@@ -43,10 +75,10 @@ private:
 	// 表示するステータス（プレイヤーのものを参照するだけ）
 	const CharacterBase::CharacterStatus& status;
 
-
-	// バー1本の描画（背景 → 中身）
-	void DrawBar(int left, int top, int height, int value, int maxValue, unsigned int color) const;
-
 	void DrawValue(int right, int top, int value)const;
+
+	// 画像のバーを割合分描く
+	void DrawGaugeImage(int left, int top, int width, int height,
+		int value, int maxValue, const Img::ImageData& image) const;
 
 };

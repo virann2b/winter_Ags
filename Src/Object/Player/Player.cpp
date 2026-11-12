@@ -260,6 +260,11 @@ void Player::Load(void)
 				//”ÍˆÍUŒ‚”­¶
 				rangeAttack->Start(RangeAttack::SCALE::Big);
 			},
+			[&]()
+			{
+				//”ÍˆÍUŒ‚íœ
+				rangeAttack->End();
+			},
 			std::bind(&Player::GetAnimeRatio, this),
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]()

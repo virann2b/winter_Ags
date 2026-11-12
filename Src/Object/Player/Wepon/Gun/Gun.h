@@ -171,8 +171,6 @@ private:
 
 	//派生クラス更新
 	void SubUpdate(void) override;
-	//派生クラス解放
-	void SubRelease(void) override;
 
 	/// <summary>
 	///照準を置くまでの時間

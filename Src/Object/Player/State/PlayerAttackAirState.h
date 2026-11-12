@@ -22,6 +22,7 @@ public:
 		std::function<void(void)> playAnimAirAttackStart,
 		std::function<void(void)> playAnimAirAttackEnd,
 		std::function<void(void)> arriveAttackRange,
+		std::function<void(void)> endAttackRange,
 		std::function<float(void)> animRate,
 		std::function<bool(void)> isAnimeEnd,
 		std::function<void(void)> ChangeStateIdle);
@@ -37,6 +38,9 @@ public:
 	// 更新処理
 	void Update(void)override;
 
+	//後始末
+	void Exit(void)override;
+
 private:
 
 	//範囲攻撃発生比率
@@ -48,8 +52,12 @@ private:
 	const std::function<void(void)> playAnimAirAttackStart;
 	// 空中攻撃終了アニメーションの再生関数のポインタ
 	const std::function<void(void)> playAnimAirAttackEnd;
+
 	// 範囲攻撃発生ポインタ
 	const std::function<void(void)> arriveAttackRange;
+	// 範囲攻撃発生ポインタ
+	const std::function<void(void)> endAttackRange;
+
 	// アニメーション再生
 	const std::function<float(void)> animRate;
 
