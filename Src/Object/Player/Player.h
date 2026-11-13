@@ -52,6 +52,9 @@ public:
 	// スキルメニューを開いているか（スキルキーを押している間）
 	bool IsSkillMenuOpen(void) const;
 
+	//銃の情報取得
+	const Gun& GetGun(void) const { return *gun; }
+
 private:
 
 
@@ -60,21 +63,23 @@ private:
 	{
 		None = -1,
 
-		Idle,
+		Idle,			//待機
 
-		Move,
+		Move,			//移動
 
-		Jump,
+		Jump,			//ジャンプ
 
-		Roll,
+		Roll,			//回避
 
-		Hit,
+		Guard,			//ガード
 
-		AttackNormal,
-		AttackAir,
-		AttackCharge,
+		Hit,			//被ダメージ
 
-		Gun,
+		AttackNormal,	//通常攻撃
+		AttackAir,		//空中攻撃
+		AttackCharge,	//強攻撃
+
+		Gun,			//銃
 
 		Max
 	};
@@ -86,29 +91,31 @@ private:
 	{
 		None = -1,
 
-		Idle,
+		Idle,				//待機
 
-		Run,
+		Run,				//移動
 
-		Roll,
+		Roll,				//回避
 
-		Hit,
+		Guard,				//ガード　
 
-		JumpStart,
-		JumpIdle,
-		JumpEnd,
+		Hit,				//被ダメージ
 
-		AttackNormal_1,
-		AttackNormal_2,
-		AttackNormal_3,
+		JumpStart,			//ジャンプ開始
+		JumpIdle,			//ジャンプ中
+		JumpEnd,			//ジャンプ終了
 
-		AttackAir_Start,
-		AttackAir_End,
+		AttackNormal_1,		//通常攻撃1
+		AttackNormal_2,		//通常攻撃2
+		AttackNormal_3,		//通常攻撃3
 
-		AttackCharge_Start,
-		AttackCharge_End,
+		AttackAir_Start,	//空中攻撃開始
+		AttackAir_End,		//空中攻撃終了
 
-		Gun,
+		AttackCharge_Start,	//強攻撃タメ開始
+		AttackCharge_End,	//強攻撃タメ終了
+
+		Gun,				//銃構え
 
 		Max
 	};
@@ -121,6 +128,8 @@ private:
 		0.8f,	// Run
 
 		1.5f,   // Roll
+
+		1.0f,	// Guard
 
 		0.5f,	// Hit
 
@@ -151,6 +160,8 @@ private:
 
 		false,  // Roll
 
+		false,	// Guard
+
 		false,  // Hit
 
 		false,  //JumpStart
@@ -176,6 +187,8 @@ private:
 		"Data/Model/Player/Run.mv1",	//Run
 
 		"Data/Model/Player/Roll.mv1",	//Roll
+
+		"Data/Model/Player/Guard.mv1",	//Guard
 
 		"Data/Model/Player/Hit.mv1",	//Hit
 

@@ -62,6 +62,8 @@ public:
 		PlayerAttackAir,
 		PlayerAttackStrong,
 
+		//ガード
+		PlayerGuard,
 		// ガンモード
 		PlayerGunMode,
 		//撃つ
@@ -77,7 +79,6 @@ public:
 		PlayerSkill2,
 		PlayerSkill3,
 		PlayerSkill4,
-
 
 
 #pragma endregion

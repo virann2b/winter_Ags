@@ -34,7 +34,6 @@
 
 #include "../../Object/UI/Enemy/EnemyStatusUI.h"
 
-#include "../../Object/Water.h"
 
 GameScene::GameScene()
 	: SceneBase(),
@@ -120,6 +119,7 @@ void GameScene::SubPostUpdate(void)
 
 	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
 
+	//全ての絶滅判定
 	if (enemyManager->IsAllDead())
 	{
 		// 最後の敵を倒した瞬間にスローにする（1回だけ）

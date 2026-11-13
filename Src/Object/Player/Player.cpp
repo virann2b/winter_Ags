@@ -15,6 +15,8 @@
 #include "Wepon/RangeAttack/RangeAttack.h"
 
 #include "../Skill/SkillFire/SkillFire.h"
+#include "../Skill/SkillIce/SkillIce.h"
+
 
 #include "../Enemy/EnemyBase.h"
 
@@ -25,6 +27,7 @@
 #include "State/PlayerJumpState.h"
 #include "State/PlayerRollState.h"
 #include "State/PlayerHitState.h"
+#include "State/PlayerGuardState.h"
 
 #include "State/PlayerAttackNormalState.h"
 #include "State/PlayerAttackAirState.h"
@@ -138,9 +141,17 @@ void Player::Load(void)
 
 	//ƒXƒLƒ‹iƒtƒ@ƒCƒAj‚Ì¶¬
 	SkillFire* skillFire = new SkillFire(trans, SkillBase::SKILL_USER::Player);
+	SkillIce* skillIce = new SkillIce(trans, SkillBase::SKILL_USER::Player);
+
 	AddChildActor(skillFire);
+	AddChildActor(skillIce);
+
+
 	//ƒXƒLƒ‹1‚ÉÝ’èiƒXƒLƒ‹2`4‚Í‹ó‚«j
 	skillSlot[0] = skillFire;
+	skillSlot[1] = skillIce;
+	skillSlot[2] = skillFire;
+	skillSlot[3] = skillIce;
 
 	sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 	sword->ChangePosition(Sword::SWORD_POSITION::Back);
@@ -210,6 +221,20 @@ void Player::Load(void)
 				SetJudgeFlg(true);
 				ChangeState(STATE::Idle); 
 			}
+		)
+	);
+
+	//ƒK[ƒhó‘Ô
+	AddState(
+		STATE::Guard,
+		new PlayerGuardState(
+			[&]() 
+			{ 
+				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
+				AnimePlay(ANIME_TYPE::Guard);
+			},
+			std::bind(&Player::IsAnimeEnd, this),
+			[&]() { ChangeState(STATE::Idle); }
 		)
 	);
 #pragma endregion
@@ -364,14 +389,19 @@ void Player::Load(void)
 	// uˆÚ“®ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::Roll);
 
-	// u‘Ò‹@ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	// u‘Ò‹@ó‘Ôv->uƒK[ƒhó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	RegisterStateTransition(STATE::Idle, STATE::Guard);
+	// uˆÚ“®ó‘Ôv->uƒK[ƒhó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	RegisterStateTransition(STATE::Move, STATE::Guard);
+
+	// u‘Ò‹@ó‘Ôv->u’ÊíUŒ‚ó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Idle, STATE::AttackNormal);
-	// uˆÚ“®ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	// uˆÚ“®ó‘Ôv->u’ÊíUŒ‚ó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::AttackNormal);
 
-	// u‘Ò‹@ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	// u‘Ò‹@ó‘Ôv->u‹­UŒ‚ó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Idle, STATE::AttackCharge);
-	// uˆÚ“®ó‘Ôv->u‰ñ”ðó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
+	// uˆÚ“®ó‘Ôv->u‹­UŒ‚ó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
 	RegisterStateTransition(STATE::Move, STATE::AttackCharge);
 
 	// u‘Ò‹@ó‘Ôv->ueó‘Ôv‚ÌŽ©“®‘JˆÚ“o˜^
@@ -555,19 +585,12 @@ bool Player::IsSkillMenuOpen(void) const
 
 void Player::SubDraw(void)
 {
-
 	if(GetState() == (int)STATE::Gun)
 	{
 	
 		gun->DrawBulletUI();
 		gun->DrawAimUI();
 	}
-
-	//DrawFormatString(0, 120, 0xffffff, "Pos : %.2f,%.2f,%.2f", trans.pos.x, trans.pos.y, trans.pos.z);
-
-	//DrawFormatString(0, 240, 0xffffff, "HP : %d / %d  MP : %d / %d",
-	//	status.hp, status.maxHp, status.mp, status.maxMp);
-
 
 }
 

@@ -19,9 +19,9 @@ private:
 
 	//火の玉の半径
 	static constexpr float FIRE_RADIUS = 40.0f;
-	//火の玉の速さ（1フレームの移動量）
+	//火の玉の速さ
 	static constexpr float FIRE_SPEED = 25.0f;
-	//火の玉の生存時間（フレーム数）
+	//火の玉の生存時間
 	static constexpr float FIRE_ALIVE_TIME = 60.0f;
 	//消費MP
 	static constexpr int FIRE_MP_COST = 20;
@@ -34,9 +34,5 @@ private:
 	void SkillStart(void) override;
 	//ファイアの発動中処理
 	void SkillUpdate(void) override;
-	//ファイア終了処理
-	void SkillEnd(void) override;
 
-	//仮の描画
-	void SubDraw(void) override;
 };

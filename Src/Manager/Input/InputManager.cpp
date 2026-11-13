@@ -69,9 +69,13 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerRoll, KEY_INPUT_R);
 	SET_C_BUTTON(KEY_TYPE::PlayerRoll, XINPUT_BUTTON_B);
 
+	//ガード
+	SET_KEYBOARD(KEY_TYPE::PlayerGuard, KEY_INPUT_Q);
+	SET_C_BUTTON(KEY_TYPE::PlayerGuard, XINPUT_BUTTON_LEFT_SHOULDER);
+
 	//スキルメニュー（押している間、下のスキル1〜4が使える）
 	SET_KEYBOARD(KEY_TYPE::PlayerSkillMenu, KEY_INPUT_LSHIFT);
-	SET_C_BUTTON(KEY_TYPE::PlayerSkillMenu, XINPUT_BUTTON_LEFT_SHOULDER);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkillMenu, XINPUT_BUTTON_RIGHT_SHOULDER);
 
 	//スキル1〜4（スキルメニューと同時押し）
 	SET_KEYBOARD(KEY_TYPE::PlayerSkill1, KEY_INPUT_Q);
@@ -99,8 +103,6 @@ void InputManager::Init(void)
 	//ロックオンの切り替え
 	SET_KEYBOARD(KEY_TYPE::PlayerNextLockOn, KEY_INPUT_T);
 	SET_C_BUTTON(KEY_TYPE::PlayerNextLockOn, XINPUT_BUTTON_RIGHT_SHOULDER);
-
-
 
 
 #pragma endregion

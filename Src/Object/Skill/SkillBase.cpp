@@ -13,6 +13,8 @@ SkillBase::SkillBase
 	user(user),
 	mpCost(0),
 	damage(1),
+	collRadius(0.0f),
+	moveSpeed(0.0f),
 	scale(SCALE::None),
 	distance(DISTANCE::None),
 	step(STEP::None),
@@ -57,14 +59,14 @@ void SkillBase::SetUpSkillObject(void)
 	SetIsDraw(false);
 }
 
-void SkillBase::AddSkillCollider(float radius)
+void SkillBase::AddSkillCollider(void)
 {
 	//使用者に合わせてタグを決める
 	const COLLIDER_TAG tag =
 		(user == SKILL_USER::Enemy) ? COLLIDER_TAG::EnemySkill : COLLIDER_TAG::PlayerSkill;
 
 	//コライダーの追加
-	SphereCollider* coll = new SphereCollider(tag, radius, trans.pos);
+	SphereCollider* coll = new SphereCollider(tag, collRadius, trans.pos);
 
 	//属性の設定
 	coll->SetElement(element);

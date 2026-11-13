@@ -117,7 +117,8 @@ protected:
 	void SetUpSkillObject(void);
 
 	//スキル用の球コライダーを追加（使用者に合わせてタグを自動で設定）
-	void AddSkillCollider(float radius);
+	//collRadius・element・damageを設定してから呼ぶ
+	void AddSkillCollider(void);
 
 	//発動中のスキルを途中で終了させる（命中時など）
 	void Finish(void);
@@ -153,14 +154,24 @@ protected:
 	//スキルの進む向き
 	Vector3 moveDir;
 
+	//------- 派生先のLoadで設定するパラメータ -------
+
 	//消費MP
 	int mpCost;
 
-	//ダメージ量（派生先のLoadで設定）
+	//ダメージ量
 	int damage;
 
-	//スキルの生存時間（フレーム数・派生先のLoadで設定）
+	//攻撃範囲（当たり判定の球の半径）
+	float collRadius;
+
+	//移動の速さ（1フレームの移動量・動かないスキルは0）
+	float moveSpeed;
+
+	//スキルの生存時間（フレーム数）
 	float skillAliveTime;
+
+	//----------------------------------------------
 	//スキルの経過時間（フレーム数）
 	float skillAliveCount;
 

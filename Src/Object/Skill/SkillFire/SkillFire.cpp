@@ -4,11 +4,8 @@
 
 #include "../../Common/Collider/SphereCollider.h"
 
-SkillFire::SkillFire
-(
-	const Transform& userTrans,
-	SKILL_USER user
-):
+SkillFire::SkillFire(const Transform& userTrans,SKILL_USER user)
+	:
 	SkillBase(userTrans, user)
 {
 }
@@ -23,28 +20,33 @@ void SkillFire::Load(void)
 	//オブジェクト初期設定
 	SetUpSkillObject();
 
+#pragma region パラメータ登録
+
 	//属性登録
 	element = ELEMENT::Fire;
-
-	//ダメージ量登録（コライダー追加より前に設定する）
-	damage = FIRE_DAMAGE;
-
-	//当たり判定の追加
-	AddSkillCollider(FIRE_RADIUS);
-
-	//生存時間
-	skillAliveTime = FIRE_ALIVE_TIME;
-
 	//スキルアイコン登録
 	iconTag = Img::IMAGE_TAG::Element_Fire;
 
-	//消費MP
+	//ダメージ量
+	damage = FIRE_DAMAGE;
+	//攻撃サイズ
+	collRadius = FIRE_RADIUS;
+	//攻撃スピード
+	moveSpeed = FIRE_SPEED;
+	//スキル生存時間
+	skillAliveTime = FIRE_ALIVE_TIME;
+	//スキル消費コスト
 	mpCost = FIRE_MP_COST;
+
+#pragma endregion
+
+	//当たり判定の追加
+	AddSkillCollider();
 }
 
 void SkillFire::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
-	//当てる相手に当たったら消える（ダメージは相手側のOnCollisionで処理）
+	//当てる相手に当たったら消える
 	if (IsTarget(other.GetTag())) { Finish(); }
 }
 
@@ -62,15 +64,6 @@ void SkillFire::SkillStart(void)
 void SkillFire::SkillUpdate(void)
 {
 	//まっすぐ進む
-	trans.pos += moveDir * FIRE_SPEED * TimeScale::Get();
+	trans.pos += moveDir * moveSpeed * TimeScale::Get();
 }
 
-void SkillFire::SkillEnd(void)
-{
-}
-
-void SkillFire::SubDraw(void)
-{
-	//モデルが無いので仮で球を描画
-	DrawSphere3D(trans.pos.ToVECTOR(), FIRE_RADIUS, 12, 0xff4000, 0xffa000, true);
-}

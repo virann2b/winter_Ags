@@ -53,6 +53,9 @@ public:
 	//ËŒ‚
 	void Shot(void);
 
+	//Å‘å’e”‚Ìæ“¾
+	int GetMaxBullet(void) const { return params.MAX_AMMO; }
+
 	//c’e”æ“¾
 	int GetBullet(void) const { return remainingBullet; }
 	//Æ€‚µ‚Ä‚¢‚é‚Ì”æ“¾

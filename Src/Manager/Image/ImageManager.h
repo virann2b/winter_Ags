@@ -53,6 +53,7 @@ public:
 		WeakElementFrame,		// ã“_‘®«‚Ì˜g
 
 		GunAim,					// e‚ÌÆ€
+		GunBullet,				// ’eŠÛ
 
 		Max
 	};
@@ -90,7 +91,6 @@ private:
 		"Data/Image/Skill/Wind.png",					// Element_Wind
 		"Data/Image/Skill/Thunder.png",					// Element_Thunder
 
-
 		"Data/Image/Player/HPFrame.png",				// HpFrame
 		"Data/Image/Player/hp_bar_fill_yellow.png",		// HpFill
 		"Data/Image/Player/hp_bar_fill_red.png",		// HpDelay
@@ -104,6 +104,8 @@ private:
 		"Data/Image/Enemy/Weak_Element_Frame.png",		// WeakElementFrame
 
 		"Data/Image/Gun/Aim.png",						// GunAim
+		"Data/Image/Gun/Bullet.png",					// Bullet
+
 	};
 };
 
