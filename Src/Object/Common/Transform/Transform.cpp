@@ -142,7 +142,7 @@ MATRIX Transform::GetWorldMatrix(void) const
 
 	// ï`âÊç¿ïW
 	const Vector3 drawPos =
-		pos + Vector3(
+		pos + drawOffset + Vector3(
 			VTransform(centerDiff.ToVECTOR(), rotationMat)
 		);
 

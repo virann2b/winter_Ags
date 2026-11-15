@@ -32,6 +32,8 @@
 #include "../../Object/UI/Player/PlayerStatusUI.h"
 #include "../../Object/UI/Player/PlayerOperationUI.h"
 
+#include "../../Object/UI/Gun/GunBulletUI.h"
+
 #include "../../Object/UI/Enemy/EnemyStatusUI.h"
 
 
@@ -101,6 +103,8 @@ void GameScene::SubPostInit(void)
 	{
 		//操作方法UI
 		uiManager->AddUI(new PlayerOperationUI(*player));
+
+		uiManager->AddUI(new GunBulletUI(*player));
 
 		//プレイヤーステータス関連UI
 		uiManager->AddUI(new PlayerStatusUI(player->GetStatus()));

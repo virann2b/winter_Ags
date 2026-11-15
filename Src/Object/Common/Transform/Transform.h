@@ -21,6 +21,9 @@ struct Transform
 	// アニメーション移動の打ち消し量（モデル空間）
 	Vector3 animationOffset;
 
+	//描画の時だけ座標座標を足す
+	Vector3 drawOffset;
+
 	// 回転
 	Quaternion rotation;
 
@@ -47,6 +50,7 @@ struct Transform
 
 		centerDiff(),
 		animationOffset(),
+		drawOffset(),
 
 		rotation(),
 		localRotation(),

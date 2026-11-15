@@ -13,8 +13,9 @@ public:
 		std::function<void(void)> playAnimeNormalAttack_2,
 		std::function<void(void)> playAnimeNormalAttack_3,
 		std::function<bool(void)> isAnimeEnd,
-		std::function<float(void)> animRate
-
+		std::function<float(void)> animRate,
+		std::function<void(void)> StepStart,
+		std::function<void(void)> StepMove
 	);
 
 	~PlayerAttackNormalState()override = default;
@@ -48,15 +49,23 @@ private:
 	//剣の判定切り替え
 	const std::function<void(void)> ChangeSwordActive;
 
+	//生成アニメーション関数テーブル
+	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX];
+
 	// 通常攻撃ごとのアニメーション終了取得関数のポインタ
 	const std::function<bool(void)> isAnimeEnd;
 	//アニメーション再生比率取得
 	const std::function<float(void)> animRate;
 
+	const std::function<void(void)> StepStart;
+
+	const std::function<void(void)> StepMove;
+
+	
+
+
 #pragma endregion
 
-	//生成アニメーション関数テーブル
-	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX];
 
 	// 現在のコンボ段階 (0始まり)
 	int  comboIndex_;		// 現在のコンボ段階 (0始まり)

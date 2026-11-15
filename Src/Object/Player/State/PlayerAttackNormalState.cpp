@@ -13,8 +13,10 @@ PlayerAttackNormalState::PlayerAttackNormalState(
 	std::function<void(void)> playAnimeNormalAttack_2,
 	std::function<void(void)> playAnimeNormalAttack_3,
 	std::function<bool(void)> isAnimeEnd,
-	std::function<float(void)> animRate)
-	:
+	std::function<float(void)> animRate,
+	std::function<void(void)> StepStart,
+	std::function<void(void)> StepMove
+	):
 	ChangeStateIdle(ChangeStateIdle),
 	ChangeSwordActive(ChangeSwordActive),
 	PLAY_ANIM_TABLE
@@ -25,6 +27,8 @@ PlayerAttackNormalState::PlayerAttackNormalState(
 	},
 	isAnimeEnd(isAnimeEnd),
 	animRate(animRate),
+	StepStart(StepStart),
+	StepMove(StepMove),
 	comboIndex_(0),
 	nextInput_(false)
 {
@@ -45,6 +49,8 @@ void PlayerAttackNormalState::Enter(void)
 
 	ChangeSwordActive();
 
+	StepStart();
+
 	//通常攻撃再生
 	PLAY_ANIM_TABLE[comboIndex_]();
 }
@@ -52,6 +58,8 @@ void PlayerAttackNormalState::Enter(void)
 void PlayerAttackNormalState::Update(void)
 {
 	
+	StepMove();
+
 	// 入力受付(先に判定する)
 	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerAttack).down)
 	{
@@ -70,6 +78,8 @@ void PlayerAttackNormalState::Update(void)
 			//リセット
 			nextInput_ = false;         
 			PLAY_ANIM_TABLE[comboIndex_]();
+
+			StepStart();
 		}
 		else
 		{

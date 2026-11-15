@@ -54,6 +54,8 @@ public:
 
 		GunAim,					// èeÇÃè∆èÄ
 		GunBullet,				// íeä€
+		GunBulletEmpty,			// ãÛíe
+
 
 		Max
 	};
@@ -105,6 +107,8 @@ private:
 
 		"Data/Image/Gun/Aim.png",						// GunAim
 		"Data/Image/Gun/Bullet.png",					// Bullet
+		"Data/Image/Gun/Bullet_Empty.png",				// GunBulletEmpty
+
 
 	};
 };

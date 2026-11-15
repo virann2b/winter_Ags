@@ -39,8 +39,8 @@ public:
 		float TARGET_DISTANCE_MIN = 350.0f, float TARGET_DISTANCE_MAX = 400.0f,
 		float fov = 80.0f * (DX_PI_F / 180.0f),
 		bool initialModeRemote = false,
-		KEY_TYPE toggleKey = KEY_TYPE::PlayerLockOn,   // ★実際のキー名に置き換えてください
-		KEY_TYPE gunKey = KEY_TYPE::PlayerGunMode        // ★実際のキー名に置き換えてください
+		KEY_TYPE toggleKey = KEY_TYPE::PlayerLockOn,   
+		KEY_TYPE gunKey = KEY_TYPE::PlayerGunMode      
 	);
 
 	~GameCamera()override = default;
@@ -51,18 +51,18 @@ public:
 		this->targetPos = targetPos;
 	}
 
-	// ロックオン対象を途中で変更する（nullptrを許可：対象消失時にフリーモードへ戻すため）
+	// ロックオン対象を途中で変更する
 	void FocusChange(const Vector3* focusPos) { this->focusPos = focusPos; }
 
-	// モード切替（カメラモードは 追従モード 中かつ focusPos がある時のみ成功する）
+	// モード切替
 	// 成功したら true
 	bool SetMode(Mode m);
-	// ターゲットON/OFF（フリーモード <-> 追従モード。カメラモード中はフリーモードへ）
+	// ターゲットON/OFF
 	void ChangeTargetMode(void);
-	// 銃モードON/OFF（追従モード <-> カメラモード。フリーモードでは何もしない）
+	// 銃モードON/OFF
 	void ChangeGunMode(void);
 
-	// 構えているかを設定（モードの切り替えはカメラが判断する。毎フレーム呼んでよい）
+	// 構えているかを設定
 	//   構えている かつ 追従モード → カメラモード
 	//   構えていない かつ カメラモード → 追従モード
 	//   フリーモード（ロックオン解除中）は何もしない
@@ -88,10 +88,15 @@ private:
 
 	// カメラモード用パラメータ
 	static constexpr float GUN_BACK_DIST = 140.0f;                    // 自機の後ろ
-	static constexpr float GUN_SHOULDER = 100.0f;                      // 右肩へのずらし
+	static constexpr float GUN_SHOULDER = 100.0f;                     // 右肩へのずらし
 	static constexpr float GUN_HEIGHT = 110.0f;                       // 高さ
 	static constexpr float GUN_FOV = 55.0f * (DX_PI_F / 180.0f);      // 照準時の視野角
 	static constexpr float FOV_LERP_RATE = 0.15f;                     // 視野角の補間率
+
+	// 敵に近づいたときの見下ろし（追従モード）
+	static constexpr float CLOSE_DIST_START = 600.0f;	// この距離から高くなり始める
+	static constexpr float CLOSE_DIST_END = 300.0f;		// この距離で一番高くなる
+	static constexpr float CLOSE_HEIGHT_ADD = 100.0f;	// 一番高いときに足す高さ
 
 #pragma endregion
 	

@@ -261,7 +261,9 @@ void Player::Load(void)
 			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_2); },
 			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_3); },
 			std::bind(&Player::IsAnimeEnd, this),
-			std::bind(&Player::GetAnimeRatio, this)
+			std::bind(&Player::GetAnimeRatio, this),
+			std::bind(&Player::AttackStepStart,this),
+			std::bind(&Player::AttackStepMove, this)
 		)
 	);
 
@@ -319,6 +321,9 @@ void Player::Load(void)
 				sword->ChangeActive(Sword::ACTIVE::Active);
 
 			},
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start); },
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start); },
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start); },
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]()
 			{
@@ -448,10 +453,7 @@ void Player::Load(void)
 	//ステータス初期化
 	InitStatus(MAX_HP, MAX_MP);
 
-
 #pragma endregion
-
-
 	
 }
 
@@ -542,12 +544,7 @@ void Player::UseSkill(int slot)
 	if (!UseMp(skill->GetMpCost())) { return; }
 
 	//ロックオン中なら敵の方向を向いてから撃つ
-	if (const EnemyBase* enemy = FindLockOnEnemy())
-	{
-		Vector3 dir = enemy->GetTrans().pos - trans.pos;
-		dir.y = 0.0f;  
-		if (dir.LengthSq() > 0.000001f) { TargetDirection(dir); }
-	}
+	FaceLockOnEnemy();
 
 	skill->Activate();
 }
@@ -562,6 +559,36 @@ const EnemyBase* Player::FindLockOnEnemy(void) const
 	if (enemy == nullptr || enemy->IsDead()) { return nullptr; }
 
 	return enemy;
+}
+
+void Player::FaceLockOnEnemy(void)
+{
+	const EnemyBase* enemy = FindLockOnEnemy();
+	if (enemy == nullptr) { return; }
+
+	Vector3 dir = enemy->GetTrans().pos - trans.pos;
+	dir.y = 0.0f;
+
+	if (dir.LengthSq() > 0.000001f) { TargetDirection(dir); }
+}
+
+void Player::AttackStepStart(void)
+{
+	//踏み込みの速さ
+	ACCEL_MAX = ATTACK_STEP_ACCEL_MAX;
+
+	FaceLockOnEnemy();
+
+}
+
+void Player::AttackStepMove(void)
+{
+	//正面に進む
+	Vector3 forward = trans.VTrans(Vector3(0.0f, 0.0f, 1.0f));
+	forward.y = 0.0f;
+
+	forward.Normalize();
+	MoveAccel(forward);
 }
 
 bool Player::IsAiming(void) const
@@ -587,8 +614,6 @@ void Player::SubDraw(void)
 {
 	if(GetState() == (int)STATE::Gun)
 	{
-	
-		gun->DrawBulletUI();
 		gun->DrawAimUI();
 	}
 

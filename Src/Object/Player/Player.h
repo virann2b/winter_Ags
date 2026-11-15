@@ -220,6 +220,8 @@ private:
 	//スキル枠の数
 	static constexpr int SKILL_SLOT_MAX = 4;
 
+	static constexpr float ATTACK_STEP_ACCEL_MAX = 5.0f;
+
 #pragma endregion
 
 #pragma region 変数
@@ -254,15 +256,23 @@ private:
 		// 待機状態に遷移
 		ChangeState(STATE::Idle);
 	}
-
+	//更新
 	void SubUpdate(void)override;
+	//描画
+	void SubDraw(void)override;
 
 	//指定した枠のスキルを使う（ロックオン中は敵の方向を向く）
 	void UseSkill(int slot);
 
-	//ロックオン中の生存している敵を探す（いなければnullptr。そのフレームの中だけで使うこと）
+	//ロックオン中の生存している敵を探す
 	const EnemyBase* FindLockOnEnemy(void) const;
 
-	void SubDraw(void)override;
+	//ロックオンしている敵に向く
+	void FaceLockOnEnemy(void);
+
+	//攻撃の踏み込み開始
+	void AttackStepStart(void);
+	//攻撃の踏み込み中の移動
+	void AttackStepMove(void);
 
 };

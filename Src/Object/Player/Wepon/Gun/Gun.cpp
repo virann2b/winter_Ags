@@ -327,42 +327,6 @@ void Gun::Shot(void)
 	aimingTimer = 0.0f;
 }
 
-void Gun::DrawBulletUI(void) const
-{
-	// 画面中央を円の中心にする(仮)
-	int sw = 0, sh = 0;
-	GetScreenState(&sw, &sh, nullptr);
-	const float cx = sw * 0.5f;
-	const float cy = sh * 0.5f;
-
-	const float PI = 3.14159265f;
-	const float RING_RADIUS = 150.0f;	// リングの半径
-	const float BULLET_UI_R = 12.0f;	// 弾アイコンの半径
-
-	for (int i = 0; i < params.MAX_AMMO; ++i)
-	{
-		// 真上から時計回りに等間隔で配置
-		float rad = -PI * 0.5f + (PI * 2.0f) * i / params.MAX_AMMO;
-		float x = cx + cosf(rad) * RING_RADIUS;
-		float y = cy + sinf(rad) * RING_RADIUS;
-
-		if (i < remainingBullet)
-		{
-			// 残っている弾:金色で塗りつぶし+縁取り
-			DrawCircleAA(x, y, BULLET_UI_R, 24, 0xd4af37, TRUE);
-			DrawCircleAA(x, y, BULLET_UI_R, 24, 0x6b5a14, FALSE, 2.0f);
-		}
-		else
-		{
-			// 空の弾:暗い輪郭のみ
-			DrawCircleAA(x, y, BULLET_UI_R, 24, 0x555555, FALSE, 2.0f);
-		}
-	}
-
-	// リング中央に数字も表示(確認用)
-	DrawFormatString((int)cx - 20, (int)cy - 8, 0xffffff,
-		"%d / %d", remainingBullet, params.MAX_AMMO);
-}
 
 void Gun::DrawAimUI(void) const
 {

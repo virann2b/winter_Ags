@@ -6,11 +6,20 @@
 PlayerAttackChargeState::PlayerAttackChargeState(
 	std::function<void(void)> PlayerAttackChargeStart,
 	std::function<void(void)> PlayerAttackChargeEnd,
+	std::function<void(void)> playAnimeAttackCharge_1,
+	std::function<void(void)> playAnimeAttackCharge_2,
+	std::function<void(void)> playAnimeAttackCharge_3,
 	std::function<bool(void)> isAnimeEnd,
 	std::function<void(void)> ChangeStateIdle
 	):
 	PlayerAttackChargeStart(PlayerAttackChargeStart),
 	PlayerAttackChargeEnd(PlayerAttackChargeEnd),
+	PLAY_ANIM_TABLE
+	{
+		playAnimeAttackCharge_1,
+		playAnimeAttackCharge_2,
+		playAnimeAttackCharge_3,
+	},
 	isAnimeEnd(isAnimeEnd),
 	ChangeStateIdle(ChangeStateIdle),
 	step(STEP::None)

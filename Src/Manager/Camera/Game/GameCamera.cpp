@@ -195,8 +195,19 @@ void GameCamera::UpdateLockOn(void)
 	// 目標カメラ位置
 	Vector3 desiredPos = *targetPos + backDir * needDist;
 
-	// 高さ補正
-	desiredPos.y += std::clamp(((*targetPos - *focusPos) * 0.5f).Length(), 250.0f, 400.0f);
+	// 高さ補正（通常：離れるほど高い）
+	float height = std::clamp(((*targetPos - *focusPos) * 0.5f).Length(), 250.0f, 400.0f);
+
+	// 敵に近づいたら上から見下ろす（水平距離で判定）
+	Vector3 flat = atToTarget;
+	flat.y = 0.0f;
+	const float dist = flat.Length();
+	// 0（遠い）～1（近い）
+	const float closeRate = std::clamp(
+		(CLOSE_DIST_START - dist) / (CLOSE_DIST_START - CLOSE_DIST_END), 0.0f, 1.0f);
+	height += CLOSE_HEIGHT_ADD * closeRate;
+
+	desiredPos.y += height;
 
 	SmoothCameraMove(pos, desiredPos);
 	if (pos.y <= CAMERA_DOWN) { pos.y = CAMERA_DOWN; }

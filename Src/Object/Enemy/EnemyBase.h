@@ -79,7 +79,7 @@ public:
 protected:
 
 
-#pragma region 定数・変数
+#pragma region 定数
 
 	// 無敵時間
 	static constexpr float DEFAULT_INVINCIBLE_FRAME = 60.0f;
@@ -100,6 +100,16 @@ protected:
 
 	// 停止距離
 	static constexpr float DEFAULT_STOP_RANGE = 200.0f;
+
+	// 弱点の反動（左右の揺れ）
+	static constexpr float SHAKE_FRAME = 15.0f;		// 揺れる時間（フレーム）
+	static constexpr float SHAKE_WIDTH = 20.0f;		// 最初の揺れ幅
+	static constexpr float SHAKE_COUNT = 3.0f;		// 揺れる間の往復回数
+
+
+#pragma endregion
+
+#pragma region 変数
 
 	// UIを出す高さ
 	float uiOffsetY = 200.0f;
@@ -217,10 +227,8 @@ private:
 
 	// 初期読み込み
 	void SubInit(void)override final;
-
 	// 更新
 	void SubUpdate(void)override final;
-
 	// 描画
 	void SubDraw(void)override final;
 
@@ -245,6 +253,10 @@ private:
 	// 硬直の残り時間
 	float stunRemain = 0.0f;
 
+	// 反動の残り時間
+	float shakeCounter = 0.0f;
+
+
 	// スキル枠
 	struct SkillSlot
 	{
@@ -264,6 +276,12 @@ private:
 
 	//弱点時のダメージ
 	int WeakDamage(int damege) const;
+
+	// 反動を開始する
+	void StartShake(void) { shakeCounter = SHAKE_FRAME; }
+
+	// 反動の更新（見た目のズレを計算する）
+	void UpdateShake(void);
 
 };
 

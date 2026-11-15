@@ -27,13 +27,9 @@ public:
 	//’…’eXV
 	void UpdateHit(void);
 
-
-	//’e‚Ìc’e”•`‰æ
-	void DrawBulletUI(void) const;
 	//Æ€‚Ì•`‰æ
 	void DrawAimUI(void) const;
 	
-
 	//•ŠíØ‚è‘Ö‚¦
 	void SetActive(bool active) {isActive = active;	}
 

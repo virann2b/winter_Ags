@@ -47,6 +47,9 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	else if (IsWeak(lastHitElement)) { WeakStun(); }
 	//硬直中はのけぞらない
 	else if (!isStunned_) { OnHit(); }
+
+	//攻撃反動
+	if (!IsDead() && isWeakStun_) { StartShake(); }
 }
 
 void EnemyBase::Stun(float frame)
@@ -196,6 +199,8 @@ void EnemyBase::SubUpdate(void)
 	SkillCoolTimeUpdate();
 
 	EnemyUpdate();
+
+	UpdateShake();
 }
 
 void EnemyBase::SubDraw(void)
@@ -300,4 +305,32 @@ int EnemyBase::WeakDamage(int damage) const
 
 	//ダメージ倍率をかけ、四捨五入
 	return (int)std::round(damage * WEAK_DAMAGE_RATE);
+}
+
+void EnemyBase::UpdateShake(void)
+{
+
+	//揺れていなければズレなし
+	if (shakeCounter <= 0.0f)
+	{
+		shakeCounter = 0.0f;
+		trans.drawOffset = Vector3();
+		return;
+	}
+
+	shakeCounter -= TimeScale::Get();
+
+	//経過の割合
+	const float progress = 1.0f - (shakeCounter / SHAKE_FRAME);
+
+	//揺れ幅はだんだん小さく
+	const float width = SHAKE_WIDTH * (1.0f - progress);
+
+	//左右に往復
+	const float wave = sinf(progress * SHAKE_COUNT * DX_TWO_PI_F);
+
+	//敵から見た右方向にずらす
+	const Vector3 right = trans.VTrans(Vector3(1.0f, 0.0f, 0.0f));
+	trans.drawOffset = right * (width * wave);
+
 }
