@@ -11,16 +11,16 @@ PlayerRollState::PlayerRollState(
 	std::function<void(void)> PlayAnimeRoll,
 	std::function<bool(void)> IsAnimeEnd,
 	std::function<void(const Vector3&)> MoveAccel,
-	float& accelMax,
-	const Transform& playerTrans,
+	float& AccelMax,
+	const Transform& PlayerTrans,
 	std::function<void(void)> ChangeStateIdle
 
 ):
 	PlayAnimeRoll(PlayAnimeRoll),
 	IsAnimeEnd(IsAnimeEnd),
 	MoveAccel(MoveAccel),
-	accelMax(accelMax),
-	playerTrans(playerTrans),
+	AccelMax(AccelMax),
+	PlayerTrans(PlayerTrans),
 	ChangeStateIdle(ChangeStateIdle)
 {
 }
@@ -36,7 +36,7 @@ void PlayerRollState::Enter(void)
 	//入力方向を取得
 	Vector3 inputVec = InputVec();
 
-	accelMax = 15.0f;
+	AccelMax = 15.0f;
 
 	if (inputVec != 0.0f) 
 	{
@@ -47,7 +47,7 @@ void PlayerRollState::Enter(void)
 	else
 	{
 		// 入力がなければプレイヤーの正面
-		rollDir = playerTrans.VTrans(Vector3(0.0f, 0.0f, 1.0f));
+		rollDir = PlayerTrans.VTrans(Vector3(0.0f, 0.0f, 1.0f));
 	}
 
 	rollDir.y = 0.0f;
@@ -57,7 +57,7 @@ void PlayerRollState::Enter(void)
 	rollMove = rollDir * ROLL_DISTANCE;
 
 	//回避の目標座標
-	rollTargetPos = playerTrans.pos + rollMove;
+	rollTargetPos = PlayerTrans.pos + rollMove;
 
 	//アニメーションの再生
 	PlayAnimeRoll();
@@ -66,7 +66,7 @@ void PlayerRollState::Enter(void)
 void PlayerRollState::Update(void)
 {
 	//巡回目標座標までのベクトルを取得
-	Vector3 vec = rollTargetPos - playerTrans.pos;
+	Vector3 vec = rollTargetPos - PlayerTrans.pos;
 	//Y軸方向は移動しない
 	vec.y = 0.0f;
 

@@ -11,8 +11,8 @@ public:
 		std::function<void(void)> PlayAnimeRoll,
 		std::function<bool(void)> IsAnimeEnd,
 		std::function<void(const Vector3&)> MoveAccel,
-		float& accelMax,
-		const Transform& playerTrans,
+		float& AccelMax,
+		const Transform& PlayerTrans,
 		std::function<void(void)> ChangeStateIdle
 	);
 
@@ -44,9 +44,9 @@ private:
 	const std::function<void(const Vector3&)> MoveAccel;
 
 	// プレイヤーのモデル制御情報の参照
-	const Transform& playerTrans;
+	const Transform& PlayerTrans;
 
-	float& accelMax;
+	float& AccelMax;
 
 #pragma endregion
 

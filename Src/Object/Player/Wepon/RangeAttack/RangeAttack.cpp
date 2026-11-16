@@ -53,13 +53,15 @@ void RangeAttack::Load(void)
 	//初期設定サイズ
 	scaleSize = scaleSizeBig;
 
-
 	// 生成、ポインタ保持
 	attackCollRef = new SphereCollider(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos);
 	
 	//属性の登録
 	attackCollRef->SetElement(ELEMENT::Physics);
 	
+	//怯み値の設定
+	attackCollRef->SetStagger(RANGE_STAGGER);
+
 	// コライダーの生成
 	AddCollider(attackCollRef);
 

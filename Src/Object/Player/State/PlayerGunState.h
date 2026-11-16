@@ -14,7 +14,7 @@ public:
 		std::function<void(const Vector3&)> MoveAccel,
 		std::function<void(void)> PlayShot,
 		float ACCEL_MAX,
-		float& accelMax,
+		float& AccelMax,
 		std::function<bool(void)> IsLockOn
 	);
 
@@ -52,7 +52,7 @@ private:
 	const std::function<bool(void)> IsLockOn;
 
 	// â°é≤â¡ë¨ìxÇÃç≈ëÂílÇÃéQè∆
-	float& accelMax;
+	float& AccelMax;
 
 #pragma endregion
 

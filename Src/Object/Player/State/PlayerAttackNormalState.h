@@ -8,12 +8,11 @@ public:
 
 	PlayerAttackNormalState(
 		std::function<void(void)> ChangeStateIdle,
-		std::function<void(void)> ChangeSwordActive,
 		std::function<void(void)> playAnimeNormalAttack_1,
 		std::function<void(void)> playAnimeNormalAttack_2,
 		std::function<void(void)> playAnimeNormalAttack_3,
-		std::function<bool(void)> isAnimeEnd,
-		std::function<float(void)> animRate,
+		std::function<bool(void)> IsAnimeEnd,
+		std::function<float(void)> AnimRate,
 		std::function<void(void)> StepStart,
 		std::function<void(void)> StepMove
 	);
@@ -46,16 +45,13 @@ private:
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
-	//剣の判定切り替え
-	const std::function<void(void)> ChangeSwordActive;
-
 	//生成アニメーション関数テーブル
 	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX];
 
 	// 通常攻撃ごとのアニメーション終了取得関数のポインタ
-	const std::function<bool(void)> isAnimeEnd;
+	const std::function<bool(void)> IsAnimeEnd;
 	//アニメーション再生比率取得
-	const std::function<float(void)> animRate;
+	const std::function<float(void)> AnimRate;
 
 	const std::function<void(void)> StepStart;
 

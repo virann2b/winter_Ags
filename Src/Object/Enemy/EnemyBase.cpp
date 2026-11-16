@@ -43,10 +43,33 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	StartInvincible();
 
 	//攻撃被弾時の処理
-	if (IsDead()) { OnDie(); }
-	else if (IsWeak(lastHitElement)) { WeakStun(); }
-	//硬直中はのけぞらない
-	else if (!isStunned_) { OnHit(); }
+	if (IsDead()) 
+	{ OnDie(); }
+	else
+	{
+		const bool isStagger = 
+			(breakCounter <= 0.0f) && ReduceStagger(other.GetStagger());
+
+		//弱点を突かれたら弱点硬直
+		if (IsWeak(lastHitElement)) { WeakStun(); }
+
+		//弱点硬直フラグ
+		if (isWeakStun_)
+		{
+			//弱点硬直はそのまま、スローだけ
+			if (isStagger) { OnStaggerBreak(); }
+		}
+		else if (isStagger)
+		{
+			//硬直を打ち切って体勢崩れ
+			BreakStance();
+		}
+		else
+		{
+			//小さい反動だけ
+			StartShake(SMALL_SHAKE_RATE);
+		}
+	}
 
 	//攻撃反動
 	if (!IsDead() && isWeakStun_) { StartShake(); }
@@ -201,6 +224,9 @@ void EnemyBase::SubUpdate(void)
 	EnemyUpdate();
 
 	UpdateShake();
+
+	//怯み値の回復
+	UpdateStagger();
 }
 
 void EnemyBase::SubDraw(void)
@@ -324,7 +350,7 @@ void EnemyBase::UpdateShake(void)
 	const float progress = 1.0f - (shakeCounter / SHAKE_FRAME);
 
 	//揺れ幅はだんだん小さく
-	const float width = SHAKE_WIDTH * (1.0f - progress);
+	const float width = SHAKE_WIDTH * shakeRate * (1.0f - progress);
 
 	//左右に往復
 	const float wave = sinf(progress * SHAKE_COUNT * DX_TWO_PI_F);
@@ -334,3 +360,55 @@ void EnemyBase::UpdateShake(void)
 	trans.drawOffset = right * (width * wave);
 
 }
+
+#pragma region 怯み値
+
+bool EnemyBase::ReduceStagger(int damage)
+{
+	stagger -= (float)damage;
+	if (stagger < 0.0f) { stagger = 0.0f; }
+	return stagger <= 0.0f;
+}
+
+void EnemyBase::BreakStance(void)
+{
+	//のけぞり
+	OnHit();
+
+	//崩れた時の共通処理
+	OnStaggerBreak();
+}
+
+void EnemyBase::OnStaggerBreak(void)
+{
+	//怯み値を最大に戻す
+	breakCounter = BREAK_GUARD_FRAME;
+	stagger = staggerMax;
+
+	//仮の演出
+	TimeScale::GetIns().TemporaryScale(BREAK_SLOW_SCALE, BREAK_SLOW_TIME);
+}
+
+void EnemyBase::UpdateStagger(void)
+{
+	if (breakCounter > 0.0f) { breakCounter -= TimeScale::Get(); }
+
+	if (stagger > staggerMax) { stagger = staggerMax; }
+}
+
+void EnemyBase::LoadStagger(const std::string& enemyName)
+{
+	//読み込むCSVのファイル名
+	const std::string fileName = "Stagger";
+
+	//書かれていなければ初期値のまま
+	if (!IsParameterExist(fileName, enemyName)) { return; }
+
+	//最大値, 回復が始まるまで, 1フレームの回復量
+	const std::vector<float>& values = GetParameterArray(fileName, enemyName);
+	if (values.size() >= 1) { staggerMax = values[0]; }
+
+	stagger = staggerMax;
+}
+
+#pragma endregion

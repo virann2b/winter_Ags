@@ -96,6 +96,9 @@ public:
 	// ダメージ量のセット
 	void SetDamage(int setDamage) { damage = setDamage; }
 
+	// 怯みダメージのセット
+	void SetStagger(int setStagger) { stagger = setStagger; }
+
 #pragma endregion
 
 
@@ -152,6 +155,9 @@ public:
 	//コライダーのダメージ量(攻撃用)
 	int GetDamage(void) const { return damage; }
 
+	//コライダーの怯みダメージ(攻撃用)
+	int GetStagger(void) const { return stagger; }
+
 #pragma endregion
 
 
@@ -177,6 +183,9 @@ private:
 
 	// 攻撃のダメージ量（設定しなければ1）
 	int damage = 1;
+
+	// 攻撃の怯みダメージ（設定しなければ0）
+	int stagger = 0;
 
 	// オブジェクト側から直接参照する情報
 	const bool* dynamicFlg;

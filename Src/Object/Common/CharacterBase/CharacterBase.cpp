@@ -126,11 +126,15 @@ void CharacterBase::RegisterStateTransition(int beforeState, int afterState)
 
 void CharacterBase::ChangeState(int nextState)
 {
+	const int prevState = state;
+
 	// 遷移前のステートの終了処理を呼び出す
 	if (stateMap.contains(state)) { stateMap.at(state)->Exit(); }
 
 	// 遷移
 	state = nextState;
+
+	OnChangeState(prevState, nextState);
 
 	// 遷移後のステートの初期化処理を呼び出す
 	if (stateMap.contains(state)) { stateMap.at(state)->Enter(); }

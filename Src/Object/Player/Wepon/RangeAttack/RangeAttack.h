@@ -43,6 +43,8 @@ private:
 	float scaleSizeNormal;
 	float scaleSizeBig;
 
+	static constexpr int RANGE_STAGGER = 10;
+
 #pragma endregion
 
 	//ÉTÉCÉY

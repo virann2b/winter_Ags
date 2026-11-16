@@ -8,35 +8,35 @@
 PlayerJumpState::PlayerJumpState(
 	float JUMP_POWER,
 
-	float& velocityY,
-	const bool& isGround,
-	bool& isMaxJump,
+	float& VelocityY,
+	const bool& IsGround,
+	bool& IsMaxJump,
 
-	std::function<void(const Vector3&)> moveAccel,
+	std::function<void(const Vector3&)> MoveAccel,
 
-	std::function<void(void)> playAnimeJumpStart,
-	std::function<void(void)> playAnimeJumpLoop,
-	std::function<void(void)> playAnimeStamp,
+	std::function<void(void)> PlayAnimeJumpStart,
+	std::function<void(void)> PlayAnimeJumpLoop,
+	std::function<void(void)> PlayAnimeStamp,
 
-	std::function<bool(void)> isAnimeEnd,
+	std::function<bool(void)> IsAnimeEnd,
 
-	std::function<void(void)> changeStateIdle
+	std::function<void(void)> ChangeStateIdle
 ) :
 	JUMP_POWER(JUMP_POWER),
 
-	velocityY(velocityY),
-	isGround(isGround),
-	isMaxJump(isMaxJump),
+	VelocityY(VelocityY),
+	IsGround(IsGround),
+	IsMaxJump(IsMaxJump),
 
-	moveAccel(moveAccel),
+	MoveAccel(MoveAccel),
 
-	playAnimeJumpStart(playAnimeJumpStart),
-	playAnimeJumpLoop(playAnimeJumpLoop),
-	playAnimeStamp(playAnimeStamp),
+	PlayAnimeJumpStart(PlayAnimeJumpStart),
+	PlayAnimeJumpLoop(PlayAnimeJumpLoop),
+	PlayAnimeStamp(PlayAnimeStamp),
 
-	isAnimeEnd(isAnimeEnd),
+	IsAnimeEnd(IsAnimeEnd),
 
-	changeStateIdle(changeStateIdle),
+	ChangeStateIdle(ChangeStateIdle),
 
 	step(STEP::Start),
 
@@ -57,7 +57,7 @@ void PlayerJumpState::Enter(void)
 	step = STEP::Start;
 
 	// ジャンプ開始アニメを再生
-	playAnimeJumpStart();
+	PlayAnimeJumpStart();
 
 	//ジャンプ回数を加算
 	jumpCount++;
@@ -71,13 +71,13 @@ void PlayerJumpState::Update(void)
 		// ジャンプ開始
 
 		// アニメーション終了
-		if (isAnimeEnd()) {
+		if (IsAnimeEnd()) {
 
 			// 加速度加算
-			velocityY = JUMP_POWER;
+			VelocityY = JUMP_POWER;
 
 			// 滞空アニメーションを再生
-			playAnimeJumpLoop();
+			PlayAnimeJumpLoop();
 
 			// 次のステップへ
 			step = STEP::Loop;
@@ -104,7 +104,7 @@ void PlayerJumpState::Update(void)
 
 		if (jumpCount >= 2)
 		{
-			isMaxJump = true;
+			IsMaxJump = true;
 		}
 
 		// 最終的に入力があれば移動させる
@@ -114,17 +114,17 @@ void PlayerJumpState::Update(void)
 			vec.TransMatOwn(MGetRotY(CurrentCamera::Get().GetAngle().y));
 
 			// 移動
-			moveAccel(vec);
+			MoveAccel(vec);
 		}
 
 		// 着地
-		if (isGround) {
+		if (IsGround) {
 
 			//ジャンプカウントリセット
 			jumpCount = 0;
 			isAirborne = false;
 			// 着地のアニメーションを再生
-			playAnimeStamp();
+			PlayAnimeStamp();
 			// 次のステップへ
 			step = STEP::Stamp;
 		}
@@ -140,10 +140,10 @@ void PlayerJumpState::Update(void)
 		OwnStateConditionUpdate();
 
 		// アニメーション終了
-		if (isAnimeEnd()) {
+		if (IsAnimeEnd()) {
 
 			// 待機状態に戻り終了
-			changeStateIdle();
+			ChangeStateIdle();
 		}
 
 		break;
@@ -157,10 +157,10 @@ void PlayerJumpState::AlwaysUpdate(void)
 	if (jumpCount == 0) return;
 
 	// 空中に出たかどうかを記録
-	if (!isGround) { isAirborne = true; }
+	if (!IsGround) { isAirborne = true; }
 
 	// 一度空中に出てから着地したらリセット
-	if (isAirborne && isGround)
+	if (isAirborne && IsGround)
 	{
 		jumpCount = 0;
 		isAirborne = false;

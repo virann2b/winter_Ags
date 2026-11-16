@@ -17,14 +17,14 @@ public:
 	};
 
 	PlayerAttackAirState(
-		const bool& isGround,
-		bool& isMaxJump,
-		std::function<void(void)> playAnimAirAttackStart,
-		std::function<void(void)> playAnimAirAttackEnd,
-		std::function<void(void)> arriveAttackRange,
-		std::function<void(void)> endAttackRange,
-		std::function<float(void)> animRate,
-		std::function<bool(void)> isAnimeEnd,
+		const bool& IsGround,
+		bool& IsMaxJump,
+		std::function<void(void)> PlayAnimAirAttackStart,
+		std::function<void(void)> PlayAnimAirAttackEnd,
+		std::function<void(void)> ArriveAttackRange,
+		std::function<void(void)> EndAttackRange,
+		std::function<float(void)> AnimRate,
+		std::function<bool(void)> IsAnimeEnd,
 		std::function<void(void)> ChangeStateIdle);
 
 	~PlayerAttackAirState()override = default;
@@ -49,27 +49,27 @@ private:
 #pragma region 受け取る参照変数・関数
 
 	// 空中攻撃開始アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimAirAttackStart;
+	const std::function<void(void)> PlayAnimAirAttackStart;
 	// 空中攻撃終了アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimAirAttackEnd;
+	const std::function<void(void)> PlayAnimAirAttackEnd;
 
 	// 範囲攻撃発生ポインタ
-	const std::function<void(void)> arriveAttackRange;
+	const std::function<void(void)> ArriveAttackRange;
 	// 範囲攻撃発生ポインタ
-	const std::function<void(void)> endAttackRange;
+	const std::function<void(void)> EndAttackRange;
 
 	// アニメーション再生
-	const std::function<float(void)> animRate;
+	const std::function<float(void)> AnimRate;
 
 	// 待機アニメーションの再生関数のポインタ
 	const std::function<void(void)> ChangeStateIdle;
 	//アニメーション終了関数ポインタ
-	const std::function<bool(void)> isAnimeEnd;
+	const std::function<bool(void)> IsAnimeEnd;
 
 	// 地面と設置しているか
-	const bool& isGround;
+	const bool& IsGround;
 	// 最大ジャンプ数に達しているか
-	bool& isMaxJump;
+	bool& IsMaxJump;
 
 #pragma endregion
 

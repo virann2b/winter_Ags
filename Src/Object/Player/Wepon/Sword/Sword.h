@@ -6,6 +6,7 @@ class Sword:public ActorBase
 {
 public:
 
+	//剣の位置
 	enum class SWORD_POSITION
 	{
 		None = -1,
@@ -13,6 +14,8 @@ public:
 		Hand,	//手
 
 		Back,	//背中
+
+		Guard,	//ガード専用
 
 		//手から背中の間
 		HandtoBack,
@@ -22,6 +25,7 @@ public:
 		MAX
 	};
 
+	//剣の状態
 	enum class ACTIVE
 	{
 		None = -1,
@@ -40,18 +44,16 @@ public:
 
 	~Sword() override = default;
 
+	//読み込み
 	void Load(void) override;
 
-	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
-
-	void SetActive(bool active) { isActive = active; }
-
-	void SetJudge(bool isjugge) { isJudge = isjugge; }
-	
-
+	//剣の位置変更
 	void ChangePosition(SWORD_POSITION nextPostion);
-
+	//剣の判定・描画切り替え
 	void ChangeActive(ACTIVE active);
+
+	// 怯みダメージの設定
+	void SetStagger(int stagger);
 
 private:
 
@@ -64,6 +66,11 @@ private:
 	//生成位置の相対座標
 	const Vector3 CREATE_LOCAL_POS = Vector3(0.0f, 400.0f, 0.0f);
 
+	//ガード時の回転補正（手のローカル軸基準・度）
+	const Vector3 GUARD_ROT_OFFSET_DEG = Vector3(-30.0f, 40.0f, 30.0f);
+	//ガード時の位置補正（手のローカル軸基準）
+	const Vector3 GUARD_POS_OFFSET = Vector3(0.0f, 0.0f, 0.0f);
+
 	// Wait状態の待ち時間
 	const unsigned short WAIT_TIME = 60;
 	//落下時の最大Y座標
@@ -75,6 +82,9 @@ private:
 	static constexpr int RIGHT_HAND_FLAME_INDEX = 17;
 
 #pragma endregion
+
+	//コライダー
+	ColliderBase* swordColl = nullptr;
 
 	//剣の待機位置
 	SWORD_POSITION swordPosition;
@@ -93,6 +103,7 @@ private:
 	bool isActive;
 	bool isJudge;
 
+
 	void SubUpdate(void) override;
 	void SubDraw(void)override;
 
@@ -100,4 +111,6 @@ private:
 	void SwordUpdate(void);
 	//剣の判定更新
 	void ActiveUpdate(void);
+
+	void AttachToHand(const Vector3& rotOffsetDeg, const Vector3& posOffset);
 };

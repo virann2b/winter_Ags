@@ -4,7 +4,9 @@
 
 #include <functional>
 
-class Sword;
+
+#include "Wepon/Sword/Sword.h"
+
 class Gun;
 class RangeAttack;
 class SkillBase;
@@ -115,6 +117,10 @@ private:
 		AttackCharge_Start,	//強攻撃タメ開始
 		AttackCharge_End,	//強攻撃タメ終了
 
+		AttackCharge_1,
+		AttackCharge_2,
+		AttackCharge_3,
+
 		Gun,				//銃構え
 
 		Max
@@ -147,6 +153,10 @@ private:
 		1.0f,	// AttackCharge_Start
 		1.0f,	// AttackCharge_End
 
+		1.0f,	//AttackCharge_1
+		1.0f,	//AttackCharge_2
+		1.0f,	//AttackCharge_3
+
 		1.5f,	// Gun
 
 	};
@@ -174,6 +184,10 @@ private:
 
 		false,	// AttackCharge_Start
 		false,	// AttackCharge_End
+
+		false,	//AttackCharge_1
+		false,	//AttackCharge_2
+		false,	//AttackCharge_3
 
 		false,	// Gun
 
@@ -206,6 +220,10 @@ private:
 		"Data/Model/Player/AttackCharge_1.mv1",	// AttackCharge_Start
 		"Data/Model/Player/AttackCharge_2.mv1",	// AttackCharge_End
 
+		"Data/Model/Player/ChargeAttack_Combo_1.mv1",	//AttackCharge_1
+		"Data/Model/Player/ChargeAttack_Combo_2.mv1",	//AttackCharge_2
+		"Data/Model/Player/ChargeAttack_Combo_3.mv1",	//AttackCharge_3
+
 		"Data/Model/Player/Gun.mv1",	//Gun
 
 	};
@@ -220,7 +238,18 @@ private:
 	//スキル枠の数
 	static constexpr int SKILL_SLOT_MAX = 4;
 
-	static constexpr float ATTACK_STEP_ACCEL_MAX = 5.0f;
+	//踏み込み時の最大移動速度
+	static constexpr float ATTACK_STEP_ACCEL_MAX = 3.0f;
+
+	//踏み込み判定距離
+	static constexpr float ATTACK_STEP_STOP_DIST = 200.0f;
+
+	//剣の怯みダメージ
+	static constexpr int STAGGER_NORMAL = 5;		//通常攻撃
+	static constexpr int STAGGER_CHARGE_COMBO = 25;	//強攻撃
+	static constexpr int STAGGER_CHARGE = 50;		//タメ攻撃
+
+
 
 #pragma endregion
 
@@ -239,8 +268,6 @@ private:
 	int lockOnEnemyId;
 	//番号から敵を探す関数
 	std::function<EnemyBase*(int)> findEnemy;
-
-	STATE state;
 
 	//武器切り替え
 	bool swordIsActive;
@@ -274,5 +301,15 @@ private:
 	void AttackStepStart(void);
 	//攻撃の踏み込み中の移動
 	void AttackStepMove(void);
+
+	// ステート切り替え時の処理
+	void OnChangeState(int prevState, int nextState) override;
+
+	// ステートに合わせて武器の基本の状態を決める
+	void ApplyWeaponState(STATE state);
+	// 剣の位置・剣の判定・銃の表示をまとめて設定
+	void SetWeapon(Sword::SWORD_POSITION pos, Sword::ACTIVE active, bool isGunActive);
+	// 剣の判定ON/OFF
+	void SwordJudge(bool isOn);
 
 };

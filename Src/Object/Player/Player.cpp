@@ -10,7 +10,6 @@
 #include "../Common/Shader/RimLightShader.h"
 #include "../Common/Shader/WaterShader.h"
 
-#include "Wepon/Sword/Sword.h"
 #include "Wepon/Gun/Gun.h"
 #include "Wepon/RangeAttack/RangeAttack.h"
 
@@ -44,8 +43,7 @@ Player::Player()
 	rangeAttack(nullptr),
 	skillSlot(),
 	lockOnEnemyId(EnemyBase::INVALID_ID),
-	findEnemy(),
-	state(STATE::None)
+	findEnemy()
 {
 }
 
@@ -64,7 +62,7 @@ void Player::Load(void)
 	SetPushFlg(true);
 
 	// 押し出しだしによる重みを設定
-	SetPushWeight(50);
+	SetPushWeight(0);
 
 #pragma endregion
 
@@ -246,20 +244,10 @@ void Player::Load(void)
 	AddState(
 		STATE::AttackNormal,
 		new PlayerAttackNormalState(
-			[&]()
-			{
-				ChangeState(STATE::Idle);
-				sword->ChangePosition(Sword::SWORD_POSITION::Back);
-
-			},
-			[&]() {sword->ChangeActive(Sword::ACTIVE::Active); },
-			[&]()
-			{
-				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
-				AnimePlay(ANIME_TYPE::AttackNormal_1);
-			},
-			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_2); },
-			[&]() {AnimePlay(ANIME_TYPE::AttackNormal_3); },
+			[&]() { ChangeState(STATE::Idle);},
+			[&]() { AnimePlay(ANIME_TYPE::AttackNormal_1);},
+			[&]() { AnimePlay(ANIME_TYPE::AttackNormal_2); },
+			[&]() { AnimePlay(ANIME_TYPE::AttackNormal_3); },
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::GetAnimeRatio, this),
 			std::bind(&Player::AttackStepStart,this),
@@ -274,12 +262,10 @@ void Player::Load(void)
 			isGround, isMaxJump,
 			[&]()
 			{
-				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
 				AnimePlay(ANIME_TYPE::AttackAir_Start);
 			},
 			[&]()
 			{
-				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 				AnimePlay(ANIME_TYPE::AttackAir_End);
 			},
 			[&]()
@@ -298,8 +284,6 @@ void Player::Load(void)
 			{
 				rangeAttack->End();
 				ChangeState(STATE::Idle);
-				sword->ChangePosition(Sword::SWORD_POSITION::Back);
-
 			}
 
 		)
@@ -308,28 +292,20 @@ void Player::Load(void)
 	AddState(
 		STATE::AttackCharge,
 		new PlayerAttackChargeState(
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start);},
 			[&]()
-			{
-				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
-				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
-
-				AnimePlay(ANIME_TYPE::AttackCharge_Start);
-			},
-			[&]()
-			{
+			{ 
 				AnimePlay(ANIME_TYPE::AttackCharge_End);
-				sword->ChangeActive(Sword::ACTIVE::Active);
-
+				FaceLockOnEnemy();
+				sword->SetStagger(STAGGER_CHARGE);
 			},
-			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start); },
-			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start); },
-			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start); },
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_1);},
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_2); },
+			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_3); },
+			std::bind(&Player::GetAnimeRatio, this),
+			std::bind(&Player::SwordJudge, this, std::placeholders::_1),
 			std::bind(&Player::IsAnimeEnd, this),
-			[&]()
-			{
-				ChangeState(STATE::Idle);
-				sword->ChangePosition(Sword::SWORD_POSITION::Back);
-			}
+			[&](){ ChangeState(STATE::Idle);}
 		)
 	);
 
@@ -337,28 +313,13 @@ void Player::Load(void)
 	AddState(
 		STATE::Gun,
 		new PlayerGunState(
-			[&]()
-			{
-				//武器の切り替え
-				sword->ChangeActive(Sword::ACTIVE::DrawOnly);
-				gun->SetActive(true);
-				AnimePlay(ANIME_TYPE::Gun);
-			},
-			[&]()
-			{
-				//武器の切り替え
-				gun->SetActive(false);
-				sword->ChangeActive(Sword::ACTIVE::Active);
-				ChangeState(STATE::Idle);
-			},
+			[&]() { AnimePlay(ANIME_TYPE::Gun);},
+			[&]() { ChangeState(STATE::Idle);},
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
-			[&]()
-			{
-				gun->Shot();
-			},
+			[&]() { gun->Shot();},
 			10.0f,
 			ACCEL_MAX,
-			//ロックオンしているか（銃に入れる条件・構えを続ける条件）
+			//ロックオンしているか
 			[&]() { return FindLockOnEnemy() != nullptr; }
 		)
 	);
@@ -583,6 +544,16 @@ void Player::AttackStepStart(void)
 
 void Player::AttackStepMove(void)
 {
+	//ロックオンしている場合
+	if (const EnemyBase* enemy = FindLockOnEnemy())
+	{
+		//敵との距離を取得
+		Vector3 toEnemy = enemy->GetTrans().pos - trans.pos;
+		toEnemy.y = 0.0f;
+		//距離が近い場合は何もしない
+		if (toEnemy.Length() <= ATTACK_STEP_STOP_DIST) { return; }
+	}
+
 	//正面に進む
 	Vector3 forward = trans.VTrans(Vector3(0.0f, 0.0f, 1.0f));
 	forward.y = 0.0f;
@@ -590,6 +561,82 @@ void Player::AttackStepMove(void)
 	forward.Normalize();
 	MoveAccel(forward);
 }
+
+void Player::OnChangeState(int prevState, int nextState)
+{
+	//次の状態に合わせて武器の状態を変更する
+	ApplyWeaponState(static_cast<STATE>(nextState));
+}
+
+void Player::ApplyWeaponState(STATE state)
+{
+	//剣の位置
+	using POS = Sword::SWORD_POSITION;
+	//剣の当たり判定
+	using ACT = Sword::ACTIVE;
+
+	switch (state)
+	{
+	case Player::STATE::Guard:
+	{
+		SetWeapon(POS::Guard, ACT::DrawOnly, false);
+		break;
+	}
+	case Player::STATE::AttackNormal:
+	{
+		SetWeapon(POS::Hand, ACT::Active, false);
+		sword->SetStagger(STAGGER_NORMAL);
+		break;
+	}
+	case Player::STATE::AttackAir:
+	{
+		SetWeapon(POS::Hand, ACT::DrawOnly, false);
+
+		break;
+	}
+	case Player::STATE::AttackCharge:
+	{
+		//判定ステート内で切り替え
+		SetWeapon(POS::Hand, ACT::DrawOnly, false);
+		sword->SetStagger(STAGGER_CHARGE_COMBO);
+
+		break;
+	}
+	case Player::STATE::Gun:
+	{
+		//判定ステート内で切り替え
+		SetWeapon(POS::Back, ACT::DrawOnly, true);
+		break;
+	}
+	default:
+	{
+		SetWeapon(POS::Back, ACT::DrawOnly, false);
+		break;
+	}
+	}
+}
+
+void Player::SetWeapon(Sword::SWORD_POSITION pos, Sword::ACTIVE active, bool isGunActive)
+{
+	//剣の位置・描画変更
+	sword->ChangePosition(pos);
+	sword->ChangeActive(active);
+	//銃の描画変更
+	gun->SetActive(isGunActive);
+}
+
+void Player::SwordJudge(bool isOn)
+{
+	if (isOn)
+	{
+		sword->ChangeActive(Sword::ACTIVE::Active);
+	}
+	else
+	{
+		sword->ChangeActive(Sword::ACTIVE::DrawOnly);
+	}
+}
+
 
 bool Player::IsAiming(void) const
 {
@@ -612,6 +659,7 @@ bool Player::IsSkillMenuOpen(void) const
 
 void Player::SubDraw(void)
 {
+	//銃状態の時のみ描画を行う
 	if(GetState() == (int)STATE::Gun)
 	{
 		gun->DrawAimUI();

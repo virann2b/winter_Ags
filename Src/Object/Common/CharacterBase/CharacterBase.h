@@ -113,8 +113,6 @@ protected:
 	//被弾後の無敵時間
 	float invincibleCounter;
 
-
-
 #pragma region ステート管理関数
 
 	// ステートの追加
@@ -208,4 +206,7 @@ protected:
 	void SetPositionCorrection(bool enabled);
 
 #pragma endregion
+
+	virtual void OnChangeState(int prevState, int nextState) {}
+
 };

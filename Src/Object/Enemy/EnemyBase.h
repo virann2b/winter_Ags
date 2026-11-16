@@ -74,6 +74,9 @@ public:
 
 	//弱点硬直を起こした
 	ELEMENT GetWeakStunElement(void) const { return weakStunElement; }
+
+	// 今の怯み値（確認用）
+	float GetStagger(void) const { return stagger; }
 ;
 
 protected:
@@ -105,6 +108,20 @@ protected:
 	static constexpr float SHAKE_FRAME = 15.0f;		// 揺れる時間（フレーム）
 	static constexpr float SHAKE_WIDTH = 20.0f;		// 最初の揺れ幅
 	static constexpr float SHAKE_COUNT = 3.0f;		// 揺れる間の往復回数
+
+	// 怯み値
+	static constexpr float DEFAULT_STAGGER_MAX = 100.0f;			// 最大値
+
+
+	// 体勢崩れ中は怯み値を削らない時間
+	static constexpr float BREAK_GUARD_FRAME = 60.0f;
+
+	// 体勢崩れのスロー（仮）
+	static constexpr float BREAK_SLOW_SCALE = 0.1f;			// 速さ
+	static constexpr unsigned short BREAK_SLOW_TIME = 60;	// 長さ
+
+	// 怯み値が残っているときの反動の大きさ（弱点のときを1とした割合）
+	static constexpr float SMALL_SHAKE_RATE = 0.4f;
 
 
 #pragma endregion
@@ -203,6 +220,10 @@ protected:
 	/// <param name="enemyName">取得する敵の名前</param>
 	void LoadResist(const std::string& enemyName);
 
+	// 怯み値をCSVから読み込む（派生先のLoadで呼ぶ）
+	// 並び：最大値, 回復が始まるまで（フレーム）, 1フレームの回復量
+	void LoadStagger(const std::string& enemyName);
+
 
 	/// <summary>
 	/// 属性の弱点判定
@@ -277,8 +298,30 @@ private:
 	//弱点時のダメージ
 	int WeakDamage(int damege) const;
 
-	// 反動を開始する
-	void StartShake(void) { shakeCounter = SHAKE_FRAME; }
+	// 反動を開始する（rate：弱点のときを1とした大きさ）
+	void StartShake(float rate = 1.0f) { shakeCounter = SHAKE_FRAME; shakeRate = rate; }
+
+	// 今の反動の大きさ
+	float shakeRate = 1.0f;
+
+	// 怯み値
+	float stagger = DEFAULT_STAGGER_MAX;
+	float staggerMax = DEFAULT_STAGGER_MAX;
+
+	// 回復が始まるまでの残り時間
+	float staggerWaitCounter = 0.0f;
+	// 体勢崩れ中の残り時間（この間は怯み値を削らない）
+	float breakCounter = 0.0f;
+
+	// 怯み値を削る
+	bool ReduceStagger(int damage);
+	// 怯み値の回復
+	void UpdateStagger(void);
+
+	// 体勢崩れ
+	void BreakStance(void);
+	//崩れた時の共有処理
+	void OnStaggerBreak(void);
 
 	// 反動の更新（見た目のズレを計算する）
 	void UpdateShake(void);

@@ -8,25 +8,23 @@
 
 PlayerAttackNormalState::PlayerAttackNormalState(
 	std::function<void(void)> ChangeStateIdle,
-	std::function<void(void)> ChangeSwordActive,
 	std::function<void(void)> playAnimeNormalAttack_1,
 	std::function<void(void)> playAnimeNormalAttack_2,
 	std::function<void(void)> playAnimeNormalAttack_3,
-	std::function<bool(void)> isAnimeEnd,
-	std::function<float(void)> animRate,
+	std::function<bool(void)> IsAnimeEnd,
+	std::function<float(void)> AnimRate,
 	std::function<void(void)> StepStart,
 	std::function<void(void)> StepMove
 	):
 	ChangeStateIdle(ChangeStateIdle),
-	ChangeSwordActive(ChangeSwordActive),
 	PLAY_ANIM_TABLE
 	{
 		playAnimeNormalAttack_1,
 		playAnimeNormalAttack_2,
 		playAnimeNormalAttack_3
 	},
-	isAnimeEnd(isAnimeEnd),
-	animRate(animRate),
+	IsAnimeEnd(IsAnimeEnd),
+	AnimRate(AnimRate),
 	StepStart(StepStart),
 	StepMove(StepMove),
 	comboIndex_(0),
@@ -46,8 +44,6 @@ void PlayerAttackNormalState::Enter(void)
 	comboIndex_ = 0;
 	//入力フラグリセット
 	nextInput_ = false;
-
-	ChangeSwordActive();
 
 	StepStart();
 
@@ -70,7 +66,7 @@ void PlayerAttackNormalState::Update(void)
 	}
 
 	// アニメ終了判定
-	if (isAnimeEnd())
+	if (IsAnimeEnd())
 	{
 		if (nextInput_ && comboIndex_ + 1 < COMBO_MAX)
 		{
@@ -92,6 +88,6 @@ void PlayerAttackNormalState::Update(void)
 const bool PlayerAttackNormalState::IsComboInputWindow(void)
 {
 	//アニメーション再生比率
-	float rate = animRate();   // 0.0~1.0
+	float rate = AnimRate();   // 0.0~1.0
 	return rate >= INPUT_RATIO_START;
 }

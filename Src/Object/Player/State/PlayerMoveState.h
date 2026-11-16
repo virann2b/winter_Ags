@@ -10,10 +10,10 @@ public:
 
 	PlayerMoveState(
 		float ACCEL_MAX, float DASH_SPEED_RATE, short DASH_STAMINA_MAX,
-		std::function<void(const Vector3&)> moveAccel,
-		float& accelMax,
-		std::function<void(void)> playAnimeWalk,
-		std::function<void(void)> playAnimeRun
+		std::function<void(const Vector3&)> MoveAccel,
+		float& AccelMax,
+		std::function<void(void)> PlayAnimeWalk,
+		std::function<void(void)> PlayAnimeRun
 	);
 
 	~PlayerMoveState()override = default;
@@ -54,15 +54,15 @@ private:
 #pragma region 受け取る参照変数・関数
 
 	// 移動関数のポインタ
-	const std::function<void(const Vector3&)> moveAccel;
+	const std::function<void(const Vector3&)> MoveAccel;
 
 	// 加速度の最大値の参照
-	float& accelMax;
+	float& AccelMax;
 
 	// 歩きアニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeWalk;
+	const std::function<void(void)> PlayAnimeWalk;
 	// 走りアニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeRun;
+	const std::function<void(void)> PlayAnimeRun;
 
 #pragma endregion
 

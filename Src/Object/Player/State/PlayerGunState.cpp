@@ -11,7 +11,7 @@ PlayerGunState::PlayerGunState(
 	std::function<void(const Vector3&)> MoveAccel,
 	std::function<void(void)> PlayShot,
 	float ACCEL_MAX,
-	float& accelMax,
+	float& AccelMax,
 	std::function<bool(void)> IsLockOn
 ):
 	PlayAnimeGun(PlayAnimeGun),
@@ -19,7 +19,7 @@ PlayerGunState::PlayerGunState(
 	MoveAccel(MoveAccel),
 	PlayShot(PlayShot),
 	ACCEL_MAX(ACCEL_MAX),
-	accelMax(accelMax),
+	AccelMax(AccelMax),
 	IsLockOn(IsLockOn)
 {
 }
@@ -67,7 +67,7 @@ void PlayerGunState::Update(void)
 	Vector3 inputVec = InputVec();
 
 	// スティックの倒し具合で速度を変える(キーボードは長さ1なので最大速度)
-	accelMax = ACCEL_MAX * inputVec.Length();
+	AccelMax = ACCEL_MAX * inputVec.Length();
 
 	if (inputVec != 0.0f) 
 	{
@@ -79,7 +79,7 @@ void PlayerGunState::Update(void)
 
 void PlayerGunState::Exit(void)
 {
-	accelMax = ACCEL_MAX;
+	AccelMax = ACCEL_MAX;
 
 	//カメラを元のモードに戻すのも、GameSceneから伝わった「構えていない」をもとにカメラが行う
 }

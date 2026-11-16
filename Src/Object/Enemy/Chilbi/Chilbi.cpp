@@ -37,6 +37,9 @@ void Chilbi::Load(void)
 	//‘®«‘Ï«‚Ì“Ç‚İ‚İ
 	LoadResist("Chilbi");
 
+	//‹¯‚İ’l‚Ì“Ç‚İ‚İ
+	LoadStagger("Chilbi");
+
 	// ƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
 	trans.LoadModel("Enemy/Chilbi/Chilbi");
 
@@ -257,6 +260,8 @@ void Chilbi::EnemyDraw(void)
 	DrawFormatString(0, 520, 0xffffff, "IsWeak : %d", (int)IsWeak(lastHitElement));
 
 	DrawFormatString(0, 540, 0xffffff, "WeakStun : %d", (int)IsWeakStun());
+
+	DrawFormatString(0, 560, 0xffffff, "Stagger : %.1f", GetStagger());
 
 
 }

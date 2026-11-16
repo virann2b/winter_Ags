@@ -8,21 +8,21 @@
 PlayerMoveState::PlayerMoveState(
 	float ACCEL_MAX, float DASH_SPEED_RATE, short DASH_STAMINA_MAX,
 
-	std::function<void(const Vector3&)> moveAccel,
+	std::function<void(const Vector3&)> MoveAccel,
 
-	float& accelMax,
+	float& AccelMax,
 	
-	std::function<void(void)> playAnimeWalk,
-	std::function<void(void)> playAnimeRun
+	std::function<void(void)> PlayAnimeWalk,
+	std::function<void(void)> PlayAnimeRun
 ) :
 	ACCEL_MAX(ACCEL_MAX), DASH_SPEED_RATE(DASH_SPEED_RATE), DASH_STAMINA_MAX(DASH_STAMINA_MAX),
 
-	moveAccel(moveAccel),
+	MoveAccel(MoveAccel),
 
-	accelMax(accelMax),
+	AccelMax(AccelMax),
 
-	playAnimeWalk(playAnimeWalk),
-	playAnimeRun(playAnimeRun),
+	PlayAnimeWalk(PlayAnimeWalk),
+	PlayAnimeRun(PlayAnimeRun),
 
 	isDash(false),
 	dashStamina(DASH_STAMINA_MAX),
@@ -39,7 +39,7 @@ void PlayerMoveState::OwnStateConditionUpdate(void)
 void PlayerMoveState::Enter(void)
 {
 	// ダッシュは廃止したので常に通常移動
-	playAnimeWalk();
+	PlayAnimeWalk();
 }
 
 void PlayerMoveState::Update(void)
@@ -52,7 +52,7 @@ void PlayerMoveState::Update(void)
 	isDash = false;
 
 	// 移動量の最大値を更新する
-	accelMax = (isDash) ? ACCEL_MAX * DASH_SPEED_RATE : ACCEL_MAX * inputVec.Length();
+	AccelMax = (isDash) ? ACCEL_MAX * DASH_SPEED_RATE : ACCEL_MAX * inputVec.Length();
 
 	// 最終的に入力があれば加速度に加算する
 	if (inputVec != 0.0f) {
@@ -61,7 +61,7 @@ void PlayerMoveState::Update(void)
 		inputVec.TransMatOwn(MGetRotY(CurrentCamera::Get().GetAngle().y));
 
 		// 移動
-		moveAccel(inputVec);
+		MoveAccel(inputVec);
 
 		// ダッシュスタミナを更新 / アニメーションを更新
 		if (isDash) {
@@ -75,18 +75,18 @@ void PlayerMoveState::Update(void)
 			}
 
 			// ダッシュしているときは走るアニメーションにする
-			playAnimeRun();
+			PlayAnimeRun();
 		}
 		else {
 			// ダッシュしていないときは歩くアニメーションにする
-			playAnimeWalk();
+			PlayAnimeWalk();
 		}
 	}
 }
 
 void PlayerMoveState::Exit(void)
 {
-	accelMax = ACCEL_MAX;
+	AccelMax = ACCEL_MAX;
 }
 
 void PlayerMoveState::AlwaysUpdate(void)

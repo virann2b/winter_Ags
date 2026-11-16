@@ -29,8 +29,6 @@ void Sword::Load(void)
 	//”»’èƒIƒt
 	SetJudgeFlg(isJudge);
 
-#pragma endregion
-
 	// ƒ‚ƒfƒ‹‚ðƒ[ƒh
 	trans.LoadModel("Sword/Sword");
 
@@ -38,27 +36,30 @@ void Sword::Load(void)
 	trans.scale = 0.7f;
 	//‚¸‚ê•â³
 	trans.centerDiff = Vector3::Xonly(-50.0f);
+	//Šp“x‚Ì’²®
+	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));
+
+#pragma endregion
 
 	//ƒRƒ‰ƒCƒ_[‚Ì’Ç‰Á
-	CapsuleCollider* swordColl =
-		new CapsuleCollider(COLLIDER_TAG::PlayerSword,
-			Vector3::Xonly(15.0f) * trans.scale,
-			Vector3::Xonly(160.0f) * trans.scale,
-			60.0f * trans.scale.MaxElementF()
-		);
+	 swordColl =new CapsuleCollider
+	 (COLLIDER_TAG::PlayerSword,
+		Vector3::Xonly(15.0f) * trans.scale,
+		Vector3::Xonly(160.0f) * trans.scale,
+		60.0f * trans.scale.MaxElementF());
 	//‘®«‚Ì“o˜^
 	swordColl->SetElement(ELEMENT::Physics);
 	AddCollider(swordColl);
 
-	//Šp“x‚Ì’²®
-	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));
-
+	//Œ•‚Ì‰ŠúˆÊ’u
 	swordPosition = SWORD_POSITION::Hand;
+
 }
 
-void Sword::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
+void Sword::SetStagger(int stagger)
 {
-
+	//‹¯‚Ý’l‚ðŒ•‚ðŒo—R‚Å“o˜^
+	if (swordColl != nullptr) { swordColl->SetStagger(stagger); }
 }
 
 void Sword::ChangePosition(SWORD_POSITION nextPostion)
@@ -171,7 +172,11 @@ void Sword::SwordUpdate(void)
 
 		break;
 	}
-
+	case Sword::SWORD_POSITION::Guard:
+	{
+		AttachToHand(GUARD_ROT_OFFSET_DEG, GUARD_POS_OFFSET);
+		break;
+	}
 	case Sword::SWORD_POSITION::HandtoBack: {
 
 		break;
@@ -216,4 +221,27 @@ void Sword::ActiveUpdate(void)
 		break;
 	}
 	}
+}
+
+void Sword::AttachToHand(const Vector3& rotOffsetDeg, const Vector3& posOffset)
+{
+	const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
+	if (handFrame < 0) { return; }
+
+	const MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
+	const Quaternion handRot = Quaternion::FromMatrix(hand);
+
+	//Žè‚Ìƒ[ƒJƒ‹Ž²Šî€‚Å‚Ì•â³‰ñ“]
+	const Quaternion offsetRot = Quaternion::FromEulerXZY(Vector3(
+		Deg2Rad(rotOffsetDeg.x),
+		Deg2Rad(rotOffsetDeg.y),
+		Deg2Rad(rotOffsetDeg.z)));
+
+	//ˆÊ’uFŽè‚ÌˆÊ’u{Žè‚ÌŒü‚«‚É‡‚í‚¹‚½‚¸‚ç‚µ
+	trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2])
+		+ handRot.Rotate(posOffset);
+
+	//‰ñ“]F•â³ ¨ Žè‚Ì‰ñ“] ‚Ì‡‚É‡¬
+	trans.rotation = Quaternion::FromMatrix(MMult(offsetRot.ToMatrix(), handRot.ToMatrix()));
+	trans.AddAngleYDeg(90.0f);
 }

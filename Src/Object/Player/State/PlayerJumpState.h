@@ -11,19 +11,19 @@ public:
 	PlayerJumpState(
 		float JUMP_POWER,
 
-		float& velocityY,
-		const bool& isGround,
-		bool& isMaxJump,
+		float& VelocityY,
+		const bool& IsGround,
+		bool& IsMaxJump,
 
-		std::function<void(const Vector3&)> moveAccel,
+		std::function<void(const Vector3&)> MoveAccel,
 
 		std::function<void(void)> PlayAnimeJumpStart,
 		std::function<void(void)> PlayAnimeJumpLoop,
 		std::function<void(void)> PlayAnimeStamp,
 
-		std::function<bool(void)> isAnimeEnd,
+		std::function<bool(void)> IsAnimeEnd,
 
-		std::function<void(void)> changeStateIdle
+		std::function<void(void)> ChangeStateIdle
 	);
 
 	~PlayerJumpState()override = default;
@@ -51,29 +51,29 @@ private:
 #pragma region 受け取る参照変数・関数
 
 	// Y軸加速度
-	float& velocityY;
+	float& VelocityY;
 
 	// 地面と設置しているか
-	const bool& isGround;
+	const bool& IsGround;
 
 	// ジャンプカウント最大フラグ
-	bool& isMaxJump;
+	bool& IsMaxJump;
 
 	// 移動関数のポインタ
-	const std::function<void(const Vector3&)> moveAccel;
+	const std::function<void(const Vector3&)> MoveAccel;
 
 	// ジャンプ開始アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeJumpStart;
+	const std::function<void(void)> PlayAnimeJumpStart;
 	// ジャンプ滞空アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeJumpLoop;
+	const std::function<void(void)> PlayAnimeJumpLoop;
 	// 着地アニメーションの再生関数のポインタ
-	const std::function<void(void)> playAnimeStamp;
+	const std::function<void(void)> PlayAnimeStamp;
 
 	// アニメーション終了取得関数のポインタ
-	const std::function<bool(void)> isAnimeEnd;
+	const std::function<bool(void)> IsAnimeEnd;
 
 	// 待機状態に戻る関数のポインタ
-	const std::function<void(void)> changeStateIdle;
+	const std::function<void(void)> ChangeStateIdle;
 
 #pragma endregion
 
