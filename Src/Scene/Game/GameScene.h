@@ -49,11 +49,17 @@ private:
 	// 経過時間(秒)
 	float elapsedSec;
 
-	// 遷移済みフラグ(毎フレーム遷移を呼ばないため)
+	// 経過時間(秒)
+	float deadSlowCount;
+
+	// 遷移済みフラグ
 	bool isChanging;
 
-	// クリア時のスロー演出を開始したか（1回だけ行うため）
+	// クリア時のスロー演出を開始フラグ
 	bool isClearSlow;
+
+	//プレイヤーが死亡時のフラグ
+	bool isDeadSlow;
 
 	void CreateCamera(void)override;
 

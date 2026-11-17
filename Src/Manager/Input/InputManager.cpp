@@ -75,11 +75,10 @@ void InputManager::Init(void)
 
 	//スキルメニュー（押している間、下のスキル1〜4が使える）
 	SET_KEYBOARD(KEY_TYPE::PlayerSkillMenu, KEY_INPUT_LSHIFT);
-	SET_C_BUTTON(KEY_TYPE::PlayerSkillMenu, XINPUT_BUTTON_RIGHT_SHOULDER);
-
+	
 	//スキル1〜4（スキルメニューと同時押し）
 	SET_KEYBOARD(KEY_TYPE::PlayerSkill1, KEY_INPUT_Q);
-	SET_C_BUTTON(KEY_TYPE::PlayerSkill1, XINPUT_BUTTON_X);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkill1, XINPUT_BUTTON_Y);
 
 	SET_KEYBOARD(KEY_TYPE::PlayerSkill2, KEY_INPUT_E);
 	SET_C_BUTTON(KEY_TYPE::PlayerSkill2, XINPUT_BUTTON_A);
@@ -88,7 +87,7 @@ void InputManager::Init(void)
 	SET_C_BUTTON(KEY_TYPE::PlayerSkill3, XINPUT_BUTTON_B);
 
 	SET_KEYBOARD(KEY_TYPE::PlayerSkill4, KEY_INPUT_F);
-	SET_C_BUTTON(KEY_TYPE::PlayerSkill4, XINPUT_BUTTON_Y);
+	SET_C_BUTTON(KEY_TYPE::PlayerSkill4, XINPUT_BUTTON_X);
 
 	//コントローラーの登録はPlayerGunStateの中に
 	//武器から銃切り替え
@@ -313,7 +312,8 @@ void InputManager::SkillMenuUpdate(void)
 		KEY_TYPE::PlayerSkill4,
 	};
 
-	const bool isSkillMenu = keyInfo[(int)KEY_TYPE::PlayerSkillMenu].now;
+	const bool isSkillMenu = keyInfo[(int)KEY_TYPE::PlayerSkillMenu].now 
+		|| Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Right).now;
 
 	for (KEY_TYPE type : MENU_BLOCK_KEYS) { SuppressKey(type, isSkillMenu); }
 	for (KEY_TYPE type : SKILL_KEYS) { SuppressKey(type, !isSkillMenu); }

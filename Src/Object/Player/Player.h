@@ -249,7 +249,12 @@ private:
 	static constexpr int STAGGER_CHARGE_COMBO = 25;	//強攻撃
 	static constexpr int STAGGER_CHARGE = 50;		//タメ攻撃
 
+	static constexpr int   GUARD_DAMAGE_MIN = 1;
 
+	static constexpr int   GUARD_MP_COST = 3;
+
+	//ガード時のダメージ倍率
+	static constexpr float GUARD_DAMAGE_RATE = 0.5f;	
 
 #pragma endregion
 

@@ -2,6 +2,8 @@
 
 #include "../../../Manager/TimeScale/TimeScale.h"
 
+#include "../../../Manager/Sound/SoundManager.h"
+
 #include "../../Common/Collider/SphereCollider.h"
 
 SkillFire::SkillFire(const Transform& userTrans,SKILL_USER user)
@@ -59,6 +61,9 @@ void SkillFire::SkillStart(void)
 
 	//スキル使用者の向きを取得（発動時の向きでまっすぐ飛ぶ）
 	moveDir = userTrans.rotation.Rotate(Vector3(0.0f, 0.0f, 1.0f));
+
+	//ファイアサウンド再生
+	Snd::GetIns().Play("Fire");
 }
 
 void SkillFire::SkillUpdate(void)

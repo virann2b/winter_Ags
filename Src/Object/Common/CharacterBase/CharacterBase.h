@@ -64,6 +64,9 @@ public:
 	//Œ»İ‘Ì—Í‚Ìæ“¾
 	int GetHp(void) const { return status.hp; };
 
+	//Œ»İ–‚—Í‚Ìæ“¾
+	int GetMp(void) const { return status.mp; };
+
 	//€–S”»’è‚Ìæ“¾
 	bool IsDead(void) const { return status.hp <= 0; };
 

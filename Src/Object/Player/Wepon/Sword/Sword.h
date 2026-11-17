@@ -67,7 +67,7 @@ private:
 	const Vector3 CREATE_LOCAL_POS = Vector3(0.0f, 400.0f, 0.0f);
 
 	//ガード時の回転補正（手のローカル軸基準・度）
-	const Vector3 GUARD_ROT_OFFSET_DEG = Vector3(-30.0f, 40.0f, 30.0f);
+	const Vector3 GUARD_ROT_OFFSET_DEG = Vector3(-20.0f, -80.0f, -30.0f);
 	//ガード時の位置補正（手のローカル軸基準）
 	const Vector3 GUARD_POS_OFFSET = Vector3(0.0f, 0.0f, 0.0f);
 

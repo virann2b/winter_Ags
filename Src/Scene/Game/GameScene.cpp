@@ -40,6 +40,7 @@
 GameScene::GameScene()
 	: SceneBase(),
 	elapsedSec(0.0f),
+	deadSlowCount(0.0f),
 	isChanging(false),
 	isClearSlow(false),
 	gameCamera(nullptr),
@@ -61,13 +62,13 @@ void GameScene::SubPostLoad(void)
 	//UI
 	AddActor(new UIManager);
 
-
 }
 
 void GameScene::SubPostInit(void)
 {
 	
 	elapsedSec = 0.0f;
+	deadSlowCount = 0.0f;
 
 	isChanging = false;
 	isClearSlow = false;
@@ -104,6 +105,7 @@ void GameScene::SubPostInit(void)
 		//操作方法UI
 		uiManager->AddUI(new PlayerOperationUI(*player));
 
+		//銃弾UI
 		uiManager->AddUI(new GunBulletUI(*player));
 
 		//プレイヤーステータス関連UI
@@ -122,6 +124,7 @@ void GameScene::SubPostUpdate(void)
 	}
 
 	EnemyManager* enemyManager = ActorSerch<EnemyManager>(actors);
+	Player* player = ActorSerch<Player>(actors);
 
 	//全ての絶滅判定
 	if (enemyManager->IsAllDead())
@@ -141,6 +144,26 @@ void GameScene::SubPostUpdate(void)
 			SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameClear);
 		}
 	}
+
+	//プレイヤーが死亡した場合
+	if (player->IsDead())
+	{
+		if (!isDeadSlow)
+		{
+			isDeadSlow = true;
+			TimeScale::GetIns().ChangeTimeScale(CLEAR_SLOW_SCALE, CLEAR_SLOW_CHANGE_TIME);
+		}
+		deadSlowCount += 1.0f / 60.0f * TimeScale::Get();
+
+		if (deadSlowCount >= 1.0f && !isChanging)
+		{
+			isChanging = true;
+			TimeScale::GetIns().ChangeDefaultTimeScale();
+			SceneManager::GetIns().ChangeSceneFade(SCENE_ID::GameOver);
+		}
+
+	}
+
 
 	// 制限時間の更新
 	if (!isChanging)

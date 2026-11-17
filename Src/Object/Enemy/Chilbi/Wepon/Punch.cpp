@@ -27,7 +27,7 @@ void Punch::Load(void)
 #pragma endregion
 
 	// 生成したコライダーをアクター所有コライダーに追加
-	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 60, trans.pos));
+	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 80, trans.pos));
 
 }
 

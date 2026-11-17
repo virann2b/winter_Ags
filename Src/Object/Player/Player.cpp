@@ -228,7 +228,6 @@ void Player::Load(void)
 		new PlayerGuardState(
 			[&]() 
 			{ 
-				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
 				AnimePlay(ANIME_TYPE::Guard);
 			},
 			std::bind(&Player::IsAnimeEnd, this),
@@ -292,7 +291,11 @@ void Player::Load(void)
 	AddState(
 		STATE::AttackCharge,
 		new PlayerAttackChargeState(
-			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_Start);},
+			[&]()
+			{ 
+				sword->ChangePosition(Sword::SWORD_POSITION::Hand);
+				AnimePlay(ANIME_TYPE::AttackCharge_Start);
+			},
 			[&]()
 			{ 
 				AnimePlay(ANIME_TYPE::AttackCharge_End);
@@ -382,13 +385,9 @@ void Player::Load(void)
 	RegisterStateTransition(STATE::Idle, STATE::Hit);
 	// 「移動状態」->「HIT状態」の自動遷移登録
 	RegisterStateTransition(STATE::Move, STATE::Hit);
-	// 「ジャンプ状態」->「HIT状態」の自動遷移登録
-	RegisterStateTransition(STATE::Jump, STATE::Hit);
-	// 「通常攻撃状態」->「HIT状態」の自動遷移登録
-	RegisterStateTransition(STATE::AttackNormal, STATE::Hit);
-	// 「銃状態」->「HIT状態」の自動遷移登録
-	RegisterStateTransition(STATE::Gun, STATE::Hit);
-
+	
+	
+	
 #pragma endregion
 
 #pragma endregion
@@ -420,28 +419,46 @@ void Player::Load(void)
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+
 	switch (other.GetTag())
 	{
-
 	case COLLIDER_TAG::Enemy_ChilbiPunch:
-	{
-		TakeDamage(1);
-		ChangeState(IsDead() ? STATE::Hit : STATE::Hit);
-
-		break;
-	}
-
-	//敵のスキル
 	case COLLIDER_TAG::EnemySkill:
 	{
+
+		//ガード中の判定
+		const bool isGuard = (static_cast<STATE>(GetState()) == STATE::Guard);
+		//MPが使用可能か
+		const bool isGuardAvailable = isGuard && (GetMp() >= GUARD_MP_COST);
+		//受け取るダメージ量
+		const int defaultDamage = other.GetDamage();
+
+		//受け渡すダメージ
+		int damage;
+
+		//ガード中かつMPを使用可能か
+		if (isGuardAvailable)
+		{
+			damage = static_cast<int>(defaultDamage * GUARD_DAMAGE_RATE);
+		}
+		else
+		{
+			damage = static_cast<int>(defaultDamage);
+		}
+
+
+		if (isGuardAvailable) { UseMp(GUARD_MP_COST); }
+
 		//スキル側のコライダーに設定されたダメージ
-		TakeDamage(other.GetDamage());
-		ChangeState(STATE::Hit);
+		TakeDamage(damage);
+
+		if (!isGuardAvailable) { ChangeState(STATE::Hit); }
 
 		break;
 	}
 
 	}
+
 }
 
 void Player::TargetDirection(const Vector3& target)
@@ -482,7 +499,8 @@ void Player::SubUpdate(void)
 
 
 	//スキル発動（スキルメニューを押している間）
-	const KEY_TYPE SKILL_KEYS[SKILL_SLOT_MAX] = {
+	const KEY_TYPE SKILL_KEYS[SKILL_SLOT_MAX] = 
+	{
 		KEY_TYPE::PlayerSkill1,
 		KEY_TYPE::PlayerSkill2,
 		KEY_TYPE::PlayerSkill3,
@@ -654,7 +672,8 @@ const SkillBase* Player::GetSkill(int slot) const
 bool Player::IsSkillMenuOpen(void) const
 {
 	//スキルメニューを押している間
-	return Input::GetIns().GetInfo(KEY_TYPE::PlayerSkillMenu).now;
+	return Input::GetIns().GetInfo(KEY_TYPE::PlayerSkillMenu).now ||
+		Input::GetIns().GetTriggerInfo(TRIGGER_TYPE::Right).now;
 }
 
 void Player::SubDraw(void)

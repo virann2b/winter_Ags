@@ -134,6 +134,8 @@ void Sword::SubDraw(void)
 
 void Sword::SwordUpdate(void)
 {
+
+
 	//剣の位置変更
 	switch (swordPosition)
 	{
@@ -143,9 +145,7 @@ void Sword::SwordUpdate(void)
 		// ボーンは名前で検索(名前はモデルに合わせて変更)
 		const int handFrame = MV1SearchFrame(playerTrans.model, "Bone_036");
 		if (handFrame < 0) { return; }
-
 		MATRIX hand = MV1GetFrameLocalWorldMatrix(playerTrans.model, handFrame);
-
 		trans.pos = Vector3(hand.m[3][0], hand.m[3][1], hand.m[3][2]);
 		trans.rotation = Quaternion::FromMatrix(hand);
 		trans.AddAngleYDeg(90.0f);
@@ -175,6 +175,7 @@ void Sword::SwordUpdate(void)
 	case Sword::SWORD_POSITION::Guard:
 	{
 		AttachToHand(GUARD_ROT_OFFSET_DEG, GUARD_POS_OFFSET);
+
 		break;
 	}
 	case Sword::SWORD_POSITION::HandtoBack: {

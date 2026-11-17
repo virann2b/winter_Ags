@@ -2,6 +2,8 @@
 
 #include "../../../Manager/TimeScale/TimeScale.h"
 
+#include "../../../Manager/Sound/SoundManager.h"
+
 #include "../../Common/Collider/SphereCollider.h"
 
 SkillIce::SkillIce(const Transform& userTrans, SKILL_USER user)
@@ -60,6 +62,10 @@ void SkillIce::SkillStart(void)
 
 	//スキル使用者の向きを取得（発動時の向きでまっすぐ飛ぶ）
 	moveDir = userTrans.rotation.Rotate(Vector3(0.0f, 0.0f, 1.0f));
+
+	//アイスのサウンド再生
+	Snd::GetIns().Play("Ice");
+
 }
 
 void SkillIce::SkillUpdate(void)
