@@ -75,15 +75,15 @@ bool CharacterBase::UseMp(int cost)
 
 void CharacterBase::BaseUpdate(void)
 {
-	// ステートの更新
-	if (!stateMap.empty()) {
+	// ステートの更新（行動停止中は止める）
+	if (!stateMap.empty() && !IsActionStop()) {
 		stateMap.at(state)->OtherStateConditionsUpdate();
 		stateMap.at(state)->Update();
 		for (std::pair<const int, CharacterStateBase*>& s : stateMap) { s.second->AlwaysUpdate(); }
 	}
 
-	// アニメーション更新
-	if (anime) {
+	// アニメーション更新（アニメーション停止中は止める）
+	if (anime && !IsAnimeStop()) {
 		anime->Update();
 		trans.animationOffset = anime->GetPositionCorrection();
 	}

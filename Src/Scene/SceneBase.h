@@ -155,8 +155,8 @@ private:
 	int mainScreen;
 	int tempScreen[2];
 
-	// アクター描画関数
-	void ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYPE drawType);
+	// アクター描画関数（isParentFocus_：親が描画限定の対象か）
+	void ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYPE drawType, bool isParentFocus_ = false);
 
 	void ActorsColliderDebugDraw(const std::vector<ActorBase*>& actors);
 

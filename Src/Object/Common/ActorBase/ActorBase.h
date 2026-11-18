@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <map>
@@ -278,7 +279,27 @@ protected:
 		if (dynamicFlg) { velocity.y = (velocity.y < 0.0f) ? 0.0f : velocity.y; }
 	}
 
+public:
+
+#pragma region 演出用の描画限定
+
+	// 指定したアクター（とその子アクター）だけを描画する状態にする
+	static void SetDrawFocus(const std::vector<const ActorBase*>& focusActors) { drawFocusActors = focusActors; }
+	// 描画限定を解除して、すべてのアクターを描画する状態に戻す
+	static void ClearDrawFocus(void) { drawFocusActors.clear(); }
+	// 描画を限定している最中か
+	static bool IsDrawFocus(void) { return !drawFocusActors.empty(); }
+	// 描画限定の対象か
+	static bool IsDrawFocusTarget(const ActorBase* actor) {
+		return std::find(drawFocusActors.begin(), drawFocusActors.end(), actor) != drawFocusActors.end();
+	}
+
+#pragma endregion
+
 private:
+
+	// 描画を限定する対象のアクター（空なら限定しない）
+	inline static std::vector<const ActorBase*> drawFocusActors;
 
 	// 中間基底クラス用追加処理
 	virtual void BaseInit(void) {}

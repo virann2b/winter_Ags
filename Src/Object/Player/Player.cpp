@@ -20,6 +20,9 @@
 #include "../Enemy/EnemyBase.h"
 
 #include "../../Manager/Input/InputManager.h"
+#include "../../Manager/TimeScale/TimeScale.h"
+#include "../../Manager/Camera/CurrentCamera.h"
+#include "../../Manager/Camera/CameraEvent/FixedCameraEvent/FixedCameraEvent.h"
 
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
@@ -33,6 +36,7 @@
 #include "State/PlayerAttackChargeState.h"
 
 #include "State/PlayerGunState.h"	
+#include "State/PlayerBreakFinishState.h"
 
 Player::Player()
 	:
@@ -43,7 +47,12 @@ Player::Player()
 	rangeAttack(nullptr),
 	skillSlot(),
 	lockOnEnemyId(EnemyBase::INVALID_ID),
-	findEnemy()
+	findEnemy(),
+	finishEnemyId(EnemyBase::INVALID_ID),
+	finishStartPos(),
+	finishTargetPos(),
+	finishCamPrevPos(),
+	finishReturnCounter(0.0f)
 {
 }
 
@@ -338,6 +347,162 @@ void Player::Load(void)
 		)
 	);
 
+	//必殺技（一閃）状態
+	AddState(
+		STATE::BreakFinish,
+		new PlayerBreakFinishState(
+			//① 構え
+			[&]()
+			{
+				FaceLockOnEnemy();
+				//TODO：専用の構えアニメーションに差し替え
+				AnimePlay(ANIME_TYPE::SheathingSword);
+				//敵の行動を止める
+				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr)
+				{
+					enemy->StartBreakFinished();
+
+					//演出中はプレイヤーと怯んだ敵だけを描画する
+					ActorBase::SetDrawFocus({ this, enemy });
+
+					//敵から一定の距離だけ離れた位置で構え直す
+					const Vector3 enemyPos = enemy->GetTrans().pos;
+					Vector3 toEnemy = enemyPos - trans.pos;
+					toEnemy.y = 0.0f;
+					if (toEnemy.LengthSq() <= 0.000001f)
+					{
+						//重なっている場合は今の正面方向
+						toEnemy = trans.VTrans(Vector3(0.0f, 0.0f, 1.0f));
+						toEnemy.y = 0.0f;
+					}
+					toEnemy.Normalize();
+
+					trans.pos.x = enemyPos.x - toEnemy.x * FINISH_START_DIST;
+					trans.pos.z = enemyPos.z - toEnemy.z * FINISH_START_DIST;
+					TargetDirection(toEnemy);
+
+					//カメラ：敵側の斜め前からプレイヤーを映す
+					const Vector3 right(toEnemy.z, 0.0f, -toEnemy.x);
+					const Vector3 camPos = trans.pos
+						+ toEnemy * FINISH_READY_CAM_FRONT
+						+ right * FINISH_READY_CAM_SIDE
+						+ Vector3::Yonly(FINISH_READY_CAM_HEIGHT);
+					const Vector3 lookPos = trans.pos + Vector3::Yonly(FINISH_READY_LOOK_HEIGHT);
+
+					CurrentCamera::Get().StartEvent(new FixedCameraEvent(camPos, lookPos, Deg2Rad(FINISH_READY_CAM_FOV)));
+				}
+			},
+			//② 一閃開始：敵の背後を到着点にする
+			[&]()
+			{
+				//TODO：専用の斬り抜けアニメーションに差し替え
+				AnimePlay(ANIME_TYPE::AttackCharge_End);
+				//敵をすり抜けるため押し出しOFF
+				SetPushFlg(false);
+				SetGravityFlg(false);
+
+				finishStartPos = trans.pos;
+				finishTargetPos = trans.pos;
+
+				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr)
+				{
+					Vector3 toEnemy = enemy->GetTrans().pos - trans.pos;
+					toEnemy.y = 0.0f;
+					if (toEnemy.LengthSq() > 0.000001f)
+					{
+						//敵までの距離
+						const float enemyDist = toEnemy.Length();
+
+						toEnemy.Normalize();
+						finishTargetPos = enemy->GetTrans().pos + toEnemy * FINISH_PASS_DIST;
+						//高さは変えない
+						finishTargetPos.y = trans.pos.y;
+
+						//カメラ：プレイヤーの斜め後ろから、敵とプレイヤーが同時に映る画角
+						const Vector3 right(toEnemy.z, 0.0f, -toEnemy.x);
+						const Vector3 camPos = trans.pos
+							- toEnemy * FINISH_PASS_CAM_BACK
+							- right * FINISH_PASS_CAM_SIDE
+							+ Vector3::Yonly(FINISH_PASS_CAM_HEIGHT);
+						const Vector3 lookPos = trans.pos
+							+ toEnemy * (enemyDist * FINISH_PASS_LOOK_RATE)
+							+ Vector3::Yonly(FINISH_PASS_LOOK_HEIGHT);
+
+						CurrentCamera::Get().StartEvent(new FixedCameraEvent(camPos, lookPos, Deg2Rad(FINISH_PASS_CAM_FOV)));
+					}
+				}
+			},
+			//一閃中の移動（rate：0～1）
+			[&](float rate)
+			{
+				trans.pos.x = finishStartPos.x + (finishTargetPos.x - finishStartPos.x) * rate;
+				trans.pos.z = finishStartPos.z + (finishTargetPos.z - finishStartPos.z) * rate;
+			},
+			//③ 背後に到着：ダメージ・ヒットストップ
+			[&]()
+			{
+				//すり抜け終了：押し出し・重力を戻す
+				SetPushFlg(true);
+				SetGravityFlg(true);
+
+				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr)
+				{
+					//斬られた瞬間にアニメーションだけ再開してからダメージ（のけぞり・死亡を見せる）
+					//行動はカメラが戻るまで止めたまま
+					enemy->ReleaseFinishFreeze();
+					enemy->TakeFinishDamage(FINISH_DAMAGE);
+				}
+				TimeScale::GetIns().TemporaryScale(FINISH_HITSTOP_SCALE, FINISH_HITSTOP_TIME);
+				//SoundTable.csvに登録後に有効化
+				//Snd::GetIns().Play("FinishSlash");
+				//TODO：専用の残心アニメーションを再生（今は斬り抜けアニメーションの続きで代用）
+			},
+			std::bind(&Player::IsAnimeEnd, this),
+			//④ カメラを元に戻し始める
+			[&]()
+			{
+				//描画を元に戻す
+				ActorBase::ClearDrawFocus();
+				//カメラを通常に戻す（GameCameraが補間しながら元の位置に戻る）
+				CurrentCamera::Get().EndEvent();
+
+				finishCamPrevPos = CurrentCamera::Get().GetPos();
+				finishReturnCounter = 0.0f;
+			},
+			//カメラが元の位置に戻ったか
+			[&]()
+			{
+				finishReturnCounter += 1.0f;
+
+				//1フレームでのカメラの移動量
+				const Vector3 camPos = CurrentCamera::Get().GetPos();
+				const float move = (camPos - finishCamPrevPos).Length();
+				finishCamPrevPos = camPos;
+
+				//保険：一定時間たったら戻ったことにする
+				if (finishReturnCounter >= FINISH_RETURN_MAX_FRAME) { return true; }
+
+				//ほとんど動かなくなったら戻った
+				return finishReturnCounter >= FINISH_RETURN_MIN_FRAME && move <= FINISH_RETURN_SETTLE_DIST;
+			},
+			//後始末（途中で中断された場合も呼ばれる）
+			[&]()
+			{
+				SetPushFlg(true);
+				SetGravityFlg(true);
+				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr) { enemy->EndBreakFinished(); }
+				finishEnemyId = EnemyBase::INVALID_ID;
+
+				//描画を元に戻す
+				ActorBase::ClearDrawFocus();
+
+				//カメラを通常に戻す（GameCameraが補間しながら元の位置に戻る）
+				CurrentCamera::Get().EndEvent();
+			},
+			[&]() { ChangeState(STATE::Idle); }
+		)
+	);
+
 #pragma endregion
 
 
@@ -419,6 +584,8 @@ void Player::Load(void)
 
 void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
 {
+	//必殺技中は無敵
+	if (static_cast<STATE>(GetState()) == STATE::BreakFinish) { return; }
 
 	switch (other.GetTag())
 	{
@@ -510,6 +677,28 @@ void Player::SubUpdate(void)
 	{
 		if (Input::GetIns().GetInfo(SKILL_KEYS[i]).down) { UseSkill(i); }
 	}
+
+	//必殺技の入力チェック
+	UpdateBreakFinishInput();
+}
+
+void Player::UpdateBreakFinishInput(void)
+{
+	if (!Input::GetIns().GetInfo(KEY_TYPE::PlayerBreakFinish).down) { return; }
+
+	//必殺技中・被ダメージ中は発動しない
+	const STATE nowState = static_cast<STATE>(GetState());
+	if (nowState == STATE::BreakFinish || nowState == STATE::Hit) { return; }
+
+	//ロックオン中の敵が怯みチャンス中か
+	EnemyBase* enemy = findEnemy ? findEnemy(lockOnEnemyId) : nullptr;
+	if (enemy == nullptr || enemy->IsDead() || !enemy->IsBreakChance()) { return; }
+
+	//チャンス消費（二重発動防止）
+	enemy->EndBreakChance();
+
+	finishEnemyId = lockOnEnemyId;
+	ChangeState(STATE::BreakFinish);
 }
 
 void Player::UseSkill(int slot)
@@ -624,6 +813,12 @@ void Player::ApplyWeaponState(STATE state)
 	{
 		//判定ステート内で切り替え
 		SetWeapon(POS::Back, ACT::DrawOnly, true);
+		break;
+	}
+	case Player::STATE::BreakFinish:
+	{
+		//見た目だけ手に持つ（ダメージは直接与える）
+		SetWeapon(POS::Hand, ACT::DrawOnly, false);
 		break;
 	}
 	default:

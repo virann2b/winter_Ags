@@ -269,12 +269,19 @@ void SceneBase::AddActor(ActorBase* newActor)
 	actors.emplace_back(newActor);
 }
 
-void SceneBase::ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYPE drawType)
+void SceneBase::ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYPE drawType, bool isParentFocus_)
 {
 	for (ActorBase* actor : actors) {
-		if (actor->GetDrawType() == drawType) { actor->Draw(); }
 
-		ActorsDraw(actor->GetChildActors(), drawType);
+		// 描画限定の対象か（親が対象なら子も対象：剣や銃など）
+		const bool isFocus_ = isParentFocus_ || ActorBase::IsDrawFocusTarget(actor);
+
+		// 演出で描画を限定している間は、対象のアクターだけ描画する
+		const bool isDrawable_ = !ActorBase::IsDrawFocus() || isFocus_;
+
+		if (isDrawable_ && actor->GetDrawType() == drawType) { actor->Draw(); }
+
+		ActorsDraw(actor->GetChildActors(), drawType, isFocus_);
 	}
 }
 

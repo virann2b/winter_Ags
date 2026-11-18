@@ -12,6 +12,7 @@ public:
 		Ready, 
 		Pass, 
 		After,
+		Return,
 
 		Max 
 	};
@@ -22,6 +23,8 @@ public:
 		std::function<void(float)> PassUpdate,	
 		std::function<void(void)> FinishSlash,	
 		std::function<bool(void)> IsAnimeEnd,
+		std::function<void(void)> ReturnStart,
+		std::function<bool(void)> IsReturnEnd,
 		std::function<void(void)> FinishRelease,	
 		std::function<void(void)> ChangeStateIdle
 	);
@@ -47,6 +50,11 @@ private:
 	std::function<void(void)> FinishSlash;
 
 	std::function<bool(void)> IsAnimeEnd;
+
+	//カメラを元に戻し始める
+	std::function<void(void)> ReturnStart;
+	//カメラが元の位置に戻ったか
+	std::function<bool(void)> IsReturnEnd;
 
 	//後始末
 	std::function<void(void)> FinishRelease;

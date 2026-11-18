@@ -89,6 +89,10 @@ void InputManager::Init(void)
 	SET_KEYBOARD(KEY_TYPE::PlayerSkill4, KEY_INPUT_F);
 	SET_C_BUTTON(KEY_TYPE::PlayerSkill4, XINPUT_BUTTON_X);
 
+	//必殺技（怯みチャンス中のみ発動・通常攻撃と同じボタン）
+	SET_MOUSE_BUTTON(KEY_TYPE::PlayerBreakFinish, MOUSE_INPUT_LEFT);
+	SET_C_BUTTON(KEY_TYPE::PlayerBreakFinish, XINPUT_BUTTON_X);
+
 	//コントローラーの登録はPlayerGunStateの中に
 	//武器から銃切り替え
 	SET_MOUSE_BUTTON(KEY_TYPE::PlayerGunMode, MOUSE_INPUT_RIGHT);
@@ -302,6 +306,7 @@ void InputManager::SkillMenuUpdate(void)
 		KEY_TYPE::PlayerRoll,
 		KEY_TYPE::PlayerAttackStrong,
 		KEY_TYPE::PlayerLockOn,
+		KEY_TYPE::PlayerBreakFinish,
 	};
 
 	// スキルメニューを押している間だけ使えるキー

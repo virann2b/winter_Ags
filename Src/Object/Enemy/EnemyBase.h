@@ -83,9 +83,12 @@ public:
 	//受付終了
 	void EndBreakChance(void) { breakChanceCounter = 0.0f; }
 
-	//必殺技の開始・終了（開始で行動を止める）
-	void StartBreakFinished(void) { isBreakFinished_ = true; OnBreakFinished(); }
-	void EndBreakFinished(void) { isBreakFinished_ = false; }
+	//必殺技の開始（行動・アニメーションを止めてその場で固める）
+	void StartBreakFinished(void) { isBreakFinished_ = true; isFinishHold_ = true; velocity = Vector3(); OnBreakFinished(); }
+	//斬られた瞬間：アニメーションだけ動かす（のけぞり・死亡を見せる。行動はまだ止めたまま）
+	void ReleaseFinishFreeze(void) { isBreakFinished_ = false; }
+	//必殺技の終了（演出が終わったら行動再開）
+	void EndBreakFinished(void) { isBreakFinished_ = false; isFinishHold_ = false; }
 
 	//必殺技のダメージを受ける
 	void TakeFinishDamage(int damage);
@@ -96,6 +99,11 @@ protected:
 
 	//派生先で専用の状態へ
 	virtual void OnBreakFinished(void) {}
+
+	//必殺技の演出が終わるまでは行動停止（ステートが止まる）
+	bool IsActionStop(void) const override { return isFinishHold_; }
+	//斬られるまではアニメーションも停止（その場で固まる）
+	bool IsAnimeStop(void) const override { return isBreakFinished_; }
 
 #pragma region 定数
 
@@ -154,8 +162,10 @@ protected:
 
 	//受付残り時間
 	float breakChanceCounter = 0.0f;	
-	//必殺技を受けている最中か
+	//必殺技を受けている最中か（斬られるまで。アニメーションも止める）
 	bool isBreakFinished_ = false;		
+	//必殺技の演出が終わるまで行動を止めるか
+	bool isFinishHold_ = false;
 
 	//最後に受けた攻撃属性
 	ELEMENT lastHitElement = ELEMENT::None;

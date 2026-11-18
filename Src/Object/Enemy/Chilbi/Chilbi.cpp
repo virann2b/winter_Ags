@@ -278,10 +278,8 @@ void Chilbi::OnStun(void)
 
 void Chilbi::OnBreakFinished(void)
 {
-	//UŒ‚”»’è‚ðÁ‚·
+	//UŒ‚”»’è‚ðÁ‚·is“®’âŽ~‚ÍEnemyBase‘¤‚Ås‚¤j
 	punch->JudgeEnd();
-	//‚Ü‚¸‚Í Hit‚Ö
-	ChangeState(STATE::Hit);	
 }
 
 void Chilbi::OnDie(void)

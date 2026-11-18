@@ -83,6 +83,8 @@ private:
 
 		Gun,			//銃
 
+		BreakFinish,	//必殺技（一閃）
+
 		Max
 	};
 
@@ -121,6 +123,8 @@ private:
 		AttackCharge_2,
 		AttackCharge_3,
 
+		SheathingSword,		//一閃用納刀
+
 		Gun,				//銃構え
 
 		Max
@@ -157,6 +161,9 @@ private:
 		1.0f,	//AttackCharge_2
 		1.0f,	//AttackCharge_3
 
+
+		0.7f,	//SheathingSword
+
 		1.5f,	// Gun
 
 	};
@@ -188,6 +195,8 @@ private:
 		false,	//AttackCharge_1
 		false,	//AttackCharge_2
 		false,	//AttackCharge_3
+
+		false,
 
 		false,	// Gun
 
@@ -224,6 +233,9 @@ private:
 		"Data/Model/Player/ChargeAttack_Combo_2.mv1",	//AttackCharge_2
 		"Data/Model/Player/ChargeAttack_Combo_3.mv1",	//AttackCharge_3
 
+		"Data/Model/Player/SheathingSword.mv1",	//SheathingSword
+
+
 		"Data/Model/Player/Gun.mv1",	//Gun
 
 	};
@@ -256,6 +268,33 @@ private:
 	//ガード時のダメージ倍率
 	static constexpr float GUARD_DAMAGE_RATE = 0.5f;	
 
+	//必殺技（一閃）
+	static constexpr float FINISH_START_DIST = 700.0f;		//一閃を始める位置（敵からの距離）
+	static constexpr float FINISH_PASS_DIST = 250.0f;		//敵の背後に抜ける距離
+	static constexpr int   FINISH_DAMAGE = 30;				//ダメージ
+	static constexpr float FINISH_HITSTOP_SCALE = 0.1f;		//到着時のヒットストップの速さ
+	static constexpr unsigned short FINISH_HITSTOP_TIME = 20;	//到着時のヒットストップの長さ
+
+	//一閃：構え中のカメラ（プレイヤーを敵側の斜め前から映す）
+	static constexpr float FINISH_READY_CAM_FRONT = 270.0f;		//プレイヤーから前方への距離
+	static constexpr float FINISH_READY_CAM_SIDE = 80.0f;		//横へのずらし
+	static constexpr float FINISH_READY_CAM_HEIGHT = 210.0f;	//高さ
+	static constexpr float FINISH_READY_LOOK_HEIGHT = 110.0f;	//プレイヤーのどの高さを見るか
+	static constexpr float FINISH_READY_CAM_FOV = 50.0f;		//視野角（度）
+
+	//一閃：カメラが元の位置に戻ったとみなす条件
+	static constexpr float FINISH_RETURN_SETTLE_DIST = 1.0f;	//1フレームの移動量がこれ以下なら戻った
+	static constexpr float FINISH_RETURN_MIN_FRAME = 10.0f;		//最低でも待つフレーム数
+	static constexpr float FINISH_RETURN_MAX_FRAME = 90.0f;		//最大で待つフレーム数（保険）
+
+	//一閃：移動中のカメラ（プレイヤーの斜め後ろから敵とプレイヤーを映す）
+	static constexpr float FINISH_PASS_CAM_BACK = 350.0f;		//プレイヤーから後方への距離
+	static constexpr float FINISH_PASS_CAM_SIDE = 200.0f;		//横へのずらし（プレイヤーが画面右に来る向き）
+	static constexpr float FINISH_PASS_CAM_HEIGHT = 150.0f;		//高さ
+	static constexpr float FINISH_PASS_LOOK_RATE = 0.6f;		//プレイヤー→敵のどのあたりを見るか（0：プレイヤー、1：敵）
+	static constexpr float FINISH_PASS_LOOK_HEIGHT = 100.0f;	//見る高さ
+	static constexpr float FINISH_PASS_CAM_FOV = 60.0f;			//視野角（度）
+
 #pragma endregion
 
 #pragma region 変数
@@ -279,6 +318,17 @@ private:
 
 	//ジャンプ回数最大フラグ
 	bool isMaxJump;
+
+	//必殺技の対象の敵
+	int finishEnemyId;
+	//一閃の開始点
+	Vector3 finishStartPos;
+	//一閃の到着点
+	Vector3 finishTargetPos;
+	//カメラが戻るのを待つ間の前フレームのカメラ座標
+	Vector3 finishCamPrevPos;
+	//カメラが戻るのを待った時間
+	float finishReturnCounter;
 
 #pragma endregion
 
@@ -306,6 +356,9 @@ private:
 	void AttackStepStart(void);
 	//攻撃の踏み込み中の移動
 	void AttackStepMove(void);
+
+	//必殺技の入力チェック（敵が怯みチャンス中なら発動）
+	void UpdateBreakFinishInput(void);
 
 	// ステート切り替え時の処理
 	void OnChangeState(int prevState, int nextState) override;

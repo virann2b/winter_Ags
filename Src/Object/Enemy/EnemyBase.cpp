@@ -218,10 +218,14 @@ void EnemyBase::SubUpdate(void)
 	else 
 	{ invincibleCounter = 0.0f; }
 
-	//スキルのクールタイム更新
-	SkillCoolTimeUpdate();
+	//必殺技を受けていない間だけ行動の更新
+	if (!IsActionStop())
+	{
+		//スキルのクールタイム更新
+		SkillCoolTimeUpdate();
 
-	EnemyUpdate();
+		EnemyUpdate();
+	}
 
 	UpdateShake();
 
@@ -443,5 +447,10 @@ void EnemyBase::TakeFinishDamage(int damage)
 
 	//ダメージ後の処理
 	if (IsDead()) { OnDie(); }
-	else { StartShake(); }
+	else
+	{
+		//のけぞり＋反動
+		OnHit();
+		StartShake();
+	}
 }

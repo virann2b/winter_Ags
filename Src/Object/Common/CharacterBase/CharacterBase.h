@@ -212,4 +212,9 @@ protected:
 
 	virtual void OnChangeState(int prevState, int nextState) {}
 
+	// 行動停止中か（trueの間はステートの更新を止める）
+	virtual bool IsActionStop(void) const { return false; }
+	// アニメーション停止中か（trueの間はアニメーションの更新を止める）
+	virtual bool IsAnimeStop(void) const { return false; }
+
 };

@@ -80,6 +80,9 @@ public:
 		PlayerSkill3,
 		PlayerSkill4,
 
+		//必殺技（敵の怯みチャンス中のみ）
+		PlayerBreakFinish,
+
 
 #pragma endregion
 
