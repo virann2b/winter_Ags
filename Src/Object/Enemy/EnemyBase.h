@@ -78,9 +78,24 @@ public:
 	// 今の怯み値（確認用）
 	float GetStagger(void) const { return stagger; }
 ;
+	//必殺技を発動できるか
+	bool IsBreakChance(void) const { return breakChanceCounter > 0.0f; }
+	//受付終了
+	void EndBreakChance(void) { breakChanceCounter = 0.0f; }
+
+	//必殺技の開始・終了（開始で行動を止める）
+	void StartBreakFinished(void) { isBreakFinished_ = true; OnBreakFinished(); }
+	void EndBreakFinished(void) { isBreakFinished_ = false; }
+
+	//必殺技のダメージを受ける
+	void TakeFinishDamage(int damage);
+
+
 
 protected:
 
+	//派生先で専用の状態へ
+	virtual void OnBreakFinished(void) {}
 
 #pragma region 定数
 
@@ -120,8 +135,11 @@ protected:
 	static constexpr float BREAK_SLOW_SCALE = 0.1f;			// 速さ
 	static constexpr unsigned short BREAK_SLOW_TIME = 60;	// 長さ
 
-	// 怯み値が残っているときの反動の大きさ（弱点のときを1とした割合）
+	// 怯み値が残っているときの反動の大きさ
 	static constexpr float SMALL_SHAKE_RATE = 0.4f;
+
+	//必殺技の入力受付時間（スロー時間と同じ）
+	static constexpr float BREAK_CHANCE_FRAME = BREAK_SLOW_TIME;
 
 
 #pragma endregion
@@ -133,6 +151,11 @@ protected:
 
 	// カウント用攻撃クールタイム
 	float attackCoolTime;
+
+	//受付残り時間
+	float breakChanceCounter = 0.0f;	
+	//必殺技を受けている最中か
+	bool isBreakFinished_ = false;		
 
 	//最後に受けた攻撃属性
 	ELEMENT lastHitElement = ELEMENT::None;

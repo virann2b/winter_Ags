@@ -91,6 +91,7 @@
     <ClCompile Include="Src\Object\Skill\SkillIce\SkillIce.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillWind\SkillWind.cpp" />
     <ClCompile Include="Src\Object\UI\Gun\GunBulletUI.cpp" />
+    <ClCompile Include="Src\Object\Player\State\PlayerBreakFinishState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -207,6 +208,7 @@
     <ClInclude Include="Src\Object\Skill\SkillIce\SkillIce.h" />
     <ClInclude Include="Src\Object\Skill\SkillWind\SkillWind.h" />
     <ClInclude Include="Src\Object\UI\Gun\GunBulletUI.h" />
+    <ClInclude Include="Src\Object\Player\State\PlayerBreakFinishState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

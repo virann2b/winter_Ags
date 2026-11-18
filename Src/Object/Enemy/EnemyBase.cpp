@@ -387,11 +387,17 @@ void EnemyBase::OnStaggerBreak(void)
 
 	//仮の演出
 	TimeScale::GetIns().TemporaryScale(BREAK_SLOW_SCALE, BREAK_SLOW_TIME);
+
+	//受付開始
+	breakChanceCounter = BREAK_CHANCE_FRAME;	
 }
 
 void EnemyBase::UpdateStagger(void)
 {
+	//体勢崩れの残り時間
 	if (breakCounter > 0.0f) { breakCounter -= TimeScale::Get(); }
+	//実時間で減らす
+	if (breakChanceCounter > 0.0f) { breakChanceCounter -= 1.0f; }	
 
 	if (stagger > staggerMax) { stagger = staggerMax; }
 }
@@ -412,3 +418,30 @@ void EnemyBase::LoadStagger(const std::string& enemyName)
 }
 
 #pragma endregion
+
+
+void EnemyBase::CountStun(float frame)
+{
+	stunRemain -= frame;
+
+	if (stunRemain < 0.0f) { stunRemain = 0.0f; }
+}
+
+float EnemyBase::GetWeakStunRate(void) const
+{
+	//弱点硬直でなければ0のまま
+	if (!isWeakStun_ || stunFrame <= 0.0f) { return 0.0f; }
+
+	//残り硬直時間の割合
+	return stunRemain / stunFrame;
+}
+
+void EnemyBase::TakeFinishDamage(int damage)
+{
+	//ダメージ
+	TakeDamage(damage);
+
+	//ダメージ後の処理
+	if (IsDead()) { OnDie(); }
+	else { StartShake(); }
+}

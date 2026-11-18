@@ -276,24 +276,17 @@ void Chilbi::OnStun(void)
 	ChangeState(STATE::Stun);
 }
 
+void Chilbi::OnBreakFinished(void)
+{
+	//UŒ‚”»’è‚ðÁ‚·
+	punch->JudgeEnd();
+	//‚Ü‚¸‚Í Hit‚Ö
+	ChangeState(STATE::Hit);	
+}
+
 void Chilbi::OnDie(void)
 {
 	ChangeState(STATE::Die);
 
 }
 
-void EnemyBase::CountStun(float frame)
-{
-	stunRemain -= frame;
-
-	if (stunRemain < 0.0f) { stunRemain = 0.0f; }
-}
-
-float EnemyBase::GetWeakStunRate(void) const
-{
-	//Žã“_d’¼‚Å‚È‚¯‚ê‚Î0‚Ì‚Ü‚Ü
-	if (!isWeakStun_ || stunFrame <= 0.0f) { return 0.0f; }
-
-	//Žc‚èd’¼ŽžŠÔ‚ÌŠ„‡
-	return stunRemain / stunFrame;
-}

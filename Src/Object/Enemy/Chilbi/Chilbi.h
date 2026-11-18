@@ -118,9 +118,14 @@ private:
 	//•`‰æ
 	void EnemyDraw(void)override;
 
+	//‘Ì¨•ö‚ê
 	void OnHit(void)override;
+	//€–S
 	void OnDie(void)override;
+	//d’¼
 	void OnStun(void)override;
+
+	void OnBreakFinished(void) override;
 
 	
 	//ƒ`ƒ‹ƒr[‚Ìd‚³

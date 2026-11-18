@@ -59,7 +59,7 @@ private:
 	//’·‰Ÿ‚µ‚Æ”»’f‚·‚é‚Ü‚Å‚ÌŠÔ
 	static constexpr float HOLD_THRESHOLD = 12.0f;
 	//ƒ^ƒŠ®—¹‚Ü‚Å‚ÌŠÔ
-	static constexpr float CHARGE_TIME = 60.0f;
+	static constexpr float CHARGE_TIME = 30.0f;
 
 #pragma endregion
 

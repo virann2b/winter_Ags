@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Player\State\PlayerBreakFinishState.cpp" />
     <ClCompile Include="Src\Object\UI\Gun\GunBulletUI.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillWind\SkillWind.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillIce\SkillIce.cpp" />
@@ -240,6 +241,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\UI\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Player\State\PlayerBreakFinishState.h" />
     <ClInclude Include="Src\Object\UI\Gun\GunBulletUI.h" />
     <ClInclude Include="Src\Object\Skill\SkillWind\SkillWind.h" />
     <ClInclude Include="Src\Object\Skill\SkillIce\SkillIce.h" />
