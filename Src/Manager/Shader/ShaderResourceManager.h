@@ -150,6 +150,12 @@ private:
 			"RimLightPS"
 		},
 
+		// Žã“_‚ð“Ë‚©‚ê‚½Žž‚Ì”­Œõ
+		{
+			PIXEL_SHADER_TYPE::WeakGlow,
+			"WeakGlowPS"
+		},
+
 		// …–Ê
 		{
 			PIXEL_SHADER_TYPE::Water,

@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <string>
 #include <vector>
 
 #include "../../../Common/Quaternion.h"
@@ -99,6 +100,9 @@ public:
 	// 怯みダメージのセット
 	void SetStagger(int setStagger) { stagger = setStagger; }
 
+	// 当たった時に鳴らすSEのセット（SoundTable.csvのID）
+	void SetHitSE(const std::string& setHitSE) { hitSE = setHitSE; }
+
 #pragma endregion
 
 
@@ -158,6 +162,9 @@ public:
 	//コライダーの怯みダメージ(攻撃用)
 	int GetStagger(void) const { return stagger; }
 
+	//コライダーが当たった時に鳴らすSE(攻撃用・空なら鳴らさない)
+	const std::string& GetHitSE(void) const { return hitSE; }
+
 #pragma endregion
 
 
@@ -186,6 +193,9 @@ private:
 
 	// 攻撃の怯みダメージ（設定しなければ0）
 	int stagger = 0;
+
+	// 当たった時に鳴らすSE（設定しなければ鳴らさない）
+	std::string hitSE;
 
 	// オブジェクト側から直接参照する情報
 	const bool* dynamicFlg;

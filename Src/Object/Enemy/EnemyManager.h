@@ -37,6 +37,9 @@ public:
 	//敵一覧
 	const std::vector<EnemyBase*>& GetEnemies(void) const { return enemies; }
 
+	//必殺技の演出中、すべての敵を止める（true）・再開する（false）
+	void SetAllFinishFreeze(bool isStop);
+
 private:
 
 	//敵の種類・座標を指定して敵を生成する

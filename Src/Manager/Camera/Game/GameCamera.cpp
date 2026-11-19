@@ -4,6 +4,8 @@
 #include "../../../Utility/Utility.h"
 #include "../../../Application/Application.h"
 
+#include"../../Sound/SoundManager.h"
+
 #include "../../Input/InputManager.h"
 #include "../../TimeScale/TimeScale.h"
 
@@ -144,7 +146,11 @@ void GameCamera::NormalUpdate(void)
 	}
 
 	// 入力
-	if (Input::GetIns().GetInfo(toggleKey).down) { ChangeTargetMode(); }
+	if (Input::GetIns().GetInfo(toggleKey).down) 
+	{ 
+		ChangeTargetMode();
+		Snd::GetIns().Play("LockOn");
+	}
 
 
 	// カメラモード中は絞り、それ以外は通常へ戻す

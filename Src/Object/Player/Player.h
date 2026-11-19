@@ -21,8 +21,8 @@ public:
 	{
 		None = -1,
 
-		Sword,
-		Gun,
+		Sword,	//剣
+		Gun,	//銃
 
 		Max
 	};
@@ -41,8 +41,11 @@ public:
 	//ロックオン対象の番号を設定（GameSceneから毎フレーム設定。ロックオンしていなければ EnemyBase::INVALID_ID）
 	void SetLockOnTarget(int enemyId) { lockOnEnemyId = enemyId; }
 
-	//番号から敵を探す関数を設定（GameSceneから初期化時に設定）
+	//番号から敵を探す関数を設定
 	void SetEnemyFinder(std::function< EnemyBase*(int)> finder) { findEnemy = finder; }
+
+	//すべての敵を止める・再開する関数を設定
+	void SetEnemyFreeze(std::function<void(bool)> freezer) { freezeAllEnemies = freezer; }
 
 	//銃を構えているか
 	bool IsAiming(void) const;
@@ -123,7 +126,7 @@ private:
 		AttackCharge_2,
 		AttackCharge_3,
 
-		SheathingSword,		//一閃用納刀
+		Attack_Special_1,	//一閃用納刀
 
 		Gun,				//銃構え
 
@@ -162,7 +165,7 @@ private:
 		1.0f,	//AttackCharge_3
 
 
-		0.7f,	//SheathingSword
+		0.7f,	//Attack_Special_1
 
 		1.5f,	// Gun
 
@@ -196,7 +199,7 @@ private:
 		false,	//AttackCharge_2
 		false,	//AttackCharge_3
 
-		false,
+		false,	//Attack_Special_1
 
 		false,	// Gun
 
@@ -233,8 +236,7 @@ private:
 		"Data/Model/Player/ChargeAttack_Combo_2.mv1",	//AttackCharge_2
 		"Data/Model/Player/ChargeAttack_Combo_3.mv1",	//AttackCharge_3
 
-		"Data/Model/Player/SheathingSword.mv1",	//SheathingSword
-
+		"Data/Model/Player/SheathingSword.mv1",	//Attack_Special_1
 
 		"Data/Model/Player/Gun.mv1",	//Gun
 
@@ -268,11 +270,14 @@ private:
 	//ガード時のダメージ倍率
 	static constexpr float GUARD_DAMAGE_RATE = 0.5f;	
 
-	//必殺技（一閃）
-	static constexpr float FINISH_START_DIST = 700.0f;		//一閃を始める位置（敵からの距離）
-	static constexpr float FINISH_PASS_DIST = 250.0f;		//敵の背後に抜ける距離
-	static constexpr int   FINISH_DAMAGE = 30;				//ダメージ
-	static constexpr float FINISH_HITSTOP_SCALE = 0.1f;		//到着時のヒットストップの速さ
+	
+#pragma region 必殺技（一閃)
+
+	//一閃を始める位置（敵からの距離）
+	static constexpr float FINISH_START_DIST = 700.0f;			//一閃を始める位置（敵からの距離）	
+	static constexpr float FINISH_PASS_DIST = 400.0f;			//敵の背後に抜ける距離
+	static constexpr int   FINISH_DAMAGE = 30;					//ダメージ
+	static constexpr float FINISH_HITSTOP_SCALE = 0.1f;			//到着時のヒットストップの速さ
 	static constexpr unsigned short FINISH_HITSTOP_TIME = 20;	//到着時のヒットストップの長さ
 
 	//一閃：構え中のカメラ（プレイヤーを敵側の斜め前から映す）
@@ -287,13 +292,39 @@ private:
 	static constexpr float FINISH_RETURN_MIN_FRAME = 10.0f;		//最低でも待つフレーム数
 	static constexpr float FINISH_RETURN_MAX_FRAME = 90.0f;		//最大で待つフレーム数（保険）
 
-	//一閃：移動中のカメラ（プレイヤーの斜め後ろから敵とプレイヤーを映す）
+	//一閃：移動中のカメラ
+	//（プレイヤーの斜め後ろから敵とプレイヤーを映す）
 	static constexpr float FINISH_PASS_CAM_BACK = 350.0f;		//プレイヤーから後方への距離
 	static constexpr float FINISH_PASS_CAM_SIDE = 200.0f;		//横へのずらし（プレイヤーが画面右に来る向き）
 	static constexpr float FINISH_PASS_CAM_HEIGHT = 150.0f;		//高さ
 	static constexpr float FINISH_PASS_LOOK_RATE = 0.6f;		//プレイヤー→敵のどのあたりを見るか（0：プレイヤー、1：敵）
 	static constexpr float FINISH_PASS_LOOK_HEIGHT = 100.0f;	//見る高さ
 	static constexpr float FINISH_PASS_CAM_FOV = 60.0f;			//視野角（度）
+
+	//一閃：演出を行う場所（ステージの中心）
+	static constexpr float FINISH_ARENA_X = 0.0f;
+	static constexpr float FINISH_ARENA_Z = 0.0f;
+	//元の場所に戻すとき、ステージの外に出ないようにする範囲（±）
+	static constexpr float FINISH_STAGE_LIMIT = 9700.0f;
+
+#pragma endregion
+
+#pragma region 空中攻撃
+
+	//プレイヤーからの高さ
+	static constexpr float AIR_CAM_HEIGHT = 600;
+	//後ろへのずらし
+	static constexpr float AIR_CAM_BACK = 150;
+	//プレイヤーのどの高さを見るか
+	static constexpr float AIR_CAM_LOOK_HEIGHT = 50;
+	//視野角
+	static constexpr float AIR_CAM_FOV = 60;
+	//見下ろし位置へ移るフレーム数
+	static constexpr float AIR_CAM_BLEND_FRAME = 10;
+
+#pragma endregion
+
+
 
 #pragma endregion
 
@@ -312,6 +343,8 @@ private:
 	int lockOnEnemyId;
 	//番号から敵を探す関数
 	std::function<EnemyBase*(int)> findEnemy;
+	//すべての敵を止める・再開する関数
+	std::function<void(bool)> freezeAllEnemies;
 
 	//武器切り替え
 	bool swordIsActive;
@@ -329,6 +362,10 @@ private:
 	Vector3 finishCamPrevPos;
 	//カメラが戻るのを待った時間
 	float finishReturnCounter;
+	//一閃を受ける敵の元の位置（ステージ中心へ移す前）
+	Vector3 finishEnemyOrigin;
+	//一閃のためにステージ中心へ移しているか
+	bool isFinishMoved_;
 
 #pragma endregion
 
@@ -359,6 +396,8 @@ private:
 
 	//必殺技の入力チェック（敵が怯みチャンス中なら発動）
 	void UpdateBreakFinishInput(void);
+	//一閃の後、ステージ中心から元の場所へ戻す
+	void RestoreFinishPosition(void);
 
 	// ステート切り替え時の処理
 	void OnChangeState(int prevState, int nextState) override;

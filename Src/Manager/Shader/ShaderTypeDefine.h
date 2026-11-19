@@ -32,6 +32,9 @@ enum class PIXEL_SHADER_TYPE
     // ƒŠƒ€ƒ‰ƒCƒg
     RimLight,
 
+    // ã“_‚ğ“Ë‚©‚ê‚½‚Ì”­Œõ
+    WeakGlow,
+
     // …–Ê
     Water,
 

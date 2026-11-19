@@ -2,6 +2,7 @@
 
 #include "../../../Common/Vector3.h"
 
+#include "../../../Manager/Sound/SoundManager.h"
 #include "../../../Manager/Input/InputManager.h"
 #include "../../../Manager/Camera/CurrentCamera.h"
 
@@ -61,6 +62,9 @@ void PlayerJumpState::Enter(void)
 
 	//ƒWƒƒƒ“ƒv‰ñ”‚ğ‰ÁZ
 	jumpCount++;
+
+	Snd::GetIns().Play("Jump");
+	Snd::GetIns().Play("VC_Jump");
 }
 
 void PlayerJumpState::Update(void)

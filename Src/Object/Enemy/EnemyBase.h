@@ -5,6 +5,7 @@
 #include <vector>
 
 class SkillBase;
+class WeakGlowShader;
 
 class EnemyBase : public CharacterBase
 {
@@ -89,6 +90,8 @@ public:
 	void ReleaseFinishFreeze(void) { isBreakFinished_ = false; }
 	//必殺技の終了（演出が終わったら行動再開）
 	void EndBreakFinished(void) { isBreakFinished_ = false; isFinishHold_ = false; }
+	//必殺技の演出用に位置を移す（ステージ中心への移動・元の場所への復帰）
+	void WarpTo(const Vector3& pos) { trans.pos = pos; }
 
 	//必殺技のダメージを受ける
 	void TakeFinishDamage(int damage);
@@ -172,6 +175,38 @@ protected:
 
 	// 弱点硬直を起こした属性
 	ELEMENT weakStunElement = ELEMENT::None;
+
+
+#pragma endregion
+
+#pragma region 弱点を突かれた時の発光
+
+	//当てた瞬間の強い光が消えるまでのフレーム数
+	static constexpr float WEAK_GLOW_FLASH_FRAME = 20.0f;
+	//弱点硬直中の光の強さ（基本）
+	static constexpr float WEAK_GLOW_STUN_BASE = 0.35f;
+	//弱点硬直中の明滅の幅
+	static constexpr float WEAK_GLOW_STUN_PULSE = 0.15f;
+	//弱点硬直中の明滅の速さ（1フレームに進む角度・ラジアン）
+	static constexpr float WEAK_GLOW_PULSE_SPEED = 0.15f;
+
+	//発光シェーダー（ActorBaseが所有・解放する）
+	WeakGlowShader* weakGlowShader = nullptr;
+	//光らせる属性
+	ELEMENT weakGlowElement = ELEMENT::None;
+	//当てた瞬間の強い光（1→0）
+	float weakGlowFlash = 0.0f;
+	//明滅用の時間
+	float weakGlowTime = 0.0f;
+
+	//発光シェーダーの生成
+	void CreateWeakGlowShader(void);
+	//弱点を突かれた時に光らせ始める
+	void StartWeakGlow(ELEMENT element);
+	//光の強さの更新
+	void UpdateWeakGlow(void);
+	//属性ごとの光の色
+	static Vector3 GetElementGlowColor(ELEMENT element);
 
 #pragma endregion
 

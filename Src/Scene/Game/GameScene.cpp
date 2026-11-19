@@ -84,8 +84,11 @@ void GameScene::SubPostInit(void)
 	{
 		enemyManager->SetTargetPos(&player->GetTrans().pos);
 
-		// ”Ô†‚©‚ç“G‚ð’T‚·ŠÖ”‚ðƒvƒŒƒCƒ„[‚É“n‚·iƒvƒŒƒCƒ„[‚ÍEnemyManager‚ð’m‚ç‚¸‚ÉÏ‚Þj
+		// ”Ô†‚©‚ç“G‚ð’T‚·ŠÖ”‚ðƒvƒŒƒCƒ„[‚É“n‚·
 		player->SetEnemyFinder([enemyManager](int id) { return enemyManager->FindEnemy(id); });
+
+		// •KŽE‹Z‚Ì‰‰o’†‚É‚·‚×‚Ä‚Ì“G‚ðŽ~‚ß‚éEÄŠJ‚·‚éŠÖ”‚ðƒvƒŒƒCƒ„[‚É“n‚·
+		player->SetEnemyFreeze([enemyManager](bool isStop) { enemyManager->SetAllFinishFreeze(isStop); });
 	}
 
 

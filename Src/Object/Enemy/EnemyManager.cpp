@@ -107,6 +107,19 @@ void EnemyManager::SetTargetPos(const Vector3* pos)
 }
 
 
+void EnemyManager::SetAllFinishFreeze(bool isStop)
+{
+	for (EnemyBase* enemy : enemies)
+	{
+		if (!enemy) { continue; }
+
+		//止める：行動・アニメーションを止めてその場で固める
+		if (isStop) { enemy->StartBreakFinished(); }
+		//再開する
+		else { enemy->EndBreakFinished(); }
+	}
+}
+
 bool EnemyManager::IsAllDead(void)
 {
 	for (const EnemyBase* enemy : enemies)

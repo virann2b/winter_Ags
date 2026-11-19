@@ -52,9 +52,9 @@ private:
 	const std::function<bool(void)> IsAnimeEnd;
 	//アニメーション再生比率取得
 	const std::function<float(void)> AnimRate;
-
+	//踏み込み開始
 	const std::function<void(void)> StepStart;
-
+	//踏み込み終了
 	const std::function<void(void)> StepMove;
 
 	

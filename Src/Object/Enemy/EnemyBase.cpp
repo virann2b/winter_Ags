@@ -1,10 +1,16 @@
 #include "EnemyBase.h"
 
 #include "../../Manager/TimeScale/TimeScale.h"
+#include "../../Manager/Sound/SoundManager.h"
 
 #include "../Common/Collider/ColliderBase.h"
 
 #include "../Skill/SkillBase.h"
+
+#include "../Common/Shader/WeakGlowShader.h"
+
+#include <algorithm>
+#include <cmath>
 
 #include <DxLib.h>
 
@@ -36,6 +42,19 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	// 最後に受けた攻撃の属性取得
 	lastHitElement = other.GetElement();
 
+	//弱点硬直中は弱点HITを再生
+	if (!other.GetHitSE().empty() && isWeakStun_)
+	{
+	
+		Snd::GetIns().Play("SwordWeakHit");
+	}
+	else
+	{
+		//攻撃側にセットされたSEを流す
+		Snd::GetIns().Play(other.GetHitSE());
+	}
+	
+
 	//ダメージ処理
 	TakeDamage(WeakDamage(other.GetDamage()));
 
@@ -51,7 +70,13 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 			(breakCounter <= 0.0f) && ReduceStagger(other.GetStagger());
 
 		//弱点を突かれたら弱点硬直
-		if (IsWeak(lastHitElement)) { WeakStun(); }
+		if (IsWeak(lastHitElement))
+		{
+			WeakStun();
+
+			//属性の色で光らせる
+			StartWeakGlow(lastHitElement);
+		}
 
 		//弱点硬直フラグ
 		if (isWeakStun_)
@@ -89,6 +114,9 @@ void EnemyBase::WeakStun(void)
 	if (IsDead() || isWeakStun_) { return; }
 
 	StartStun(WEAK_STUN_FRAME, true);
+
+	//弱点硬直時のダメージ音
+	Snd::GetIns().Play("WeakPoint");
 
 	//弱点硬直を起こした属性を保存
 	weakStunElement = lastHitElement;
@@ -194,6 +222,12 @@ bool EnemyBase::IsWeak(ELEMENT element) const
 
 void EnemyBase::SubInit(void)
 {
+	//弱点を突かれた時の発光シェーダー（モデル読み込み後に生成する）
+	CreateWeakGlowShader();
+	weakGlowElement = ELEMENT::None;
+	weakGlowFlash = 0.0f;
+	weakGlowTime = 0.0f;
+
 	//無敵時間リセット
 	invincibleCounter = 0.0f;
 
@@ -229,9 +263,70 @@ void EnemyBase::SubUpdate(void)
 
 	UpdateShake();
 
+	//弱点の発光の更新
+	UpdateWeakGlow();
+
 	//怯み値の回復
 	UpdateStagger();
 }
+
+#pragma region 弱点を突かれた時の発光
+
+void EnemyBase::CreateWeakGlowShader(void)
+{
+	weakGlowShader = new WeakGlowShader(trans.model);
+	CreateShader(weakGlowShader);
+}
+
+void EnemyBase::StartWeakGlow(ELEMENT element)
+{
+	weakGlowElement = element;
+
+	//当てた瞬間は一番強く光る
+	weakGlowFlash = 1.0f;
+}
+
+void EnemyBase::UpdateWeakGlow(void)
+{
+	if (weakGlowShader == nullptr) { return; }
+
+	//当てた瞬間の強い光を少しずつ弱める
+	if (weakGlowFlash > 0.0f)
+	{
+		weakGlowFlash -= TimeScale::Get() / WEAK_GLOW_FLASH_FRAME;
+		if (weakGlowFlash < 0.0f) { weakGlowFlash = 0.0f; }
+	}
+
+	//弱点硬直中はゆっくり明滅させる
+	float stunGlow = 0.0f;
+	if (isWeakStun_ && !IsDead())
+	{
+		weakGlowTime += TimeScale::Get();
+		stunGlow = WEAK_GLOW_STUN_BASE + WEAK_GLOW_STUN_PULSE * sinf(weakGlowTime * WEAK_GLOW_PULSE_SPEED);
+	}
+	else
+	{
+		weakGlowTime = 0.0f;
+	}
+
+	//強い方を採用（0なら通常の描画）
+	const float strength = (std::max)(weakGlowFlash, stunGlow);
+	weakGlowShader->SetGlow(GetElementGlowColor(weakGlowElement), strength);
+}
+
+Vector3 EnemyBase::GetElementGlowColor(ELEMENT element)
+{
+	switch (element)
+	{
+	case ELEMENT::Fire:		return Vector3(1.0f, 0.15f, 0.1f);	//火：赤
+	case ELEMENT::Wind:		return Vector3(0.2f, 1.0f, 0.3f);	//風：緑
+	case ELEMENT::Thunder:	return Vector3(1.0f, 0.9f, 0.1f);	//雷：黄色
+	case ELEMENT::Ice:		return Vector3(0.4f, 0.85f, 1.0f);	//氷：水色
+	default:				return Vector3();					//それ以外は光らない
+	}
+}
+
+#pragma endregion
 
 void EnemyBase::SubDraw(void)
 {
@@ -335,6 +430,7 @@ int EnemyBase::WeakDamage(int damage) const
 
 	//ダメージ倍率をかけ、四捨五入
 	return (int)std::round(damage * WEAK_DAMAGE_RATE);
+
 }
 
 void EnemyBase::UpdateShake(void)

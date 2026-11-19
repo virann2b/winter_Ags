@@ -4,6 +4,8 @@
 
 #include "../../../../Manager/TimeScale/TimeScale.h"
 #include "../../../../Manager/Image/ImageManager.h"
+#include "../../../../Manager/Sound/SoundManager.h"
+
 
 #include "../../../Enemy/EnemyBase.h"
 
@@ -202,6 +204,9 @@ void Gun::UpdateAim(int targetId)
 	if (aimCount >= params.MAX_SHOT) { return; }
 	if (aimCount >= remainingBullet) { return; }
 
+	//e•W€Œø‰Ê‰¹
+	Snd::GetIns().Play("GunAim");
+
 	//Æ€ŽžŠÔ‚Ì‰ÁŽZ
 	aimingTimer += TimeScale::Get();
 
@@ -224,6 +229,9 @@ void Gun::UpdateHit(void)
 		// ’…’eF‚»‚Ì“G‚ª‚Ü‚¾¶‚«‚Ä‚¢‚ê‚Î“–‚Ä‚éiŽ€‚ñ‚Å‚¢‚½‚ç‰½‚à‚µ‚È‚¢Žc‚è‚Ì’e‚ÍÁ‚¦‚éj
 		EnemyBase* enemy = findEnemy ? findEnemy(hit.targetId) : nullptr;
 		if (enemy == nullptr || enemy->IsDead()) { continue; }
+
+		//eHITŒø‰Ê‰¹
+		Snd::GetIns().Play("GunHit");
 
 		//ƒ_ƒ[ƒWˆ—
 		enemy->TakeGunDamege(damage);

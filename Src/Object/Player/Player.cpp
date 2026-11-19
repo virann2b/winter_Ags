@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include <algorithm>
+
 #include "../../Utility/Utility.h"
 
 #include "../Common/Collider/CapsuleCollider.h"
@@ -10,12 +12,13 @@
 #include "../Common/Shader/RimLightShader.h"
 #include "../Common/Shader/WaterShader.h"
 
+#include "../../Manager/Sound/SoundManager.h"
+
 #include "Wepon/Gun/Gun.h"
 #include "Wepon/RangeAttack/RangeAttack.h"
 
 #include "../Skill/SkillFire/SkillFire.h"
 #include "../Skill/SkillIce/SkillIce.h"
-
 
 #include "../Enemy/EnemyBase.h"
 
@@ -23,6 +26,7 @@
 #include "../../Manager/TimeScale/TimeScale.h"
 #include "../../Manager/Camera/CurrentCamera.h"
 #include "../../Manager/Camera/CameraEvent/FixedCameraEvent/FixedCameraEvent.h"
+#include "../../Manager/Camera/CameraEvent/FollowOverheadCameraEvent/FollowOverheadCameraEvent.h"
 
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
@@ -52,7 +56,9 @@ Player::Player()
 	finishStartPos(),
 	finishTargetPos(),
 	finishCamPrevPos(),
-	finishReturnCounter(0.0f)
+	finishReturnCounter(0.0f),
+	finishEnemyOrigin(),
+	isFinishMoved_(false)
 {
 }
 
@@ -160,6 +166,7 @@ void Player::Load(void)
 	skillSlot[2] = skillFire;
 	skillSlot[3] = skillIce;
 
+	//剣の描画切り替え
 	sword->ChangeActive(Sword::ACTIVE::DrawOnly);
 	sword->ChangePosition(Sword::SWORD_POSITION::Back);
 
@@ -198,9 +205,14 @@ void Player::Load(void)
 		new PlayerJumpState(
 			20.0f, velocity.y, isGround, isMaxJump,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
-			[&]() { AnimePlay(ANIME_TYPE::JumpStart); },
+			[&]() { AnimePlay(ANIME_TYPE::JumpStart);},
 			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
-			[&]() { AnimePlay(ANIME_TYPE::JumpEnd); },
+			[&]() 
+			{ 
+
+				Snd::GetIns().Play("Jump");
+				AnimePlay(ANIME_TYPE::JumpEnd);
+			},
 			std::bind(&Player::IsAnimeEnd, this),
 			[&]() { ChangeState(STATE::Idle); }
 		)
@@ -216,6 +228,8 @@ void Player::Load(void)
 				//回避中は判定なし
 				SetGravityFlg(false);
 				SetJudgeFlg(false);
+				//ファイアサウンド再生
+				Snd::GetIns().Play("Roll");
 			},
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
@@ -253,9 +267,28 @@ void Player::Load(void)
 		STATE::AttackNormal,
 		new PlayerAttackNormalState(
 			[&]() { ChangeState(STATE::Idle);},
-			[&]() { AnimePlay(ANIME_TYPE::AttackNormal_1);},
-			[&]() { AnimePlay(ANIME_TYPE::AttackNormal_2); },
-			[&]() { AnimePlay(ANIME_TYPE::AttackNormal_3); },
+			[&]()
+			{ 
+				AnimePlay(ANIME_TYPE::AttackNormal_1);
+				Snd::GetIns().Play("SwordSwing");
+
+			},
+			[&]() 
+			{ 
+				AnimePlay(ANIME_TYPE::AttackNormal_2);
+				Snd::GetIns().Play("VC_NormalCombo_1");
+				Snd::GetIns().Play("SwordSwing");
+
+
+			},
+			[&]()
+			{ 
+				AnimePlay(ANIME_TYPE::AttackNormal_3);
+				Snd::GetIns().Play("VC_NormalCombo_2");
+				Snd::GetIns().Play("SwordSwing");
+
+
+			},
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::GetAnimeRatio, this),
 			std::bind(&Player::AttackStepStart,this),
@@ -356,18 +389,20 @@ void Player::Load(void)
 			{
 				FaceLockOnEnemy();
 				//TODO：専用の構えアニメーションに差し替え
-				AnimePlay(ANIME_TYPE::SheathingSword);
+				AnimePlay(ANIME_TYPE::Attack_Special_1);
 				//敵の行動を止める
 				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr)
 				{
 					enemy->StartBreakFinished();
 
+					//ほかの敵もすべて止める（演出中に動かないように）
+					if (freezeAllEnemies) { freezeAllEnemies(true); }
+
 					//演出中はプレイヤーと怯んだ敵だけを描画する
 					ActorBase::SetDrawFocus({ this, enemy });
 
-					//敵から一定の距離だけ離れた位置で構え直す
-					const Vector3 enemyPos = enemy->GetTrans().pos;
-					Vector3 toEnemy = enemyPos - trans.pos;
+					//プレイヤー→敵の向き（元の場所で計算）
+					Vector3 toEnemy = enemy->GetTrans().pos - trans.pos;
 					toEnemy.y = 0.0f;
 					if (toEnemy.LengthSq() <= 0.000001f)
 					{
@@ -377,6 +412,15 @@ void Player::Load(void)
 					}
 					toEnemy.Normalize();
 
+					//敵を元の場所からステージの中心へ移す（高さはそのまま）
+					finishEnemyOrigin = enemy->GetTrans().pos;
+					Vector3 enemyPos = finishEnemyOrigin;
+					enemyPos.x = FINISH_ARENA_X;
+					enemyPos.z = FINISH_ARENA_Z;
+					enemy->WarpTo(enemyPos);
+					isFinishMoved_ = true;
+
+					//中心の敵から一定の距離だけ離れた位置で構え直す
 					trans.pos.x = enemyPos.x - toEnemy.x * FINISH_START_DIST;
 					trans.pos.z = enemyPos.z - toEnemy.z * FINISH_START_DIST;
 					TargetDirection(toEnemy);
@@ -458,20 +502,23 @@ void Player::Load(void)
 				//TODO：専用の残心アニメーションを再生（今は斬り抜けアニメーションの続きで代用）
 			},
 			std::bind(&Player::IsAnimeEnd, this),
-			//④ カメラを元に戻し始める
 			[&]()
 			{
+				//カメラを通常に戻す
+				CurrentCamera::Get().EndEvent();
+				//ステージ中心から元の場所へ戻す
+				RestoreFinishPosition();
 				//描画を元に戻す
 				ActorBase::ClearDrawFocus();
-				//カメラを通常に戻す（GameCameraが補間しながら元の位置に戻る）
-				CurrentCamera::Get().EndEvent();
 
 				finishCamPrevPos = CurrentCamera::Get().GetPos();
 				finishReturnCounter = 0.0f;
 			},
-			//カメラが元の位置に戻ったか
+			
 			[&]()
 			{
+				//カメラが元の位置に戻ったか
+
 				finishReturnCounter += 1.0f;
 
 				//1フレームでのカメラの移動量
@@ -479,25 +526,33 @@ void Player::Load(void)
 				const float move = (camPos - finishCamPrevPos).Length();
 				finishCamPrevPos = camPos;
 
-				//保険：一定時間たったら戻ったことにする
+				//一定時間たったら戻す
 				if (finishReturnCounter >= FINISH_RETURN_MAX_FRAME) { return true; }
-
-				//ほとんど動かなくなったら戻った
 				return finishReturnCounter >= FINISH_RETURN_MIN_FRAME && move <= FINISH_RETURN_SETTLE_DIST;
 			},
-			//後始末（途中で中断された場合も呼ばれる）
+		
 			[&]()
 			{
+				//後始末
+
+				//押し出し・重力ON
 				SetPushFlg(true);
 				SetGravityFlg(true);
+
+				//カメラを通常に戻す
+				CurrentCamera::Get().EndEvent();
+
+				//途中で中断された場合も、ステージ中心から元の場所へ戻す
+				RestoreFinishPosition();
+
 				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr) { enemy->EndBreakFinished(); }
 				finishEnemyId = EnemyBase::INVALID_ID;
 
+				//止めていたすべての敵を再開
+				if (freezeAllEnemies) { freezeAllEnemies(false); }
+
 				//描画を元に戻す
 				ActorBase::ClearDrawFocus();
-
-				//カメラを通常に戻す（GameCameraが補間しながら元の位置に戻る）
-				CurrentCamera::Get().EndEvent();
 			},
 			[&]() { ChangeState(STATE::Idle); }
 		)
@@ -619,7 +674,7 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 		//スキル側のコライダーに設定されたダメージ
 		TakeDamage(damage);
 
-		if (!isGuardAvailable) { ChangeState(STATE::Hit); }
+		//if (!isGuardAvailable) { ChangeState(STATE::Hit); }
 
 		break;
 	}
@@ -680,6 +735,36 @@ void Player::SubUpdate(void)
 
 	//必殺技の入力チェック
 	UpdateBreakFinishInput();
+}
+
+void Player::RestoreFinishPosition(void)
+{
+	//ステージ中心へ移していなければ何もしない
+	if (!isFinishMoved_) { return; }
+	isFinishMoved_ = false;
+
+	//ステージ中心から元の場所までのずれ（水平のみ）
+	const float shiftX = finishEnemyOrigin.x - FINISH_ARENA_X;
+	const float shiftZ = finishEnemyOrigin.z - FINISH_ARENA_Z;
+
+	//敵を元の場所へ戻す（高さは今のまま）
+	if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr)
+	{
+		Vector3 enemyPos = enemy->GetTrans().pos;
+		enemyPos.x = finishEnemyOrigin.x;
+		enemyPos.z = finishEnemyOrigin.z;
+		enemy->WarpTo(enemyPos);
+	}
+
+	//プレイヤーは敵との位置関係（敵の背後）を保ったまま移す
+	//ステージの外に出る場合は範囲内に収める
+	const Vector3 before = trans.pos;
+	trans.pos.x = std::clamp(trans.pos.x + shiftX, -FINISH_STAGE_LIMIT, FINISH_STAGE_LIMIT);
+	trans.pos.z = std::clamp(trans.pos.z + shiftZ, -FINISH_STAGE_LIMIT, FINISH_STAGE_LIMIT);
+
+	//カメラもプレイヤーと同じだけずらして、画面がステージを横切って流れないようにする
+	const Vector3 moved = trans.pos - before;
+	CurrentCamera::Get().SetPos(CurrentCamera::Get().GetPos() + moved);
 }
 
 void Player::UpdateBreakFinishInput(void)
@@ -773,6 +858,19 @@ void Player::OnChangeState(int prevState, int nextState)
 {
 	//次の状態に合わせて武器の状態を変更する
 	ApplyWeaponState(static_cast<STATE>(nextState));
+
+	//空中攻撃が終わったら（着地・被弾などどの終わり方でも）見下ろしカメラを終了
+	//（GameCameraが補間しながら元の位置に戻る）
+	if (static_cast<STATE>(prevState) == STATE::AttackAir) { CurrentCamera::Get().EndEvent(); }
+
+	//空中攻撃の間は、プレイヤーの上から見下ろすカメラにする
+	if (static_cast<STATE>(nextState) == STATE::AttackAir)
+	{
+		CurrentCamera::Get().StartEvent(new FollowOverheadCameraEvent(
+			trans.pos,
+			AIR_CAM_HEIGHT, AIR_CAM_BACK, AIR_CAM_LOOK_HEIGHT,
+			Deg2Rad(AIR_CAM_FOV), AIR_CAM_BLEND_FRAME));
+	}
 }
 
 void Player::ApplyWeaponState(STATE state)

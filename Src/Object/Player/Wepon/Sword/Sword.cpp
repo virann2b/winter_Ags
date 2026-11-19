@@ -49,6 +49,10 @@ void Sword::Load(void)
 		60.0f * trans.scale.MaxElementF());
 	//‘®«‚Ì“o˜^
 	swordColl->SetElement(ELEMENT::Physics);
+
+	//“–‚½‚Á‚½‚ÌSE
+	swordColl->SetHitSE("SwordHit_S");
+
 	AddCollider(swordColl);
 
 	//Œ•‚Ì‰ŠúˆÊ’u
