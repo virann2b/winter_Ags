@@ -439,7 +439,7 @@ void Player::Load(void)
 			//② 一閃開始：敵の背後を到着点にする
 			[&]()
 			{
-				//TODO：専用の斬り抜けアニメーションに差し替え
+				//アニメーション再生
 				AnimePlay(ANIME_TYPE::AttackCharge_End);
 				//敵をすり抜けるため押し出しOFF
 				SetPushFlg(false);

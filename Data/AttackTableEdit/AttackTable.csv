@@ -1,0 +1,7 @@
+RangeAttack,Physics,1,10,,0
+SkillFire,Fire,10,0,,0
+SkillIce,Ice,10,0,,0
+SwordCharge,Physics,1,50,SwordHit_S,0
+SwordChargeCombo,Physics,1,25,SwordHit_S,0
+SwordNormal,Physics,1,5,SwordHit_S,0
+ChilbiPunch,None,1,0,,0

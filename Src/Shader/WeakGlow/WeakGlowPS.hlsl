@@ -3,7 +3,6 @@
 #include "../Common/Pixel/PixelShader3DHeader.hlsli"
 #include "../Common/Pixel/ModelPixelCommon.hlsli"
 
-// Weak point glow parameter (set from WeakGlowShader on the C++ side)
 cbuffer WeakGlowParam : register(b4)
 {
     float4 glowColor;   // rgb: glow color, a: strength (0-1)

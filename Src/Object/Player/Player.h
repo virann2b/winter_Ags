@@ -160,9 +160,9 @@ private:
 		1.0f,	// AttackCharge_Start
 		1.0f,	// AttackCharge_End
 
-		1.0f,	//AttackCharge_1
-		1.0f,	//AttackCharge_2
-		1.0f,	//AttackCharge_3
+		1.3f,	//AttackCharge_1
+		1.3f,	//AttackCharge_2
+		1.3f,	//AttackCharge_3
 
 
 		0.7f,	//Attack_Special_1

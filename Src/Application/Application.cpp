@@ -9,6 +9,7 @@
 #include "../Manager/Font/FontManager.h"
 #include "../Manager/Shader/ShaderResourceManager.h"
 #include "../Manager/Image/ImageManager.h"
+#include "../Manager/AttackParam/AttackParamManager.h"
 #include "../Scene/SceneManager.h"
 
 Application* Application::ins = nullptr;
@@ -77,6 +78,9 @@ void Application::Init(void)
 
 	// サウンド管理クラスの生成 / 初期化処理
 	Snd::CreateIns();
+
+	// 攻撃管理クラスの生成 / 初期化処理
+	AttackParamManager::CreateInc();
 
 	// フォントデータ生成 / 初期化処理
 	Font::CreateIns();
@@ -151,6 +155,9 @@ void Application::Release(void)
 
 	// サウンド管理解放・削除
 	Snd::DeleteIns();
+
+	// 攻撃管理解放・削除
+	AttackParamManager::DeleteIns();
 
 	// 入力制御削除
 	Input::DeleteIns();

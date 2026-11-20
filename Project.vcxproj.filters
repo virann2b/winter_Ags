@@ -92,6 +92,7 @@
     <ClCompile Include="Src\Object\Skill\SkillWind\SkillWind.cpp" />
     <ClCompile Include="Src\Object\UI\Gun\GunBulletUI.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerBreakFinishState.cpp" />
+    <ClCompile Include="Src\Manager\AttackParam\AttackParamManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Src\Object\Skill\SkillWind\SkillWind.h" />
     <ClInclude Include="Src\Object\UI\Gun\GunBulletUI.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerBreakFinishState.h" />
+    <ClInclude Include="Src\Manager\AttackParam\AttackParamManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />
@@ -277,5 +279,6 @@
     <FxCompile Include="Src\Shader\Default\DefaultVS_NMap1Frame.hlsl" />
     <FxCompile Include="Src\Shader\Default\DefaultVS_NMap4Frame.hlsl" />
     <FxCompile Include="Src\Shader\Default\DefaultVS_NMap8Frame.hlsl" />
+    <FxCompile Include="Src\Shader\WeakGlow\WeakGlowPS.hlsl" />
   </ItemGroup>
 </Project>

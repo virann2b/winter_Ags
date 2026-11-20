@@ -148,6 +148,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\AttackParam\AttackParamManager.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerBreakFinishState.cpp" />
     <ClCompile Include="Src\Object\UI\Gun\GunBulletUI.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillWind\SkillWind.cpp" />
@@ -241,6 +242,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\UI\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\AttackParam\AttackParamManager.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerBreakFinishState.h" />
     <ClInclude Include="Src\Object\UI\Gun\GunBulletUI.h" />
     <ClInclude Include="Src\Object\Skill\SkillWind\SkillWind.h" />
@@ -567,6 +569,9 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <FxCompile Include="Src\Shader\Water\WaterVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\WeakGlow\WeakGlowPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
