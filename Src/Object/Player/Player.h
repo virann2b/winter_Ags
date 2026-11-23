@@ -150,9 +150,9 @@ private:
 		1.0f,	// JumpIdle
 		1.0f,	// JumpEnd
 
-		0.7f,	// AttackNormal_1
-		0.7f,	// AttackNormal_2
-		0.7f,	// AttackNormal_3
+		0.9f,	// AttackNormal_1
+		0.9f,	// AttackNormal_2
+		0.9f,	// AttackNormal_3
 
 		1.0f,	// AttackAir_Start
 		1.0f,	// AttackAir_End

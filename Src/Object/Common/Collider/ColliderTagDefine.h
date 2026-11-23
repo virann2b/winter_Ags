@@ -20,7 +20,6 @@ enum class COLLIDER_TAG
 	None = -1,
 
 	Player,
-	PlayerKickDownAttack,
 	PlayerSword,
 	PlayerLargeAttack,
 

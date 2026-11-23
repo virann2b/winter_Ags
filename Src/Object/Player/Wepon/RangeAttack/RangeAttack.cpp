@@ -14,7 +14,8 @@ RangeAttack::RangeAttack
 	scaleSize(0.0f),
 	scaleSizeMin(0.0f),
 	scaleSizeNormal(0.0f),
-	scaleSizeBig(0.0f)
+	scaleSizeBig(0.0f),
+	attackCollRef(nullptr)
 {
 }
 
@@ -61,6 +62,8 @@ void RangeAttack::Load(void)
 	
 	//怯み値の設定
 	attackCollRef->SetStagger(RANGE_STAGGER);
+	//HIT時のSE
+	attackCollRef->SetHitSE("SwordHit_S");
 
 	// コライダーの生成
 	AddCollider(attackCollRef);

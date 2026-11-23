@@ -8,6 +8,7 @@
 #include "../../../Common/Vector2I.h"
 
 #include "../../../Manager/TimeScale/TimeScale.h"
+#include "../../../Manager/AttackParam/AttackParamManager.h"
 
 #include "../Collider/ColliderBase.h"
 
@@ -191,6 +192,17 @@ void ActorBase::DrawColliderDebug(void) const
 {
 	for (ColliderBase* collider : GetColliders()) {
 		if (collider->GetJudgeFlg()) collider->DrawDebug(); 
+	}
+}
+
+void ActorBase::ApplyAttackParam(const std::string& id, COLLIDER_TAG tag)
+{
+	for (ColliderBase* coll : colliders)
+	{
+		//コライダーとタグの一致を確認
+		if (coll == nullptr || coll->GetTag() != tag) { continue; }
+
+		AttackParamMng::GetIns().Apply(*coll, id);
 	}
 }
 

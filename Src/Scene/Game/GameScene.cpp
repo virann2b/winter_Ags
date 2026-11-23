@@ -28,6 +28,8 @@
 #include "../../Object/Enemy/EnemyManager.h"
 #include "../../Object/Enemy/EnemyBase.h"
 
+#include "../../Object/Stage/Stage.h"
+
 #include "../../Object/UI/UIManager.h"
 #include "../../Object/UI/Player/PlayerStatusUI.h"
 #include "../../Object/UI/Player/PlayerOperationUI.h"
@@ -52,7 +54,12 @@ void GameScene::SubPostLoad(void)
 {
 	Snd::GetIns().ChangeScene("Game");
 
+
 	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
+
+	//ステージ
+	//AddActor(new Stage);
+
 	//敵
 	AddActor(new EnemyManager);
 

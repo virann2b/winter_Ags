@@ -43,6 +43,8 @@ private:
 
 	GameCamera* gameCamera;
 
+
+
 	//ƒƒbƒNƒIƒ“’†‚Ì“G‚Ì”Ô†
 	int lockedEnemyId;
 

@@ -28,7 +28,9 @@ PlayerAttackChargeState::PlayerAttackChargeState(
 	SwordJugge(SwordJugge),
 	IsAnimeEnd(IsAnimeEnd),
 	ChangeStateIdle(ChangeStateIdle),
-	step(STEP::None)
+	step(STEP::None),
+	nextInput_(false),
+	comboIndex_(-1)
 {
 }
 

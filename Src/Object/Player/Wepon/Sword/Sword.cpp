@@ -10,7 +10,10 @@ Sword::Sword(const Transform& playerTrans, bool isActive)
 	ActorBase("Data/Parameter/Wepon/"),
 	playerTrans(playerTrans),
 	isActive(isActive),
-	swordPosition(SWORD_POSITION::None)
+	swordPosition(SWORD_POSITION::None),
+	isJudge(false),
+	handIndex(-1),
+	active(ACTIVE::None)
 {
 }
 

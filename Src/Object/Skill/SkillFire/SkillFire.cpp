@@ -28,6 +28,8 @@ void SkillFire::Load(void)
 	element = ELEMENT::Fire;
 	//スキルアイコン登録
 	iconTag = Img::IMAGE_TAG::Element_Fire;
+	//攻撃ID
+	attackId = "SkillFire";
 
 	//ダメージ量
 	damage = FIRE_DAMAGE;

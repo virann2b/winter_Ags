@@ -3,12 +3,14 @@ GunAim,Data/Sound/Player/Gun/GunAim.wav,Game,SE,0.5,False,10
 GunHit,Data/Sound/Player/Gun/GunHit.wav,Game,SE,0.5,False,10
 Ice,Data/Sound/Skill/Ice.wav,Game,SE,0.5,False,10
 Jump,Data/Sound/Player/Jump.wav,Game,SE,0.5,False,2
+Jump_End,Data/Sound/Player/Jump_End.wav,Game,SE,0.35,False,1
 LockOn,Data/Sound/Player/LockOn.wav,Game,SE,0.6,False,2
 Roll,Data/Sound/Player/Roll.wav,Game,SE,0.4,False,2
+Sword_Air,Data/Sound/Player/Sword/Sword_Air.wav,Game,SE,0.4,False,1
 SwordHit_S,Data/Sound/Player/Sword/SwordHit_S.wav,Game,SE,0.5,False,10
 SwordSwing,Data/Sound/Player/Sword/SwordSwing.wav,Game,SE,0.5,False,5
 SwordWeakHit,Data/Sound/Player/Sword/SwordWeakHit.mp3,Game,SE,0.4,False,100
 VC_Jump,Data/Sound/Player/VC/VC_Jump.wav,Game,SE,0.4,False,2
-VC_NormalCombo_1,Data/Sound/Player/VC/VC_NormalCombo_1.wav,Game,SE,0.4,False,1
-VC_NormalCombo_2,Data/Sound/Player/VC/VC_NormalCombo_2.wav,Game,SE,0.5,False,1
+VC_NormalCombo_1,Data/Sound/Player/VC/VC_NormalCombo_1.wav,Game,SE,0.4,False,5
+VC_NormalCombo_2,Data/Sound/Player/VC/VC_NormalCombo_2.wav,Game,SE,0.5,False,5
 WeakPoint,Data/Sound/Enemy/WeakPoint.wav,Game,SE,0.55,False,20

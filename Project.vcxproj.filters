@@ -93,6 +93,9 @@
     <ClCompile Include="Src\Object\UI\Gun\GunBulletUI.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerBreakFinishState.cpp" />
     <ClCompile Include="Src\Manager\AttackParam\AttackParamManager.cpp" />
+    <ClCompile Include="Src\Object\Stage\Stage.cpp" />
+    <ClCompile Include="Src\Object\UI\Title\Title.cpp" />
+    <ClCompile Include="PlayerLockOnUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application\resource.h" />
@@ -211,6 +214,9 @@
     <ClInclude Include="Src\Object\UI\Gun\GunBulletUI.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerBreakFinishState.h" />
     <ClInclude Include="Src\Manager\AttackParam\AttackParamManager.h" />
+    <ClInclude Include="Src\Object\Stage\Stage.h" />
+    <ClInclude Include="Src\Object\UI\Title\Title.h" />
+    <ClInclude Include="PlayerLockOnUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

@@ -31,8 +31,17 @@ public:
 	enum class IMAGE_TAG
 	{
 
+		Title,					//タイトル
+		Title_Frame_Off,		//タイトルフレームオフ
+		Title_Frame_On,			//タイトルフレームオン
+		Title_Start,			//スタート
+		Title_End,				//エンド
+		Title_Option,			//オプション
+
 		Operation_1,			//操作方法1
 		Operation_2,			//操作方法2
+
+		LockOn,					//ロックオン
 
 		Element_Physics,		// 物理アイコン
 		Element_Fire,			// 火アイコン
@@ -84,8 +93,20 @@ private:
 	// 画像のパス（IMAGE_TAGと同じ順番）
 	const char* PATH_TABLE[(int)IMAGE_TAG::Max] =
 	{
+
+		"Data/Image/Title/test.png",					//Title
+
+		"Data/Image/Title/Title_Frame_Off.png",			//Title_Off
+		"Data/Image/Title/Title_Frame_On.png",			//Title_On
+
+		"Data/Image/Title/Title_GameStart.png",			//Title_Start
+		"Data/Image/Title/Title_GameEnd.png",			//Title_End
+		"Data/Image/Title/Title_Option.png",			//Title_Option
+
 		"Data/Image/Player/Operation_1.png",			// Operation_1
 		"Data/Image/Player/Operation_2.png",			// Operation_2
+
+		"Data/Image/Player/LockOn.png",					// LockOn
 
 		"Data/Image/Skill/Battle.png",					// Element_Physics
 		"Data/Image/Skill/Fire.png",					// Element_Fire
@@ -108,7 +129,6 @@ private:
 		"Data/Image/Gun/Aim.png",						// GunAim
 		"Data/Image/Gun/Bullet.png",					// Bullet
 		"Data/Image/Gun/Bullet_Empty.png",				// GunBulletEmpty
-
 
 	};
 };

@@ -74,7 +74,9 @@ void SkillBase::AddSkillCollider(void)
 	//ダメージ量の設定
 	coll->SetDamage(damage);
 
+	//コライダーの追加
 	AddCollider(coll);
+	ApplyAttackParam(attackId, tag);
 
 	//当たり判定オフ（コライダー追加後でないと効かない）
 	SetJudgeFlg(false);

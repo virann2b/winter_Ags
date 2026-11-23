@@ -136,21 +136,27 @@ void Player::Load(void)
 
 #pragma region 下位アクターの生成
 
-	//剣の生成
-	sword = new Sword(trans,swordIsActive);
-	AddChildActor(sword);
-
 	//銃の生成
-	gun = new Gun(trans); 
+	gun = new Gun(trans);
 
 	gun->SetEnemyFinder([&](int id) { return findEnemy ? findEnemy(id) : nullptr; });
 	gun->SetAddMp([this](int recovery) { AddMp(recovery); });
 
 	AddChildActor(gun);
 
+
+	//剣の生成
+	sword = new Sword(trans,swordIsActive);
+	AddChildActor(sword);
+	//パラメータ追加
+	ApplyAttackParam("SwordNormal", COLLIDER_TAG::PlayerSword);
+
+
 	//範囲攻撃の生成
 	rangeAttack = new RangeAttack(trans);
 	AddChildActor(rangeAttack);
+	//パラメータ追加
+	ApplyAttackParam("RangeAttack", COLLIDER_TAG::PlayerLargeAttack);
 
 	//スキル（ファイア）の生成
 	SkillFire* skillFire = new SkillFire(trans, SkillBase::SKILL_USER::Player);
@@ -210,7 +216,7 @@ void Player::Load(void)
 			[&]() 
 			{ 
 
-				Snd::GetIns().Play("Jump");
+				Snd::GetIns().Play("Jump_End");
 				AnimePlay(ANIME_TYPE::JumpEnd);
 			},
 			std::bind(&Player::IsAnimeEnd, this),
@@ -308,6 +314,9 @@ void Player::Load(void)
 			[&]()
 			{
 				AnimePlay(ANIME_TYPE::AttackAir_End);
+				Snd::GetIns().Play("Sword_Air");
+				Snd::GetIns().Play("Jump_End");
+
 			},
 			[&]()
 			{

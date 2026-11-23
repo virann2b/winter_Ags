@@ -79,6 +79,8 @@ public:
 	// qƒNƒ‰ƒX‚ğæ“¾‚·‚é
 	const std::vector<ActorBase*>& GetChildActors(void)const { return childActors; }
 
+	void ApplyAttackParam(const std::string& id,COLLIDER_TAG tag);
+
 private:
 
 	// “–‚½‚è”»’èî•ñ

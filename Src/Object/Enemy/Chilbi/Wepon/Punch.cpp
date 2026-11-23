@@ -29,6 +29,8 @@ void Punch::Load(void)
 	// 生成したコライダーをアクター所有コライダーに追加
 	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 80, trans.pos));
 
+	ApplyAttackParam("ChilbiPunch", COLLIDER_TAG::Enemy_ChilbiPunch);
+
 }
 
 void Punch::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)

@@ -154,6 +154,9 @@ protected:
 	//スキルの進む向き
 	Vector3 moveDir;
 
+	//攻撃ID
+	std::string attackId;
+
 	//------- 派生先のLoadで設定するパラメータ -------
 
 	//消費MP
@@ -172,6 +175,7 @@ protected:
 	float skillAliveTime;
 
 	//----------------------------------------------
+	
 	//スキルの経過時間（フレーム数）
 	float skillAliveCount;
 

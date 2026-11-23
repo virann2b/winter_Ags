@@ -28,7 +28,8 @@ void SkillIce::Load(void)
 	element = ELEMENT::Ice;
 	//スキルアイコン登録
 	iconTag = Img::IMAGE_TAG::Element_Ice;
-
+	//攻撃ID
+	attackId = "SkillFire";
 
 	//ダメージ量
 	damage = ICE_DAMAGE;
