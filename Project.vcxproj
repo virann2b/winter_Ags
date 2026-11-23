@@ -156,6 +156,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\Skill\SkillIce\SkillIce.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerGuardState.cpp" />
     <ClCompile Include="Src\Object\UI\Enemy\EnemyStatusUI.cpp" />
+    <ClCompile Include="Src\Object\UI\Player\LockOnUI.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerOperationUI.cpp" />
     <ClCompile Include="Src\Manager\Image\ImageManager.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
@@ -253,6 +254,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClInclude Include="Src\Object\Skill\SkillIce\SkillIce.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerGuardState.h" />
     <ClInclude Include="Src\Object\UI\Enemy\EnemyStatusUI.h" />
+    <ClInclude Include="Src\Object\UI\Player\LockOnUI.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerOperationUI.h" />
     <ClInclude Include="Src\Manager\Image\ImageManager.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />

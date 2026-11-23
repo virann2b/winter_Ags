@@ -37,6 +37,7 @@
 #include "../../Object/UI/Gun/GunBulletUI.h"
 
 #include "../../Object/UI/Enemy/EnemyStatusUI.h"
+#include "../../Object/UI/Player/LockOnUI.h"
 
 
 GameScene::GameScene()
@@ -108,6 +109,15 @@ void GameScene::SubPostInit(void)
 	{
 		//敵ステータス関連UI
 		uiManager->AddUI(new EnemyStatusUI(enemyManager->GetEnemies()));
+
+		//ロックオンUI（ロックオン中の敵にマーカーを表示）
+		uiManager->AddUI(new LockOnUI([this, enemyManager]() -> const EnemyBase*
+			{
+				//フリーモード中はロックオンしていない
+				if (gameCamera == nullptr || gameCamera->GetMode() == GameCamera::Mode::Remote) { return nullptr; }
+
+				return enemyManager->FindEnemy(lockedEnemyId);
+			}));
 	}
 
 	if (player && uiManager)
