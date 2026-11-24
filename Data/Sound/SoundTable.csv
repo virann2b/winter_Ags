@@ -6,6 +6,8 @@ Jump,Data/Sound/Player/Jump.wav,Game,SE,0.5,False,2
 Jump_End,Data/Sound/Player/Jump_End.wav,Game,SE,0.35,False,1
 LockOn,Data/Sound/Player/LockOn.wav,Game,SE,0.6,False,2
 Roll,Data/Sound/Player/Roll.wav,Game,SE,0.4,False,2
+Special_1,Data/Sound/Player/Special/Special_1.wav,Game,SE,0.5,False,1
+Special_Flash,Data/Sound/Player/Special/Special_Flash.wav,Game,SE,0.5,False,2
 Sword_Air,Data/Sound/Player/Sword/Sword_Air.wav,Game,SE,0.4,False,1
 SwordHit_S,Data/Sound/Player/Sword/SwordHit_S.wav,Game,SE,0.5,False,10
 SwordSwing,Data/Sound/Player/Sword/SwordSwing.wav,Game,SE,0.5,False,5

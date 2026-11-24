@@ -56,10 +56,10 @@ void GameScene::SubPostLoad(void)
 	Snd::GetIns().ChangeScene("Game");
 
 
-	AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
+	//AddActor(new BoxDebugObject(Vector3(20000, 1000, 20000), Vector3::Yonly(-500), false));
 
 	//ステージ
-	//AddActor(new Stage);
+	AddActor(new Stage);
 
 	//敵
 	AddActor(new EnemyManager);

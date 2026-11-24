@@ -153,7 +153,8 @@ void Chilbi::Load(void)
 				ChangeState(STATE::Idle); 
 
 			},
-			std::bind(&Chilbi::IsAnimeEnd, this)
+			std::bind(&Chilbi::IsAnimeEnd, this),
+			[&](){	punch->JudgeEnd(); }
 		)
 	);
 

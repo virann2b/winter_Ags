@@ -5,12 +5,14 @@ ChilbiAttackState::ChilbiAttackState(
 	std::function<void(void)> playAnimeAttack_1,
 	std::function<void(void)> playAnimeAttack_2, 
 	std::function<void(void)> ChangeStateIdle,
-	std::function<bool(void)> isAnimeEnd)
+	std::function<bool(void)> isAnimeEnd,
+	std::function<void(void)> PunchJuggeEnd)
 	:
 	playAnimeAttack_1(playAnimeAttack_1),
 	playAnimeAttack_2(playAnimeAttack_2),
 	ChangeStateIdle(ChangeStateIdle),
-	isAnimeEnd(isAnimeEnd)
+	isAnimeEnd(isAnimeEnd),
+	PunchJuggeEnd(PunchJuggeEnd)
 {
 	//パターン１
 	patternTable_[(size_t)PATTERN::Pattern_1] =
@@ -57,6 +59,11 @@ void ChilbiAttackState::Update(void)
 		//パターンを最後までやり終えたら待機へ
 		ChangeStateIdle();
 	}
+}
+
+void ChilbiAttackState::Exit(void)
+{
+	PunchJuggeEnd();
 }
 
 void ChilbiAttackState::SetPattern(PATTERN pattern)

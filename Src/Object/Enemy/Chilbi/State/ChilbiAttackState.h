@@ -23,7 +23,8 @@ public:
 		std::function<void(void)> playAnimeAttack_1,
 		std::function<void(void)> playAnimeAttack_2,
 		std::function<void(void)> ChangeStateInit,
-		std::function<bool(void)> isAnimeEnd);
+		std::function<bool(void)> isAnimeEnd,
+		std::function<void(void)> PunchEnd);
 
 	~ChilbiAttackState() override = default;
 
@@ -33,8 +34,10 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
-	//更新
+	// 更新
 	void Update(void)override;
+	//　後始末
+	void Exit(void)override;
 
 	// 使うパターンを指定する(Enterより前に呼ぶ)
 	void SetPattern(PATTERN pattern);
@@ -52,6 +55,9 @@ private:
 
 	//アニメーション終了判定
 	const std::function<bool(void)> isAnimeEnd;
+	//パンチの当たり判定終了
+	const std::function<void(void)> PunchJuggeEnd;
+
 
 #pragma endregion
 

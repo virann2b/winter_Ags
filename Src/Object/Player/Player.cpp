@@ -399,6 +399,8 @@ void Player::Load(void)
 				FaceLockOnEnemy();
 				//TODO：専用の構えアニメーションに差し替え
 				AnimePlay(ANIME_TYPE::Attack_Special_1);
+				//SE再生
+				Snd::GetIns().Play("Special_1");
 				//敵の行動を止める
 				if (EnemyBase* enemy = findEnemy ? findEnemy(finishEnemyId) : nullptr)
 				{
@@ -450,6 +452,9 @@ void Player::Load(void)
 			{
 				//アニメーション再生
 				AnimePlay(ANIME_TYPE::AttackCharge_End);
+				//SE再生
+				Snd::GetIns().Play("Special_Flash");
+
 				//敵をすり抜けるため押し出しOFF
 				SetPushFlg(false);
 				SetGravityFlg(false);
