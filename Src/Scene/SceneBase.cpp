@@ -12,6 +12,7 @@
 
 #include "../Manager/Camera/CameraBase.h"
 #include "../Manager/Collision/CollisionManager.h"
+#include "../Manager/Effect/EffectManager.h"
 #include "../Object/Common/ActorBase/ActorBase.h"
 
 #include "Common/PostEffect/PostEffectBase.h"
@@ -133,6 +134,11 @@ void SceneBase::Draw(void)
 	ActorsDraw(actors, ACTOR_DRAW_TYPE::Alpha);
 	SubAlphaDraw();
 
+	// エフェクト描画（3D描画の後・ポストエフェクトの前）
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	Eff::GetIns().Draw();
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 150);
+
 	ActorsColliderDebugDraw(actors);
 
 	// デバッグ用チャンク描画
@@ -193,6 +199,9 @@ void SceneBase::Release(void)
 
 	// 派生先の解放（前）
 	SubPreRelease();
+
+	// 再生中のエフェクトを全て止める（次のシーンに残さない）
+	Eff::GetIns().StopAll();
 
 	// 全てのポストエフェクトを解放
 	for (PostEffectBase*& postEffect : postEffects) {
@@ -273,8 +282,8 @@ void SceneBase::ActorsDraw(const std::vector<ActorBase*>& actors, ACTOR_DRAW_TYP
 {
 	for (ActorBase* actor : actors) {
 
-		// 描画限定の対象か（親が対象なら子も対象：剣や銃など）
-		const bool isFocus_ = isParentFocus_ || ActorBase::IsDrawFocusTarget(actor);
+		// 描画限定の対象
+		const bool isFocus_ = isParentFocus_ || ActorBase::IsDrawFocusTarget(actor) || actor->IsIgnoreDrawFocus();
 
 		// 演出で描画を限定している間は、対象のアクターだけ描画する
 		const bool isDrawable_ = !ActorBase::IsDrawFocus() || isFocus_;

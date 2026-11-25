@@ -159,6 +159,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\UI\Player\LockOnUI.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerOperationUI.cpp" />
     <ClCompile Include="Src\Manager\Image\ImageManager.cpp" />
+    <ClCompile Include="Src\Manager\Effect\EffectManager.cpp" />
     <ClCompile Include="Src\Object\UI\Player\PlayerStatusUI.cpp" />
     <ClCompile Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerSkillState.cpp" />
@@ -257,6 +258,7 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClInclude Include="Src\Object\UI\Player\LockOnUI.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerOperationUI.h" />
     <ClInclude Include="Src\Manager\Image\ImageManager.h" />
+    <ClInclude Include="Src\Manager\Effect\EffectManager.h" />
     <ClInclude Include="Src\Object\UI\Player\PlayerStatusUI.h" />
     <ClInclude Include="Src\Object\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Enemy\Chilbi\State\ChilbiStunState.h" />

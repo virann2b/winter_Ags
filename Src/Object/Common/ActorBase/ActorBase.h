@@ -79,21 +79,39 @@ public:
 	// 子クラスを取得する
 	const std::vector<ActorBase*>& GetChildActors(void)const { return childActors; }
 
+	//攻撃パラメータ
 	void ApplyAttackParam(const std::string& id,COLLIDER_TAG tag);
+
+	//限定描画フラグ
+	void SetIgnoreDrawFocus(bool flg) { isIgnoreDrawFocus_ = flg; }
+	bool IsIgnoreDrawFocus(void) const { return isIgnoreDrawFocus_; }
+
+	// コライダーのデバッグ表示をするかの設定・取得
+	void SetColliderDebugDraw(bool flg) { isColliderDebugDraw_ = flg; }
+	bool IsColliderDebugDraw(void) const { return isColliderDebugDraw_; }
+
 
 private:
 
 	// 当たり判定情報
 	std::vector<ColliderBase*> colliders;
 	
-	// 動的オブジェクトかどうか（true = 動的、false = 静的）
+	// 動的オブジェクト判定
 	bool dynamicFlg;
 
-	// 重力を適用するかどうか（true = する、false = しない）
+	// 重力を適用判定
 	bool gravityFlg;
 
-	// 衝突時押し出しを行うかどうか（true = 押し出す、false = 押し出さず通り抜ける）
+	// 衝突時押し出し判定
 	bool pushFlg;
+
+	// 描画限定中でも描画するか
+	bool isIgnoreDrawFocus_ = false;	
+
+	// コライダーのデバッグ表示判定
+	// デフォルトは描画する
+	bool isColliderDebugDraw_ = true;
+
 
 	// 押し出しを行う際の重さ（0 ～ 100 で設定）
 	unsigned char pushWeight;

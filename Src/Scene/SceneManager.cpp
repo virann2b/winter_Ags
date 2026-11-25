@@ -606,7 +606,8 @@ void SceneManager::Init3D(void)
 
 #pragma region ƒƒCƒ“ƒ‰ƒCƒgİ’è
 
-	VECTOR mainDirection = VNorm(VGet(0.0f, 0.35f, 1.0f));
+	// Î‚ßã‚©‚çÆ‚ç‚·
+	VECTOR mainDirection = VNorm(VGet(0.3f, -0.7f, 0.6f));	
 	ChangeLightTypeDir(mainDirection);
 	SetLightDirection(mainDirection);
 	SetLightEnable(true);

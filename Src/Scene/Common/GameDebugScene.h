@@ -10,7 +10,6 @@
 
 #include "../../Manager/Camera/MultifuncCamera/MultifuncCamera.h"
 
-#include"../../Manager/Input/KeyManager.h"
 #include"../../Manager/Sound/SoundManager.h"
 
 class GameDebugScene : public SceneBase
@@ -28,27 +27,27 @@ private:
 
 #pragma region 主要関数再定義
 	// 初期化
-	void SubPostInit(void)override { 
-		camera.ChangeModeFree(Deg2Rad(2.0f), 10.0f, camera.GetPos(), camera.GetAngle()); 
+	//void SubPostInit(void)override { 
+	//	camera.ChangeModeFree(Deg2Rad(2.0f), 10.0f, camera.GetPos(), camera.GetAngle()); 
 
-		Snd::GetIns().AllStop();
-	}
+	//	Snd::GetIns().AllStop();
+	//}
 
-	// 更新
-	void SubPostUpdate(void)override {
+	//// 更新
+	//void SubPostUpdate(void)override {
 
-		if (Key::GetIns().GetInfo(KEY_TYPE::DEBUG_MODE_TOPUPDATE).now) { TopUpdate(); Snd::GetIns().PausePlay(); }
-		else { Snd::GetIns().AllStop(); }
+	//	if (Key::GetIns().GetInfo(KEY_TYPE::DEBUG_MODE_TOPUPDATE).now) { TopUpdate(); Snd::GetIns().PausePlay(); }
+	//	else { Snd::GetIns().AllStop(); }
 
-		camera.Update();
+	//	camera.Update();
 
-		if (
-			Key::GetIns().GetInfo(KEY_TYPE::DEBUG_MODE_SWITCH).down ||
-			Key::GetIns().GetInfo(KEY_TYPE::PAUSE).down
-			) {
-			SceneManager::GetIns().PopScene();
-		}
-	}
+	//	if (
+	//		Key::GetIns().GetInfo(KEY_TYPE::DEBUG_MODE_SWITCH).down ||
+	//		Key::GetIns().GetInfo(KEY_TYPE::PAUSE).down
+	//		) {
+	//		SceneManager::GetIns().PopScene();
+	//	}
+	//}
 
 	// 終了
 	void SubPreRelease(void) { CameraReset(); Snd::GetIns().PausePlay(); }

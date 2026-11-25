@@ -9,6 +9,7 @@
 #include "../Manager/Font/FontManager.h"
 #include "../Manager/Shader/ShaderResourceManager.h"
 #include "../Manager/Image/ImageManager.h"
+#include "../Manager/Effect/EffectManager.h"
 #include "../Manager/AttackParam/AttackParamManager.h"
 #include "../Scene/SceneManager.h"
 
@@ -88,6 +89,9 @@ void Application::Init(void)
 	//画像管理クラスの生成 / 初期化処理
 	Img::CreateIns();
 
+	// エフェクト管理クラスの生成 / 初期化処理（Effekseer_Initの後）
+	Eff::CreateIns();
+
 	// シェーダーデータ生成
 	ShaderResourceManager::CreateIns();
 
@@ -112,6 +116,9 @@ void Application::Run(void)
 
 		// シーン管理更新
 		SceneManager::GetIns().Update();
+
+		// エフェクト更新（時間倍率を反映して1フレーム進める）
+		Eff::GetIns().Update();
 
 		// 音声管理クラスの更新
 		Snd::GetIns().Update();
@@ -149,6 +156,9 @@ void Application::Release(void)
 
 	//画像管理解放・削除
 	Img::DeleteIns();
+
+	// エフェクト管理解放・削除（Effkseer_Endの前）
+	Eff::DeleteIns();
 
 	// フォントデータの削除
 	Font::DeleteIns();

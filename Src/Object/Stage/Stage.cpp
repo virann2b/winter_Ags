@@ -7,10 +7,10 @@ Stage::Stage()
 
 void Stage::Load(void)
 {
-	//モデル読み込み
-	trans.LoadModel("Stage/Stage");
+	//モデル読み込みw
+	trans.LoadModel("Stage/Stage2");
 	trans.pos = Vector3( 0,-100,0 );
-	trans.scale = 2.0f;
+	trans.scale = 3.0f;
 
 	//描画ON
 	SetIsDraw(true);
@@ -21,6 +21,12 @@ void Stage::Load(void)
 
 	//押し出しON
 	SetPushFlg(true);
-	
+
+	//描画限定判定
+	SetIgnoreDrawFocus(true);
+	//デバッグ表示OFF
+	SetColliderDebugDraw(false);
+
+	//コライダー追加
 	AddCollider(new MeshCollider(COLLIDER_TAG::Stage, trans.model));
 }

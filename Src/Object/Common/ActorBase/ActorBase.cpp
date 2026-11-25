@@ -190,7 +190,11 @@ std::vector<ColliderBase*> ActorBase::GetColliders(void) const
 
 void ActorBase::DrawColliderDebug(void) const
 {
-	for (ColliderBase* collider : GetColliders()) {
+	for (ColliderBase* collider : GetColliders())
+	{
+		// デバッグ表示OFFのActorは描かない
+		if (!isColliderDebugDraw_) { return; }
+
 		if (collider->GetJudgeFlg()) collider->DrawDebug(); 
 	}
 }
