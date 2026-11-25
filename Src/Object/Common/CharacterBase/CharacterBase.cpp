@@ -4,6 +4,8 @@
 
 #include "../../../Application/Application.h"
 
+#include "../../../Manager/Effect/EffectManager.h"
+
 #include "CharacterStateBase.h"
 
 #include "../AnimationController/AnimationController.h"
@@ -61,6 +63,13 @@ void CharacterBase::AddMp(int recovery)
 {
 	status.mp = status.mp + recovery;
 	if (status.mp >= status.maxMp) { status.mp = status.maxMp; }
+
+	//エフェクトが再生されていな時のみ
+	if (!Eff::GetIns().IsPlaying((int)Eff::EFFECT_TAG::AddMp))
+	{
+		Eff::GetIns().Play(Eff::EFFECT_TAG::AddMp, trans.pos);
+	}
+	
 }
 
 bool CharacterBase::UseMp(int cost)

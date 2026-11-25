@@ -274,7 +274,7 @@ private:
 #pragma region 必殺技（一閃)
 
 	//一閃を始める位置（敵からの距離）
-	static constexpr float FINISH_START_DIST = 700.0f;			//一閃を始める位置（敵からの距離）	
+	static constexpr float FINISH_START_DIST = 600.0f;			//一閃を始める位置（敵からの距離）	
 	static constexpr float FINISH_PASS_DIST = 400.0f;			//敵の背後に抜ける距離
 	static constexpr int   FINISH_DAMAGE = 30;					//ダメージ
 	static constexpr float FINISH_HITSTOP_SCALE = 0.1f;			//到着時のヒットストップの速さ

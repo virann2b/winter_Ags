@@ -148,7 +148,6 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PlayerLockOnUI.cpp" />
     <ClCompile Include="Src\Manager\AttackParam\AttackParamManager.cpp" />
     <ClCompile Include="Src\Object\Player\State\PlayerBreakFinishState.cpp" />
     <ClCompile Include="Src\Object\UI\Gun\GunBulletUI.cpp" />
@@ -247,8 +246,8 @@ $(ProjectDir)Lib\Enet;</AdditionalLibraryDirectories>
     <ClCompile Include="Src\Object\UI\Title\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PlayerLockOnUI.h" />
     <ClInclude Include="Src\Manager\AttackParam\AttackParamManager.h" />
+    <ClInclude Include="Src\Object\Common\Shader\WeakGlowShader.h" />
     <ClInclude Include="Src\Object\Player\State\PlayerBreakFinishState.h" />
     <ClInclude Include="Src\Object\UI\Gun\GunBulletUI.h" />
     <ClInclude Include="Src\Object\Skill\SkillWind\SkillWind.h" />

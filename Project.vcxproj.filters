@@ -96,7 +96,6 @@
     <ClCompile Include="Src\Manager\AttackParam\AttackParamManager.cpp" />
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\UI\Title\Title.cpp" />
-    <ClCompile Include="PlayerLockOnUI.cpp" />
     <ClCompile Include="Src\Object\UI\Player\LockOnUI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -219,8 +218,8 @@
     <ClInclude Include="Src\Manager\AttackParam\AttackParamManager.h" />
     <ClInclude Include="Src\Object\Stage\Stage.h" />
     <ClInclude Include="Src\Object\UI\Title\Title.h" />
-    <ClInclude Include="PlayerLockOnUI.h" />
     <ClInclude Include="Src\Object\UI\Player\LockOnUI.h" />
+    <ClInclude Include="Src\Object\Common\Shader\WeakGlowShader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\ModelFog.hlsli" />

@@ -223,6 +223,8 @@ void Chilbi::Load(void)
 	//ステータス初期化
 	InitStatus(MAX_HP, MAX_MP);
 
+	SetHitEffectPos(Vector3(0, 100, 0));
+
 #pragma endregion
 
 

@@ -36,6 +36,10 @@ public:
 	{
 		Test,			// 動作確認用
 
+		AddMp,
+
+		HitFire,
+
 		Max
 	};
 
@@ -86,7 +90,10 @@ private:
 	// エフェクトの情報（EFFECT_TAGと同じ順番）
 	const EffectInfo INFO_TABLE[(int)EFFECT_TAG::Max] =
 	{
-		{ "Data/Effect/Test.efkefc", 10.0f },		// Test
+		{ "Data/Effect/Test.efkefc", 15.0f },		// Test
+		{ "Data/Effect/AddMp.efkefc", 30.0f },		// AddMp
+		{ "Data/Effect/HitFire.efkefc", 30.0f },		// AddMp
+
 	};
 
 	// 読み込んだエフェクトのハンドル

@@ -2,12 +2,13 @@
 
 #include "../../Manager/TimeScale/TimeScale.h"
 #include "../../Manager/Sound/SoundManager.h"
+#include "../../Manager/Effect/EffectManager.h"
 
 #include "../Common/Collider/ColliderBase.h"
 
-#include "../Skill/SkillBase.h"
-
 #include "../Common/Shader/WeakGlowShader.h"
+
+#include "../Skill/SkillBase.h"
 
 #include <algorithm>
 #include <cmath>
@@ -45,13 +46,15 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	//弱点硬直中は弱点HITを再生
 	if (!other.GetHitSE().empty() && isWeakStun_)
 	{
-	
 		Snd::GetIns().Play("SwordWeakHit");
+		Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos - hitEffectPos);
 	}
 	else
 	{
 		//攻撃側にセットされたSEを流す
 		Snd::GetIns().Play(other.GetHitSE());
+		Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos - hitEffectPos);
+
 	}
 	
 
@@ -188,6 +191,10 @@ Vector3 EnemyBase::GetDirectionToTarget(void) const
 	if (len <= 0.0001f) { return Vector3(); }
 
 	return Vector3(dx / len, 0.0f, dz / len);
+}
+
+void EnemyBase::SetHitEffectPos(Vector3 setPos)
+{
 }
 
 void EnemyBase::LoadResist(const std::string& enemyName)

@@ -106,8 +106,8 @@ public:
 
 private:
 
-	//シェーダー側の register(b4) に合わせる
-	static constexpr int CONSTANT_BUFFER_SLOT = 4;
+	//シェーダー側の register(b8) に合わせる
+	static constexpr int CONSTANT_BUFFER_SLOT = 8;
 
 	//シェーダーへ送るパラメータ（float4 の並びに合わせる）
 	struct PARAM

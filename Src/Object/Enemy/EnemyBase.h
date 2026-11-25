@@ -61,6 +61,9 @@ public:
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
 
+	// HITエフェクトの座標設定(キャラによって大きさが違うため)
+	void SetHitEffectPod(Vector3 hitPos) { hitEffectPos = hitPos ;}
+
 	// 死亡アニメーションまで終わったか（画面から消えたか）
 	bool IsDieEnd(void) const { return isDieEnd_; }
 
@@ -152,6 +155,14 @@ protected:
 	//必殺技の入力受付時間（スロー時間と同じ）
 	static constexpr float BREAK_CHANCE_FRAME = BREAK_SLOW_TIME;
 
+	//当てた瞬間の強い光が消えるまでのフレーム数
+	static constexpr float WEAK_GLOW_FLASH_FRAME = 20.0f;
+	//弱点硬直中の光の強さ（基本）
+	static constexpr float WEAK_GLOW_STUN_BASE = 0.35f;
+	//弱点硬直中の明滅の幅
+	static constexpr float WEAK_GLOW_STUN_PULSE = 0.15f;
+	//弱点硬直中の明滅の速さ（1フレームに進む角度・ラジアン）
+	static constexpr float WEAK_GLOW_PULSE_SPEED = 0.15f;
 
 #pragma endregion
 
@@ -176,21 +187,7 @@ protected:
 	// 弱点硬直を起こした属性
 	ELEMENT weakStunElement = ELEMENT::None;
 
-
-#pragma endregion
-
-#pragma region 弱点を突かれた時の発光
-
-	//当てた瞬間の強い光が消えるまでのフレーム数
-	static constexpr float WEAK_GLOW_FLASH_FRAME = 20.0f;
-	//弱点硬直中の光の強さ（基本）
-	static constexpr float WEAK_GLOW_STUN_BASE = 0.35f;
-	//弱点硬直中の明滅の幅
-	static constexpr float WEAK_GLOW_STUN_PULSE = 0.15f;
-	//弱点硬直中の明滅の速さ（1フレームに進む角度・ラジアン）
-	static constexpr float WEAK_GLOW_PULSE_SPEED = 0.15f;
-
-	//発光シェーダー（ActorBaseが所有・解放する）
+	//発光シェーダー
 	WeakGlowShader* weakGlowShader = nullptr;
 	//光らせる属性
 	ELEMENT weakGlowElement = ELEMENT::None;
@@ -198,6 +195,11 @@ protected:
 	float weakGlowFlash = 0.0f;
 	//明滅用の時間
 	float weakGlowTime = 0.0f;
+
+
+#pragma endregion
+
+#pragma region 弱点を突かれた時の発光
 
 	//発光シェーダーの生成
 	void CreateWeakGlowShader(void);
@@ -262,6 +264,8 @@ protected:
 	// プレイヤーへの単位ベクトル
 	Vector3 GetDirectionToTarget(void) const;
 
+	void SetHitEffectPos(Vector3 setPos);
+
 #pragma region スキル関連
 
 	// 攻撃対象との距離の区分を取得
@@ -323,6 +327,9 @@ private:
 
 	// 初期座標
 	Vector3 initPos;
+
+	// HITエフェクト調整位置
+	Vector3 hitEffectPos;
 	
 	// 攻撃対象の座標
 	const Vector3* targetPos = nullptr;
