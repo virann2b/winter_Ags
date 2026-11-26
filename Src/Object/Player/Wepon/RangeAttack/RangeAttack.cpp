@@ -21,13 +21,17 @@ RangeAttack::RangeAttack
 
 void RangeAttack::Load(void)
 {
+
+#pragma region オブジェクト設定
+
 	//移動判定ON
 	SetDynamicFlg(true);
 	//重力OFF
 	SetGravityFlg(false);
 	//コライダー同士の押し出しOFF
 	SetPushFlg(false);
-
+	//当たり判定OFF
+	SetJudgeFlg(false);
 
 #pragma region 外部読み込み
 
@@ -49,32 +53,32 @@ void RangeAttack::Load(void)
 	if (!IsParameterExist("AttackLange", parameterName)) { return; }
 	scaleSizeBig = (float)GetParameterToInt("AttackLange", parameterName);
 
-#pragma endregion
 
 	//初期設定サイズ
 	scaleSize = scaleSizeBig;
 
 	// 生成、ポインタ保持
 	attackCollRef = new SphereCollider(COLLIDER_TAG::PlayerLargeAttack, scaleSize, trans.pos);
-	
+
+
+#pragma endregion
+
+#pragma endregion
+
 	//属性の登録
 	attackCollRef->SetElement(ELEMENT::Physics);
-	
+
 	//怯み値の設定
 	attackCollRef->SetStagger(RANGE_STAGGER);
+
 	//HIT時のSE
 	attackCollRef->SetHitSE("SwordHit_S");
 
 	// コライダーの生成
 	AddCollider(attackCollRef);
 
-	//当たり判定OFF
-	SetJudgeFlg(false);
-
-}
-
-void RangeAttack::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result)
-{
+	//パラメータ追加
+	ApplyAttackParam("RangeAttack", COLLIDER_TAG::PlayerLargeAttack);
 
 }
 

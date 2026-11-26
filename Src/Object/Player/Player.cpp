@@ -27,6 +27,7 @@
 #include "../../Manager/Camera/CurrentCamera.h"
 #include "../../Manager/Camera/CameraEvent/FixedCameraEvent/FixedCameraEvent.h"
 #include "../../Manager/Camera/CameraEvent/FollowOverheadCameraEvent/FollowOverheadCameraEvent.h"
+#include "../../Manager/Effect/EffectManager.h"
 
 #include "State/PlayerIdleState.h"
 #include "State/PlayerMoveState.h"
@@ -96,9 +97,6 @@ void Player::Load(void)
 	// モデルの角度のズレの補正
 	trans.SetLocalRotation(Quaternion::FromRotationY(Deg2Rad(180.0f)));
 
-	// シェーダー登録
-	//CreateShader(new DefaultShader());
-
 #pragma endregion
 
 
@@ -142,21 +140,17 @@ void Player::Load(void)
 	gun->SetEnemyFinder([&](int id) { return findEnemy ? findEnemy(id) : nullptr; });
 	gun->SetAddMp([this](int recovery) { AddMp(recovery); });
 
+	//銃の生成
 	AddChildActor(gun);
-
 
 	//剣の生成
 	sword = new Sword(trans,swordIsActive);
 	AddChildActor(sword);
-	//パラメータ追加
-	ApplyAttackParam("SwordNormal", COLLIDER_TAG::PlayerSword);
-
 
 	//範囲攻撃の生成
 	rangeAttack = new RangeAttack(trans);
 	AddChildActor(rangeAttack);
-	//パラメータ追加
-	ApplyAttackParam("RangeAttack", COLLIDER_TAG::PlayerLargeAttack);
+	
 
 	//スキル（ファイア）の生成
 	SkillFire* skillFire = new SkillFire(trans, SkillBase::SKILL_USER::Player);
@@ -351,7 +345,9 @@ void Player::Load(void)
 			{ 
 				AnimePlay(ANIME_TYPE::AttackCharge_End);
 				FaceLockOnEnemy();
-				sword->SetStagger(STAGGER_CHARGE);
+
+				//タメ専用剣のパラメータセット
+				sword->SetAttackParam("SwordChargeFinish");
 			},
 			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_1);},
 			[&](){ AnimePlay(ANIME_TYPE::AttackCharge_2); },
@@ -704,7 +700,7 @@ void Player::TargetDirection(const Vector3& target)
 
 void Player::SubUpdate(void)
 {
-
+	//着地判定
 	if (isGround)
 	{
 		isMaxJump = false;
@@ -733,7 +729,6 @@ void Player::SubUpdate(void)
 #pragma endregion
 
 
-
 	//スキル発動（スキルメニューを押している間）
 	const KEY_TYPE SKILL_KEYS[SKILL_SLOT_MAX] = 
 	{
@@ -747,8 +742,12 @@ void Player::SubUpdate(void)
 		if (Input::GetIns().GetInfo(SKILL_KEYS[i]).down) { UseSkill(i); }
 	}
 
+	//受付開始判定更新
+	UpdateBreakChanceEffect();
+
 	//必殺技の入力チェック
 	UpdateBreakFinishInput();
+
 }
 
 void Player::RestoreFinishPosition(void)
@@ -783,6 +782,7 @@ void Player::RestoreFinishPosition(void)
 
 void Player::UpdateBreakFinishInput(void)
 {
+
 	if (!Input::GetIns().GetInfo(KEY_TYPE::PlayerBreakFinish).down) { return; }
 
 	//必殺技中・被ダメージ中は発動しない
@@ -793,11 +793,50 @@ void Player::UpdateBreakFinishInput(void)
 	EnemyBase* enemy = findEnemy ? findEnemy(lockOnEnemyId) : nullptr;
 	if (enemy == nullptr || enemy->IsDead() || !enemy->IsBreakChance()) { return; }
 
+	if (enemy->IsBreakChance())
+	{
+		//再生されていない時のみ再生する
+		if (!Eff::GetIns().IsPlaying((int)Eff::EFFECT_TAG::Test))
+		{
+			Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos);
+		}
+		
+	}
+
 	//チャンス消費（二重発動防止）
 	enemy->EndBreakChance();
 
 	finishEnemyId = lockOnEnemyId;
 	ChangeState(STATE::BreakFinish);
+}
+
+void Player::UpdateBreakChanceEffect(void)
+{
+	//ロックオン中の敵が怯みチャンス中か
+	EnemyBase* enemy = findEnemy ? findEnemy(lockOnEnemyId) : nullptr;
+
+	//現在の受付判定
+	const bool isChance = enemy != nullptr && !enemy->IsDead() && enemy->IsBreakChance();
+
+	//今のフレームと１フレームが入力を受け付けている時のみ再生する
+	if (isChance && wasBreakChance_)
+	{
+		breakChanceEffect = Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos);
+	}
+	else if (!isChance && !wasBreakChance_)
+	{
+		Eff::GetIns().Stop(breakChanceEffect);
+		breakChanceEffect = -1;
+	}
+
+	//再生中は追従する
+	if (Eff::GetIns().IsPlaying(breakChanceEffect))
+	{
+		Eff::GetIns().SetPos(breakChanceEffect,trans.pos);
+	}
+
+	//受付判定を更新
+	wasBreakChance_ = isChance;
 }
 
 void Player::UseSkill(int slot)
@@ -904,21 +943,20 @@ void Player::ApplyWeaponState(STATE state)
 	case Player::STATE::AttackNormal:
 	{
 		SetWeapon(POS::Hand, ACT::Active, false);
-		sword->SetStagger(STAGGER_NORMAL);
+		sword->SetAttackParam("SwordNormal");
 		break;
 	}
 	case Player::STATE::AttackAir:
 	{
 		SetWeapon(POS::Hand, ACT::DrawOnly, false);
-
+		sword->SetAttackParam("SwordAir");
 		break;
 	}
 	case Player::STATE::AttackCharge:
 	{
 		//判定ステート内で切り替え
 		SetWeapon(POS::Hand, ACT::DrawOnly, false);
-		sword->SetStagger(STAGGER_CHARGE_COMBO);
-
+		sword->SetAttackParam("SwordCharge");
 		break;
 	}
 	case Player::STATE::Gun:
@@ -929,13 +967,14 @@ void Player::ApplyWeaponState(STATE state)
 	}
 	case Player::STATE::BreakFinish:
 	{
-		//見た目だけ手に持つ（ダメージは直接与える）
+		//見た目だけ手に持つ
 		SetWeapon(POS::Hand, ACT::DrawOnly, false);
 		break;
 	}
 	default:
 	{
 		SetWeapon(POS::Back, ACT::DrawOnly, false);
+		sword->SetAttackParam("SwordNormal");
 		break;
 	}
 	}

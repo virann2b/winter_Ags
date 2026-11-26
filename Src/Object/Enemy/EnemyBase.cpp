@@ -47,13 +47,13 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 	if (!other.GetHitSE().empty() && isWeakStun_)
 	{
 		Snd::GetIns().Play("SwordWeakHit");
-		Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos - hitEffectPos);
+		Eff::GetIns().Play(Eff::EFFECT_TAG::Hit, trans.pos + hitEffectPos);
 	}
 	else
 	{
 		//攻撃側にセットされたSEを流す
 		Snd::GetIns().Play(other.GetHitSE());
-		Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos - hitEffectPos);
+		Eff::GetIns().Play(Eff::EFFECT_TAG::Hit, trans.pos + hitEffectPos);
 
 	}
 	
@@ -268,6 +268,7 @@ void EnemyBase::SubUpdate(void)
 		EnemyUpdate();
 	}
 
+	//反動更新
 	UpdateShake();
 
 	//弱点の発光の更新

@@ -27,8 +27,6 @@ public:
 
 	void Load(void) override;
 
-	void OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const CollisionResult& result) override;
-
 	//äJén
 	void Start(SCALE setScale);
 	//èIóπ

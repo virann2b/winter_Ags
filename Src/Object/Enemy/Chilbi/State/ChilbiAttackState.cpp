@@ -29,12 +29,6 @@ ChilbiAttackState::ChilbiAttackState(
 	};
 }
 
-
-void ChilbiAttackState::OwnStateConditionUpdate(void)
-{
-
-}
-
 void ChilbiAttackState::Enter(void)
 {
 	actionIndex_ = 0;
@@ -44,12 +38,14 @@ void ChilbiAttackState::Enter(void)
 
 void ChilbiAttackState::Update(void)
 {
+	//アニメーションが終了している場合は何もしない
 	if (!isAnimeEnd()) return;
 
 	actionIndex_++;
 
 	const auto& actions = patternTable_[(size_t)currentPattern_];
 
+	//再生中の攻撃を取得
 	if (actionIndex_ < actions.size())
 	{
 		PlayCurrentAction();
@@ -63,15 +59,15 @@ void ChilbiAttackState::Update(void)
 
 void ChilbiAttackState::Exit(void)
 {
+	//パンチの当たり判定終了
 	PunchJuggeEnd();
 }
 
 void ChilbiAttackState::SetPattern(PATTERN pattern)
 {
-	if (pattern == PATTERN::None || pattern == PATTERN::Max)
-	{	
-		return;
-	}
+	if (pattern == PATTERN::None || pattern == PATTERN::Max){ return; }
+
+	//攻撃を行うパターンをセットする
 	currentPattern_ = pattern;
 }
 

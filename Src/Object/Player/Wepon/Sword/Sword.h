@@ -55,6 +55,9 @@ public:
 	// 怯みダメージの設定
 	void SetStagger(int stagger);
 
+	//攻撃パラメータをIDで切り替える
+	void SetAttackParam(const std::string& id);
+
 private:
 
 #pragma region 定数

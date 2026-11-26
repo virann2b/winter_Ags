@@ -69,7 +69,6 @@ void CharacterBase::AddMp(int recovery)
 	{
 		Eff::GetIns().Play(Eff::EFFECT_TAG::AddMp, trans.pos);
 	}
-	
 }
 
 bool CharacterBase::UseMp(int cost)
@@ -111,6 +110,15 @@ void CharacterBase::BaseRelease(void)
 		anime->Release();
 		delete anime;
 		anime = nullptr;
+	}
+}
+
+void CharacterBase::EffectUpdate(void)
+{
+	//MP回復エフェクト座標更新
+	if (Eff::GetIns().IsPlaying((int)Eff::EFFECT_TAG::AddMp))
+	{
+		Eff::GetIns().SetPos((int)Eff::EFFECT_TAG::AddMp, trans.pos);
 	}
 }
 

@@ -352,8 +352,14 @@ private:
 	//ジャンプ回数最大フラグ
 	bool isMaxJump;
 
+	//ロックオン中の敵の入力受付判定
+	bool wasBreakChance_ = false;
+
 	//必殺技の対象の敵
 	int finishEnemyId;
+	// 一閃チャンス演出の再生ハンドル
+	int breakChanceEffect = -1;   
+
 	//一閃の開始点
 	Vector3 finishStartPos;
 	//一閃の到着点
@@ -396,13 +402,16 @@ private:
 
 	//必殺技の入力チェック（敵が怯みチャンス中なら発動）
 	void UpdateBreakFinishInput(void);
+	//一閃、入力開始の検出
+	void UpdateBreakChanceEffect(void);
+
 	//一閃の後、ステージ中心から元の場所へ戻す
 	void RestoreFinishPosition(void);
 
 	// ステート切り替え時の処理
 	void OnChangeState(int prevState, int nextState) override;
 
-	// ステートに合わせて武器の基本の状態を決める
+	// ステートに合わせた武器切り替え
 	void ApplyWeaponState(STATE state);
 	// 剣の位置・剣の判定・銃の表示をまとめて設定
 	void SetWeapon(Sword::SWORD_POSITION pos, Sword::ACTIVE active, bool isGunActive);

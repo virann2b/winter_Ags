@@ -217,4 +217,7 @@ protected:
 	// アニメーション停止中か（trueの間はアニメーションの更新を止める）
 	virtual bool IsAnimeStop(void) const { return false; }
 
+	//エフェクト更新処理
+	void EffectUpdate(void);
+
 };

@@ -34,11 +34,13 @@ public:
 	// エフェクトのタグ（追加したらINFO_TABLEにも同じ順番で追加する）
 	enum class EFFECT_TAG
 	{
-		Test,			// 動作確認用
+		Hit,			// ヒット
 
-		AddMp,
+		AddMp,			// MP回復
 
-		HitFire,
+		HitFire,		//炎魔法ヒット
+
+		Test,
 
 		Max
 	};
@@ -53,7 +55,7 @@ public:
 	/// <returns>再生中のハンドル（失敗時は-1）</returns>
 	int Play(EFFECT_TAG tag, const Vector3& pos, const Vector3& rot = Vector3(), float scale = 1.0f);
 
-	// 再生中のエフェクトの位置を変更（追従させたい時に毎フレーム呼ぶ）
+	// 再生中のエフェクトの位置を変更
 	void SetPos(int playHandle, const Vector3& pos);
 	// 再生中のエフェクトの回転を変更（ラジアン・XYZ）
 	void SetRot(int playHandle, const Vector3& rot);
@@ -90,10 +92,10 @@ private:
 	// エフェクトの情報（EFFECT_TAGと同じ順番）
 	const EffectInfo INFO_TABLE[(int)EFFECT_TAG::Max] =
 	{
-		{ "Data/Effect/Test.efkefc", 15.0f },		// Test
+		{ "Data/Effect/Hit.efkefc", 15.0f },		// Test
 		{ "Data/Effect/AddMp.efkefc", 30.0f },		// AddMp
-		{ "Data/Effect/HitFire.efkefc", 30.0f },		// AddMp
-
+		{ "Data/Effect/Hit_Fire.efkefc", 30.0f },	// HitFire
+		{ "Data/Effect/Test.efkefc", 20.0f },		// HitFired
 	};
 
 	// 読み込んだエフェクトのハンドル

@@ -2,6 +2,8 @@
 
 #include "../../../../Utility/Utility.h"
 
+#include "../../../../Manager/AttackParam/AttackParamManager.h"
+
 #include "../../../Common/Collider/CapsuleCollider.h"
 
 
@@ -42,6 +44,9 @@ void Sword::Load(void)
 	//角度の調整
 	trans.SetLocalRotation(Quaternion::FromRotationZ(Deg2Rad(-180.0f)));
 
+	//剣の初期位置
+	swordPosition = SWORD_POSITION::Hand;
+
 #pragma endregion
 
 	//コライダーの追加
@@ -55,11 +60,11 @@ void Sword::Load(void)
 
 	//当たった時のSE
 	swordColl->SetHitSE("SwordHit_S");
-
+	//コライダー登録
 	AddCollider(swordColl);
 
-	//剣の初期位置
-	swordPosition = SWORD_POSITION::Hand;
+	//パラメータ追加
+	ApplyAttackParam("SwordNormal", COLLIDER_TAG::PlayerSword);
 
 }
 
@@ -229,6 +234,16 @@ void Sword::ActiveUpdate(void)
 		break;
 	}
 	}
+}
+
+void Sword::SetAttackParam(const std::string& id)
+{
+	//空の場合は何もしない
+	if (swordColl == nullptr) { return; }
+
+	//剣にパラメータを追加
+	AttackParamManager::GetIns().Apply(*swordColl, id);
+	
 }
 
 void Sword::AttachToHand(const Vector3& rotOffsetDeg, const Vector3& posOffset)
