@@ -43,7 +43,7 @@ private:
 	const std::function<float(void)> getStunRemain;
 	// 硬直時間のカウント関数ポインタ
 	const std::function<void(float)> countStun;
-	// アニメーション再生比率取得関ポインタ
+	// アニメーション再生比率取得関数ポインタ
 	const std::function<float(void)> getAnimeRatio;
 	// アニメーションの再生位置取得関数ポインタ
 	const std::function<float(void)> getAnimeStep;

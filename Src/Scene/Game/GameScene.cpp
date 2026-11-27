@@ -149,14 +149,13 @@ void GameScene::SubPostUpdate(void)
 	//全ての絶滅判定
 	if (enemyManager->IsAllDead())
 	{
-		// 最後の敵を倒した瞬間にスローにする（1回だけ）
-		if (!isClearSlow)
+		// 最後の敵を倒した瞬間にスローにする
 		{
 			isClearSlow = true;
 			TimeScale::GetIns().ChangeTimeScale(CLEAR_SLOW_SCALE, CLEAR_SLOW_CHANGE_TIME);
 		}
 
-		// 死亡アニメーションが終わって敵が消えたら、元の速さに戻してクリアへ（1回だけ）
+		// 死亡アニメーションが終わって敵が消えたら、元の速さに戻してクリアへ
 		if (enemyManager->IsAllDieAnimEnd() && !isChanging)
 		{
 			isChanging = true;

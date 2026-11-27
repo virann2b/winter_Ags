@@ -23,16 +23,14 @@ void Sword::Load(void)
 {
 #pragma region オブジェクト設定
 
+	//移動設定
 	SetDynamicFlg(true);
 	//衝突設定
 	SetGravityFlg(false);
-	//当たり判定による押し出し
+	//押し出し設定
 	SetPushFlg(false);
-
-	//描画ON
+	//描画設定
 	SetIsDraw(isActive);
-	//判定オフ
-	SetJudgeFlg(isJudge);
 
 	// モデルをロード
 	trans.LoadModel("Sword/Sword");
@@ -56,10 +54,11 @@ void Sword::Load(void)
 		Vector3::Xonly(160.0f) * trans.scale,
 		60.0f * trans.scale.MaxElementF());
 
-	//当たった時のSE
-	swordColl->SetHitSE("SwordHit_S");
 	//コライダー登録
 	AddCollider(swordColl);
+
+	//当たり判定設定
+	SetJudgeFlg(isJudge);
 
 	//パラメータ追加
 	ApplyAttackParam("SwordNormal", COLLIDER_TAG::PlayerSword);

@@ -160,7 +160,7 @@ void Player::Load(void)
 	AddChildActor(skillIce);
 
 
-	//スキル1に設定
+	//スキルのスロットごとに設定
 	skillSlot[0] = skillFire;
 	skillSlot[1] = skillIce;
 	skillSlot[2] = skillFire;
@@ -191,7 +191,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Move,
 		new PlayerMoveState(
-			MOVE_ACCEL_POW, 1.5f, DASH_STAMINA_MAX,
+			MOVE_ACCEL_POW, DASH_SPEED_RATE, DASH_STAMINA_MAX,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			ACCEL_MAX,
 			[&]() { AnimePlay(ANIME_TYPE::Run); },
@@ -729,9 +729,14 @@ void Player::SubUpdate(void)
 		KEY_TYPE::PlayerSkill3,
 		KEY_TYPE::PlayerSkill4,
 	};
-	for (int i = 0; i < SKILL_SLOT_MAX; ++i)
+
+	//スキルメニューを開いている時のみ
+	if (IsSkillMenuOpen())
 	{
-		if (Input::GetIns().GetInfo(SKILL_KEYS[i]).down) { UseSkill(i); }
+		for (int i = 0; i < SKILL_SLOT_MAX; ++i)
+		{
+			if (Input::GetIns().GetInfo(SKILL_KEYS[i]).down) { UseSkill(i); }
+		}
 	}
 
 	//受付開始判定更新

@@ -34,14 +34,12 @@ public:
 
 private:
 
-#pragma region 定数
+#pragma region 変数
 
 	//指定サイズごとの範囲攻撃の最大範囲
 	float scaleSizeMin;
 	float scaleSizeNormal;
 	float scaleSizeBig;
-
-	static constexpr int RANGE_STAGGER = 10;
 
 #pragma endregion
 

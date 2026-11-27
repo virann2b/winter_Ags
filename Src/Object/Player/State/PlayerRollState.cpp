@@ -29,7 +29,7 @@ PlayerRollState::PlayerRollState(
 
 void PlayerRollState::OwnStateConditionUpdate(void)
 {
-	// ジャンプキーのダウントリガーで遷移
+	// 回避キーのダウントリガーで遷移
 	if (Input::GetIns().GetInfo(KEY_TYPE::PlayerRoll).down) { OwnChangeState(); }
 }
 
@@ -70,19 +70,19 @@ void PlayerRollState::Enter(void)
 
 void PlayerRollState::Update(void)
 {
-	//巡回目標座標までのベクトルを取得
+	//目標座標までのベクトルを取得
 	Vector3 vec = rollTargetPos - PlayerTrans.pos;
 	//Y軸方向は移動しない
 	vec.y = 0.0f;
 
-	//巡回目標座標までの距離が近い場合
+	//目標座標までの距離が近い場合
 	if (vec.Length() <= ARRIVE_RANGE || IsAnimeEnd())
 	{
 		ChangeStateIdle();
 		return;
 	}
 
-	//巡回目標座標までのベクトルを正規化して加速移動する
+	//目標座標までのベクトルを正規化して加速移動する
 	vec.Normalize();
 	MoveAccel(vec);
 }

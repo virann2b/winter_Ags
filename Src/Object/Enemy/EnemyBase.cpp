@@ -215,6 +215,7 @@ void EnemyBase::LoadResistTable(const std::string& enemyName)
 		if (value < (int)ELEMENT_RESIST::Normal || value >= (int)ELEMENT_RESIST::Max)
 		{
 			resistTable[i] = ELEMENT_RESIST::Normal;
+			continue;
 		}
 
 		resistTable[i] = static_cast<ELEMENT_RESIST>((int)values[i]);

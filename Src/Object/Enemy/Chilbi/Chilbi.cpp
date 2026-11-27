@@ -209,7 +209,7 @@ void Chilbi::Load(void)
 	punch = new Punch(trans);
 	AddChildActor(punch);
 
-	//スキル（ファイア）：中距離～遠距離で使う
+	//スキル（ファイア)
 	AddSkill(
 		new SkillFire(trans, SkillBase::SKILL_USER::Enemy),
 		DISTANCE::Middle, DISTANCE::Long,
@@ -222,11 +222,10 @@ void Chilbi::Load(void)
 
 	//ステータス初期化
 	InitStatus(MAX_HP, MAX_MP);
-
-	SetHitEffectPos(Vector3(0, 100, 0));
+	//HITエフェクト位置設定
+	SetHitEffectPos(Vector3(0, -50, 0));
 
 #pragma endregion
-
 
 }
 

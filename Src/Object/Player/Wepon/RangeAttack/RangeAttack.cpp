@@ -31,6 +31,8 @@ void RangeAttack::Load(void)
 	//コライダー同士の押し出しOFF
 	SetPushFlg(false);
 
+#pragma endregion
+
 #pragma region 外部読み込み
 
 	// その回のパラメーター名
@@ -61,11 +63,6 @@ void RangeAttack::Load(void)
 
 #pragma endregion
 
-#pragma endregion
-
-	//HIT時のSE
-	attackCollRef->SetHitSE("SwordHit_S");
-
 	// コライダーの生成
 	AddCollider(attackCollRef);
 
@@ -79,6 +76,9 @@ void RangeAttack::Load(void)
 
 void RangeAttack::Start(SCALE setScale)
 {
+	//コライダーが生成されていない場合は何もしない
+	if (attackCollRef == nullptr) { return; }
+
 	//サイズ変更
 	switch (setScale)
 	{

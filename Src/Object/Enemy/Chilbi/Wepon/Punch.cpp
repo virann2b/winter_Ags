@@ -40,8 +40,9 @@ void Punch::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const Co
 	{
 	case COLLIDER_TAG::Player:
 	{
-		TakeDamage(1);
+		//îªíËèIóπ
 		JudgeEnd();
+		break;
 	}
 	}
 }

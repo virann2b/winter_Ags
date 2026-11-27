@@ -77,7 +77,7 @@ public:
 
 private:
 
-	// 初期化（全エフェクトの読み込み）
+	// 初期化
 	void Init(void);
 	// 解放
 	void Release(void);
@@ -95,7 +95,7 @@ private:
 		{ "Data/Effect/Hit.efkefc", 15.0f },		// Test
 		{ "Data/Effect/AddMp.efkefc", 30.0f },		// AddMp
 		{ "Data/Effect/Hit_Fire.efkefc", 30.0f },	// HitFire
-		{ "Data/Effect/Test.efkefc", 20.0f },		// HitFired
+		{ "Data/Effect/Test.efkefc", 20.0f },		// Test
 	};
 
 	// 読み込んだエフェクトのハンドル
