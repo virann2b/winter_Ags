@@ -35,7 +35,7 @@ void Chilbi::Load(void)
 	SetupEnemyObject(CHILIBI_WEIGHT);
 
 	//‘®«‘Ï«‚Ì“Ç‚İ‚İ
-	LoadResist("Chilbi");
+	LoadResistTable("Chilbi");
 
 	//‹¯‚İ’l‚Ì“Ç‚İ‚İ
 	LoadStagger("Chilbi");

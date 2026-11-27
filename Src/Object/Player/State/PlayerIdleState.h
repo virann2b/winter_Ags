@@ -25,7 +25,7 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 待機アニメーションの再生関数のポインタ
+	// 待機アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimeIdle;
 	// 剣の判定変更関数ポインタ
 	const std::function<void(void)> ChangeSwordActive;

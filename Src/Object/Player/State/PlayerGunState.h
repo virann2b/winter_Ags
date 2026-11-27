@@ -29,26 +29,26 @@ public:
 	// 更新処理
 	void Update(void)override;
 
-	//後始末
+	// 状態遷移前1度行う終了処理
 	void Exit(void)override;
 
 private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 銃アニメーションの再生関数のポインタ
+	// 銃アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimeGun;
 
-	// 待機アニメーションの再生関数のポインタ
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
-	// 発射処理関数のポインタ
+	// 発射処理関数ポインタ
 	const std::function<void(void)> PlayShot;
 
-	// 移動関数のポインタ
+	// 移動関数ポインタ
 	const std::function<void(const Vector3&)> MoveAccel;
 
-	// ロックオンしているか（銃に入れる条件・構えを続ける条件）
+	// ロックオンしているかを返す関数ポインタ（銃に入れる条件・構えを続ける条件）
 	const std::function<bool(void)> IsLockOn;
 
 	// 横軸加速度の最大値の参照

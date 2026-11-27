@@ -42,7 +42,7 @@ void PlayerStatusUI::Update(void)
 		return;
 	}
 	//HPÇÃå∏è≠
-	delayHp -= status.hp * DELAY_DECREASE_RATE;
+	delayHp -= status.maxHp * DELAY_DECREASE_RATE;
 	if (delayHp < (float)status.hp) { delayHp = (float)status.hp; }
 }
 

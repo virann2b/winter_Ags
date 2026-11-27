@@ -58,7 +58,7 @@ private:
 
 	int selectIndex = 0;	// ‘I‘ğ’†‚Ì”Ô†
 
-	SELECT selct;
+	SELECT select;
 
 };
 

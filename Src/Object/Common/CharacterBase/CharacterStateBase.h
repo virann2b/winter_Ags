@@ -48,12 +48,12 @@ protected:
 
 private:
 
-	// 自分の状態に遷移させる関数のポインタ
+	// 自分の状態に遷移させる関数ポインタ
 	std::function<void(void)> ownChangeStatePtr;
 
-	// 現在自分の状態かどうかを返す関数のポインタ
+	// 現在自分の状態かどうかを返す関数ポインタ
 	std::function<bool(void)> isOwnStatePtr;
 
-	// 他の状態に遷移する条件関数のポインタを格納するベクター
+	// 他の状態に遷移する条件関数ポインタを格納するベクター
 	std::vector<std::function<void(void)>> OtherStateConditions;		
 };

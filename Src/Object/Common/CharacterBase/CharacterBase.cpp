@@ -126,10 +126,10 @@ void CharacterBase::EffectUpdate(void)
 
 void CharacterBase::AddState(int stateNum, CharacterStateBase* stateIns)
 {
-	// 自分の状態に遷移させる関数のポインタをセットする（共通初期設定）
+	// 自分の状態に遷移させる関数ポインタをセット
 	stateIns->SetOwnChangeStatePtr([this, stateNum]() { ChangeState(stateNum); });
 
-	// 現在自分の状態かどうかを返す関数のポインタをセットする（共通初期設定）
+	// 現在自分の状態かどうかを返す関数ポインタをセット
 	stateIns->SetIsOwnStatePtr([this, stateNum]() { return state == stateNum; });
 
 	// 格納

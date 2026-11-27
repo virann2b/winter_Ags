@@ -23,7 +23,7 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
-	// 更新
+	// 更新処理
 	void Update(void)override;
 	// 状態遷移前1度行う終了処理
 	void Exit(void)override;
@@ -35,24 +35,25 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// HITアニメーションの再生
+	// HITアニメーションの再生関数ポインタ
 	const std::function<void(void)> playAnimeHit;
-	// 硬直させる時間（フレーム）の取得
+	// 硬直させる時間（フレーム）の取得関数ポインタ
 	const std::function<float(void)> getStunFrame;
-	// 弱点硬直時間の残り割合取得
+	// 弱点硬直時間の残り割合取得関数ポインタ
 	const std::function<float(void)> getStunRemain;
-	// 硬直残り時間
+	// 硬直時間のカウント関数ポインタ
 	const std::function<void(float)> countStun;
-	// アニメーションの再生比率の取得
+	// アニメーション再生比率取得関ポインタ
 	const std::function<float(void)> getAnimeRatio;
-	// アニメーションの再生位置の取得・設定
+	// アニメーションの再生位置取得関数ポインタ
 	const std::function<float(void)> getAnimeStep;
+	// アニメーションの再生位置設定関数ポインタ
 	const std::function<void(float)> setAnimeStep;
-	// アニメーション終了判定
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> isAnimeEnd;
-	// 待機状態へ遷移
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> changeStateIdle;
-	// 硬直の終了
+	// 硬直の終了関数ポインタ
 	const std::function<void(void)> endStun;
 
 #pragma endregion

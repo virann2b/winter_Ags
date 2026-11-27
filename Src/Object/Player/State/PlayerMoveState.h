@@ -53,15 +53,15 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 移動関数のポインタ
+	// 移動関数ポインタ
 	const std::function<void(const Vector3&)> MoveAccel;
 
 	// 加速度の最大値の参照
 	float& AccelMax;
 
-	// 歩きアニメーションの再生関数のポインタ
+	// 歩きアニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimeWalk;
-	// 走りアニメーションの再生関数のポインタ
+	// 走りアニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimeRun;
 
 #pragma endregion

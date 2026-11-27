@@ -12,7 +12,7 @@ Punch::Punch(const Transform& chilbiTrans)
 
 void Punch::Load(void)
 {
-#pragma region 初期設定
+#pragma region オブジェクト設定
 
 	//移動判定ON
 	SetDynamicFlg(true);
@@ -21,14 +21,15 @@ void Punch::Load(void)
 	//コライダー同士の押し出しOFF
 	SetPushFlg(false);
 
-	//当たり判定OFF
-	SetJudgeFlg(false);
-
 #pragma endregion
 
 	// 生成したコライダーをアクター所有コライダーに追加
 	AddCollider(new SphereCollider(COLLIDER_TAG::Enemy_ChilbiPunch, 80, trans.pos));
 
+	//当たり判定OFF
+	SetJudgeFlg(false);
+
+	//攻撃パラメータ追加
 	ApplyAttackParam("ChilbiPunch", COLLIDER_TAG::Enemy_ChilbiPunch);
 
 }

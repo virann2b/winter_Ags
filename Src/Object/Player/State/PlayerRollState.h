@@ -13,7 +13,8 @@ public:
 		std::function<void(const Vector3&)> MoveAccel,
 		float& AccelMax,
 		const Transform& PlayerTrans,
-		std::function<void(void)> ChangeStateIdle
+		std::function<void(void)> ChangeStateIdle,
+		std::function<void(void)> PlayerReset
 	);
 
 	~PlayerRollState()override = default;
@@ -23,9 +24,10 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
-
 	// 更新処理
 	void Update(void)override;
+	// 状態遷移前1度行う終了処理
+	void Exit(void)override;
 
 private:
 
@@ -33,19 +35,23 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 回避アニメーションの再生関数のポインタ
+	// 回避アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimeRoll;
-	// 待機アニメーションの再生関数のポインタ
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
-	// アニメーション終了取得関数のポインタ
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> IsAnimeEnd;
-	// 移動関数のポインタ
+	// 移動関数ポインタ
 	const std::function<void(const Vector3&)> MoveAccel;
+
+	// プレイヤーの設定を元に戻す関数ポインタ
+	const std::function<void(void)> PlayerReset;
 
 	// プレイヤーのモデル制御情報の参照
 	const Transform& PlayerTrans;
 
+	//最大加速度
 	float& AccelMax;
 
 #pragma endregion
@@ -58,6 +64,10 @@ private:
 	static constexpr float ROLL_TIME = 0.6f;    
 
 	static constexpr float ARRIVE_RANGE = 10.0f;
+
+	//回避最大速度
+	static constexpr float ROLL_ACCEL_MAX = 15.0f;
+
 #pragma endregion
 
 	
@@ -75,6 +85,8 @@ private:
 	// ここまでに転がった距離
 	float rollMoved = 0.0f;  
 
+	// 回避前の加速度保存用
+	float prevAccelMax = 0.0f;
 
 #pragma endregion
 

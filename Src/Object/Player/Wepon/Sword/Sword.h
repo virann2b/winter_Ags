@@ -52,9 +52,6 @@ public:
 	//剣の判定・描画切り替え
 	void ChangeActive(ACTIVE active);
 
-	// 怯みダメージの設定
-	void SetStagger(int stagger);
-
 	//攻撃パラメータをIDで切り替える
 	void SetAttackParam(const std::string& id);
 
@@ -92,6 +89,7 @@ private:
 	//剣の待機位置
 	SWORD_POSITION swordPosition;
 
+	//状態
 	ACTIVE active;
 
 	// プレイヤーのモデル制御情報の参照

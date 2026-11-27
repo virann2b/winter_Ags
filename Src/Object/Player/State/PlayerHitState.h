@@ -20,7 +20,7 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void) override;
-	//更新
+	// 更新処理
 	void Update(void) override;
 
 
@@ -28,15 +28,15 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	//HITアニメーション再生
+	// HITアニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimeHit;
-	//待機状態遷移
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
-	// アニメーション終了取得関数のポインタ
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> IsAnimeEnd;
 
-	//自身のステートに遷移する条件関数ポインタ
+	// 自身のステートに遷移する条件関数ポインタ
 	const std::function<bool(void)> OwnState;
 
 #pragma endregion

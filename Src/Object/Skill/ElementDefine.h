@@ -29,6 +29,8 @@ enum class ELEMENT_RESIST
 	Normal,		//ïÅí 	
 
 	Weak,		//é„ì_
+
+	Max
 };
 
 

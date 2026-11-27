@@ -160,7 +160,7 @@ void Player::Load(void)
 	AddChildActor(skillIce);
 
 
-	//スキル1に設定（スキル2～4は空き）
+	//スキル1に設定
 	skillSlot[0] = skillFire;
 	skillSlot[1] = skillIce;
 	skillSlot[2] = skillFire;
@@ -191,7 +191,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Move,
 		new PlayerMoveState(
-			15.0f, 1.5f, 300,
+			MOVE_ACCEL_POW, 1.5f, DASH_STAMINA_MAX,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			ACCEL_MAX,
 			[&]() { AnimePlay(ANIME_TYPE::Run); },
@@ -203,7 +203,7 @@ void Player::Load(void)
 	AddState(
 		STATE::Jump,
 		new PlayerJumpState(
-			20.0f, velocity.y, isGround, isMaxJump,
+			JUMP_POW, velocity.y, isGround, isMaxJump,
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			[&]() { AnimePlay(ANIME_TYPE::JumpStart);},
 			[&]() { AnimePlay(ANIME_TYPE::JumpIdle); },
@@ -228,19 +228,19 @@ void Player::Load(void)
 				//回避中は判定なし
 				SetGravityFlg(false);
 				SetJudgeFlg(false);
-				//ファイアサウンド再生
+				//回避SE再生
 				Snd::GetIns().Play("Roll");
 			},
 			std::bind(&Player::IsAnimeEnd, this),
 			std::bind(&Player::MoveAccel, this, std::placeholders::_1),
 			ACCEL_MAX,
 			trans,
+			[&](){ ChangeState(STATE::Idle); },
 			[&]()
-			{ 
-				//当たり判定を戻す
+			{
+				//当たり・重力判定を戻す
 				SetGravityFlg(true);
-				SetJudgeFlg(true);
-				ChangeState(STATE::Idle); 
+				SetJudgeFlg(true); 
 			}
 		)
 	);
@@ -301,16 +301,12 @@ void Player::Load(void)
 		STATE::AttackAir,
 		new PlayerAttackAirState(
 			isGround, isMaxJump,
-			[&]()
-			{
-				AnimePlay(ANIME_TYPE::AttackAir_Start);
-			},
+			[&](){ AnimePlay(ANIME_TYPE::AttackAir_Start);},
 			[&]()
 			{
 				AnimePlay(ANIME_TYPE::AttackAir_End);
 				Snd::GetIns().Play("Sword_Air");
 				Snd::GetIns().Play("Jump_End");
-
 			},
 			[&]()
 			{
@@ -324,15 +320,11 @@ void Player::Load(void)
 			},
 			std::bind(&Player::GetAnimeRatio, this),
 			std::bind(&Player::IsAnimeEnd, this),
-			[&]()
-			{
-				rangeAttack->End();
-				ChangeState(STATE::Idle);
-			}
-
+			[&](){ ChangeState(STATE::Idle);}
 		)
 	);
 
+	//強攻撃状態
 	AddState(
 		STATE::AttackCharge,
 		new PlayerAttackChargeState(
@@ -675,7 +667,7 @@ void Player::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, const C
 		}
 		else
 		{
-			damage = static_cast<int>(defaultDamage);
+			damage = defaultDamage;
 		}
 
 
@@ -782,7 +774,7 @@ void Player::RestoreFinishPosition(void)
 
 void Player::UpdateBreakFinishInput(void)
 {
-
+	// 入力してなければ受け付けない
 	if (!Input::GetIns().GetInfo(KEY_TYPE::PlayerBreakFinish).down) { return; }
 
 	//必殺技中・被ダメージ中は発動しない
@@ -792,16 +784,6 @@ void Player::UpdateBreakFinishInput(void)
 	//ロックオン中の敵が怯みチャンス中か
 	EnemyBase* enemy = findEnemy ? findEnemy(lockOnEnemyId) : nullptr;
 	if (enemy == nullptr || enemy->IsDead() || !enemy->IsBreakChance()) { return; }
-
-	if (enemy->IsBreakChance())
-	{
-		//再生されていない時のみ再生する
-		if (!Eff::GetIns().IsPlaying((int)Eff::EFFECT_TAG::Test))
-		{
-			Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos);
-		}
-		
-	}
 
 	//チャンス消費（二重発動防止）
 	enemy->EndBreakChance();
@@ -819,12 +801,13 @@ void Player::UpdateBreakChanceEffect(void)
 	const bool isChance = enemy != nullptr && !enemy->IsDead() && enemy->IsBreakChance();
 
 	//今のフレームと１フレームが入力を受け付けている時のみ再生する
-	if (isChance && wasBreakChance_)
+	if (isChance && !wasBreakChance_)
 	{
 		breakChanceEffect = Eff::GetIns().Play(Eff::EFFECT_TAG::Test, trans.pos);
 	}
-	else if (!isChance && !wasBreakChance_)
+	else if (!isChance && wasBreakChance_)
 	{
+		//エフェクト終了
 		Eff::GetIns().Stop(breakChanceEffect);
 		breakChanceEffect = -1;
 	}
@@ -857,8 +840,10 @@ void Player::UseSkill(int slot)
 
 const EnemyBase* Player::FindLockOnEnemy(void) const
 {
+	//敵がいない場合は空を返す
 	if (!findEnemy) { return nullptr; }
 
+	//敵を取得
 	const EnemyBase* enemy = findEnemy(lockOnEnemyId);
 
 	//既に死んでいる敵はロックオンしない

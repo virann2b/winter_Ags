@@ -55,8 +55,6 @@ void Sword::Load(void)
 		Vector3::Xonly(15.0f) * trans.scale,
 		Vector3::Xonly(160.0f) * trans.scale,
 		60.0f * trans.scale.MaxElementF());
-	//‘®«‚Ì“o˜^
-	swordColl->SetElement(ELEMENT::Physics);
 
 	//“–‚½‚Á‚½Žž‚ÌSE
 	swordColl->SetHitSE("SwordHit_S");
@@ -68,11 +66,7 @@ void Sword::Load(void)
 
 }
 
-void Sword::SetStagger(int stagger)
-{
-	//‹¯‚Ý’l‚ðŒ•‚ðŒo—R‚Å“o˜^
-	if (swordColl != nullptr) { swordColl->SetStagger(stagger); }
-}
+
 
 void Sword::ChangePosition(SWORD_POSITION nextPostion)
 {

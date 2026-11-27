@@ -86,7 +86,7 @@ private:
 	struct EffectInfo
 	{
 		const char* path;	// ファイルパス
-		float scale;		// 読み込み時の倍率（エディタとゲームの大きさの差を合わせる）
+		float scale;		// 読み込み時の倍率
 	};
 
 	// エフェクトの情報（EFFECT_TAGと同じ順番）

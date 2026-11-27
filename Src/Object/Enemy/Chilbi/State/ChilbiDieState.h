@@ -20,7 +20,7 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
-	// 更新
+	// 更新処理
 	void Update(void)override;
 
 private:
@@ -29,16 +29,16 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 待機アニメーションの再生関数のポインタ
+	// 死亡アニメーションの再生関数ポインタ
 	const std::function<void(void)> playAnimeDie;
 
-	// 死亡判定
+	// 死亡判定関数ポインタ
 	const std::function<bool(void)> isDead;
 
-	//アニメーション終了判定
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> isAnimeEnd;
 
-	//死亡アニメーション終了時の処理
+	// 死亡アニメーション終了時の処理関数ポインタ
 	const std::function<void(void)> dieEnd;
 
 #pragma endregion

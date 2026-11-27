@@ -30,9 +30,9 @@ public:
 ;
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
-	// 更新
+	// 更新処理
 	void Update(void)override;
-	//　後始末
+	// 状態遷移前1度行う終了処理
 	void Exit(void)override;
 
 	// 使うパターンを指定する(Enterより前に呼ぶ)
@@ -42,16 +42,17 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 攻撃アニメーションの再生関数のポインタ
+	// 攻撃アニメーション1の再生関数ポインタ
 	const std::function<void(void)> playAnimeAttack_1;
+	// 攻撃アニメーション2の再生関数ポインタ
 	const std::function<void(void)> playAnimeAttack_2;
 
-	// 待機状態に遷移
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
-	//アニメーション終了判定
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> isAnimeEnd;
-	//パンチの当たり判定終了
+	// パンチの当たり判定終了関数ポインタ
 	const std::function<void(void)> PunchJuggeEnd;
 
 

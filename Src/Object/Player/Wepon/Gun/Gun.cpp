@@ -150,6 +150,9 @@ float Gun::GetAimTime(int aimCount) const
 
 void Gun::GetAimScreenOffset(int index, float& offsetX, float& offsetY) const
 {
+
+	if (index < 0 || index >= (int)AIMING_POS::Max) { return; }
+
 	// 置く順：中心 → 上 → 左 → 右 → 左下 → 右下（AIMING_POS の順）
 	// x = 画面の右、y = 画面の上 への割合
 	static const float OFFSET_X[(int)AIMING_POS::Max] = { 0.0f, 0.0f, -1.0f, 1.0f, -0.6f,  0.6f };

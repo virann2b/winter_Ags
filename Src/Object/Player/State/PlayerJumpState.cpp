@@ -7,8 +7,8 @@
 #include "../../../Manager/Camera/CurrentCamera.h"
 
 PlayerJumpState::PlayerJumpState(
-	float JUMP_POWER,
 
+	float JUMP_POWER,
 	float& VelocityY,
 	const bool& IsGround,
 	bool& IsMaxJump,

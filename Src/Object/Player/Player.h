@@ -249,6 +249,16 @@ private:
 	//プレイヤーサイズ
 	static constexpr float PLAYER_SCALE = 1.3f;
 
+	//移動加速度
+	static constexpr float MOVE_ACCEL_POW = 15.0f;
+	//ダッシュ速度倍率
+	static constexpr float DASH_SPEED_RATE = 1.5f;
+	//最大スタミナ
+	static constexpr int  DASH_STAMINA_MAX = 300;
+
+	//ジャンプ量
+	static constexpr float JUMP_POW = 20.0f;
+
 	//スキル枠の数
 	static constexpr int SKILL_SLOT_MAX = 4;
 
@@ -258,13 +268,10 @@ private:
 	//踏み込み判定距離
 	static constexpr float ATTACK_STEP_STOP_DIST = 200.0f;
 
-	//剣の怯みダメージ
-	static constexpr int STAGGER_NORMAL = 5;		//通常攻撃
-	static constexpr int STAGGER_CHARGE_COMBO = 25;	//強攻撃
-	static constexpr int STAGGER_CHARGE = 50;		//タメ攻撃
-
+	//ガード時の最小ダメージ
 	static constexpr int   GUARD_DAMAGE_MIN = 1;
 
+	//ガードの消費MPコスト
 	static constexpr int   GUARD_MP_COST = 3;
 
 	//ガード時のダメージ倍率

@@ -28,7 +28,7 @@ public:
 	void Enter(void)override;
 	// 更新処理
 	void Update(void)override;
-	//後始末
+	// 状態遷移前1度行う終了処理
 	void Exit(void)override;
 
 private:
@@ -66,20 +66,20 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	//強タメ攻撃開始アニメーション
+	// 強タメ攻撃開始アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayerAttackChargeStart;
-	//強タメ攻撃終了アニメーション
+	// 強タメ攻撃終了アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayerAttackChargeEnd;
 
-	//生成アニメーション関数テーブル
+	// コンボごとのアニメーション再生関数ポインタテーブル
 	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX];
-	//アニメーション再生比率
+	// アニメーション再生比率取得関数ポインタ
 	const std::function<float(void)> AnimRate;
-	//剣の判定
+	// 剣の判定切り替え関数ポインタ
 	const std::function<void(bool)> SwordJugge;
-	// 待機アニメーションの再生
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
-	// 通常攻撃ごとのアニメーション終了取得
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> IsAnimeEnd;
 
 #pragma endregion

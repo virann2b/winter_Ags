@@ -42,19 +42,19 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 待機アニメーションの再生関数のポインタ
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
-	//生成アニメーション関数テーブル
+	// コンボごとのアニメーション再生関数ポインタ
 	const std::function<void(void)> PLAY_ANIM_TABLE[(int)COMBO_MAX];
 
-	// 通常攻撃ごとのアニメーション終了取得関数のポインタ
+	// 通常攻撃ごとのアニメーション終了取得関数ポインタ
 	const std::function<bool(void)> IsAnimeEnd;
-	//アニメーション再生比率取得
+	// アニメーション再生比率取得関数ポインタ
 	const std::function<float(void)> AnimRate;
-	//踏み込み開始
+	// 踏み込み開始関数ポインタ
 	const std::function<void(void)> StepStart;
-	//踏み込み終了
+	// 踏み込み中の移動関数ポインタ
 	const std::function<void(void)> StepMove;
 
 	
@@ -63,8 +63,8 @@ private:
 #pragma endregion
 
 
-	// 現在のコンボ段階 (0始まり)
-	int  comboIndex_;		// 現在のコンボ段階 (0始まり)
+	// 現在のコンボ段階 
+	int  comboIndex_;		// 現在のコンボ段階 
 	bool nextInput_;		// 次段への先行入力
 
 	//次回コンボ入力受付(再生比率で判断)

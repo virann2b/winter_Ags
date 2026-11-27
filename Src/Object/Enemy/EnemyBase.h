@@ -61,9 +61,6 @@ public:
 	// 攻撃対象の座標を設定
 	void SetTargetPos(const Vector3* targetPos) { this->targetPos = targetPos; }
 
-	// HITエフェクトの座標設定(キャラによって大きさが違うため)
-	void SetHitEffectPod(Vector3 hitPos) { hitEffectPos = hitPos ;}
-
 	// 死亡アニメーションまで終わったか（画面から消えたか）
 	bool IsDieEnd(void) const { return isDieEnd_; }
 
@@ -140,7 +137,6 @@ protected:
 
 	// 怯み値
 	static constexpr float DEFAULT_STAGGER_MAX = 100.0f;			// 最大値
-
 
 	// 体勢崩れ中は怯み値を削らない時間
 	static constexpr float BREAK_GUARD_FRAME = 60.0f;
@@ -264,7 +260,9 @@ protected:
 	// プレイヤーへの単位ベクトル
 	Vector3 GetDirectionToTarget(void) const;
 
-	void SetHitEffectPos(Vector3 setPos);
+	//ヒットエフェクト位置設定
+	void SetHitEffectPos(Vector3 setPos){ hitEffectPos = setPos; }
+
 
 #pragma region スキル関連
 
@@ -290,7 +288,7 @@ protected:
 	/// 属性耐性テーブル読み込み
 	/// </summary>
 	/// <param name="enemyName">取得する敵の名前</param>
-	void LoadResist(const std::string& enemyName);
+	void LoadResistTable(const std::string& enemyName);
 
 	// 怯み値をCSVから読み込む（派生先のLoadで呼ぶ）
 	// 並び：最大値, 回復が始まるまで（フレーム）, 1フレームの回復量

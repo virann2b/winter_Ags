@@ -13,7 +13,8 @@ PlayerRollState::PlayerRollState(
 	std::function<void(const Vector3&)> MoveAccel,
 	float& AccelMax,
 	const Transform& PlayerTrans,
-	std::function<void(void)> ChangeStateIdle
+	std::function<void(void)> ChangeStateIdle,
+	std::function<void(void)> PlayerReset
 
 ):
 	PlayAnimeRoll(PlayAnimeRoll),
@@ -21,7 +22,8 @@ PlayerRollState::PlayerRollState(
 	MoveAccel(MoveAccel),
 	AccelMax(AccelMax),
 	PlayerTrans(PlayerTrans),
-	ChangeStateIdle(ChangeStateIdle)
+	ChangeStateIdle(ChangeStateIdle),
+	PlayerReset(PlayerReset)
 {
 }
 
@@ -36,7 +38,10 @@ void PlayerRollState::Enter(void)
 	//入力方向を取得
 	Vector3 inputVec = InputVec();
 
-	AccelMax = 15.0f;
+	//回避前の速度を保存
+	prevAccelMax = AccelMax;
+
+	AccelMax = ROLL_ACCEL_MAX;
 
 	if (inputVec != 0.0f) 
 	{
@@ -80,6 +85,14 @@ void PlayerRollState::Update(void)
 	//巡回目標座標までのベクトルを正規化して加速移動する
 	vec.Normalize();
 	MoveAccel(vec);
+}
+
+void PlayerRollState::Exit(void)
+{
+	//速度を元に戻す
+	AccelMax = prevAccelMax;
+	//プレイヤーのオブジェクト設定を戻す
+	PlayerReset();
 }
 
 

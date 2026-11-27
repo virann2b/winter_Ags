@@ -21,7 +21,7 @@ public:
 
 	// 状態遷移後1度行う初期化処理
 	void Enter(void)override;
-	//更新
+	// 更新処理
 	void Update(void) override;
 
 private:
@@ -30,13 +30,13 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 待機アニメーションの再生関数のポインタ
+	// 待機アニメーションの再生関数ポインタ
 	const std::function<void(void)> playAnimeIdle;
-	//移動状態に遷移する関数ポインタ
+	// 移動状態に遷移する関数ポインタ
 	const std::function<void(void)> changeMoveState;
-	//攻撃状態に遷移する関数ポインタ
+	// 攻撃状態に遷移する関数ポインタ
 	const std::function<void(void)> changeAttackState;
-	//攻撃対象との距離判定ポインタ
+	// 攻撃対象との距離判定関数ポインタ
 	const std::function<bool(void)> isDistanceNear;
 	//攻撃クールタイム
 	const float attackCoolTime;

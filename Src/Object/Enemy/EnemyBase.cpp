@@ -40,29 +40,31 @@ void EnemyBase::OnCollision(COLLIDER_TAG ownTag, const ColliderBase& other, cons
 		return;
 	}
 
-	// 最後に受けた攻撃の属性取得
-	lastHitElement = other.GetElement();
+	//再生されるHITSE
+	const std::string& se = other.GetHitSE();
 
 	//弱点硬直中は弱点HITを再生
-	if (!other.GetHitSE().empty() && isWeakStun_)
+	if (!se.empty() && isWeakStun_)
 	{
 		Snd::GetIns().Play("SwordWeakHit");
-		Eff::GetIns().Play(Eff::EFFECT_TAG::Hit, trans.pos + hitEffectPos);
 	}
-	else
+	else if(!se.empty())
 	{
 		//攻撃側にセットされたSEを流す
-		Snd::GetIns().Play(other.GetHitSE());
-		Eff::GetIns().Play(Eff::EFFECT_TAG::Hit, trans.pos + hitEffectPos);
-
+		Snd::GetIns().Play(se);
 	}
-	
 
+	Eff::GetIns().Play(Eff::EFFECT_TAG::Hit, trans.pos + hitEffectPos);
+
+	
 	//ダメージ処理
 	TakeDamage(WeakDamage(other.GetDamage()));
 
 	//無敵判定開始
 	StartInvincible();
+
+	// 最後に受けた攻撃の属性取得
+	lastHitElement = other.GetElement();
 
 	//攻撃被弾時の処理
 	if (IsDead()) 
@@ -113,7 +115,7 @@ void EnemyBase::Stun(float frame)
 
 void EnemyBase::WeakStun(void)
 {
-	//死亡・すでに弱点を疲れている場合は受け付けない
+	//死亡・すでに弱点を突かれている場合は受け付けない
 	if (IsDead() || isWeakStun_) { return; }
 
 	StartStun(WEAK_STUN_FRAME, true);
@@ -193,11 +195,7 @@ Vector3 EnemyBase::GetDirectionToTarget(void) const
 	return Vector3(dx / len, 0.0f, dz / len);
 }
 
-void EnemyBase::SetHitEffectPos(Vector3 setPos)
-{
-}
-
-void EnemyBase::LoadResist(const std::string& enemyName)
+void EnemyBase::LoadResistTable(const std::string& enemyName)
 {
 	// その回のパラメータ
 	std::string FileName = "ElementResist";
@@ -211,6 +209,14 @@ void EnemyBase::LoadResist(const std::string& enemyName)
 	//属性耐性テーブルに登録
 	for (int i = 0; i < (int)ELEMENT::Max && i < (int)values.size(); ++i)
 	{
+		const int value = (int)values[i];
+
+		//設定されていない場合はNormalを持たせる
+		if (value < (int)ELEMENT_RESIST::Normal || value >= (int)ELEMENT_RESIST::Max)
+		{
+			resistTable[i] = ELEMENT_RESIST::Normal;
+		}
+
 		resistTable[i] = static_cast<ELEMENT_RESIST>((int)values[i]);
 	}
 }
@@ -229,7 +235,7 @@ bool EnemyBase::IsWeak(ELEMENT element) const
 
 void EnemyBase::SubInit(void)
 {
-	//弱点を突かれた時の発光シェーダー（モデル読み込み後に生成する）
+	//弱点を突かれた時のリムライト
 	CreateWeakGlowShader();
 	weakGlowElement = ELEMENT::None;
 	weakGlowFlash = 0.0f;
@@ -241,12 +247,18 @@ void EnemyBase::SubInit(void)
 	//攻撃クールタイム
 	attackCoolTime = 0.0f;
 
-	//死亡終了フラグ
-	isDieEnd_ = false;
+	//弱点硬直
+	isWeakStun_ = false;
+
+	//必殺入力受付カウンター
+	breakChanceCounter = 0.0f;
 
 	//硬直
 	isStunned_ = false;
 	stunFrame = 0.0f;
+
+	//死亡終了フラグ
+	isDieEnd_ = false;
 
 	EnemyInit();
 }

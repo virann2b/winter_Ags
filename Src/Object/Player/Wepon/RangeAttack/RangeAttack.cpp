@@ -30,8 +30,6 @@ void RangeAttack::Load(void)
 	SetGravityFlg(false);
 	//コライダー同士の押し出しOFF
 	SetPushFlg(false);
-	//当たり判定OFF
-	SetJudgeFlg(false);
 
 #pragma region 外部読み込み
 
@@ -65,12 +63,6 @@ void RangeAttack::Load(void)
 
 #pragma endregion
 
-	//属性の登録
-	attackCollRef->SetElement(ELEMENT::Physics);
-
-	//怯み値の設定
-	attackCollRef->SetStagger(RANGE_STAGGER);
-
 	//HIT時のSE
 	attackCollRef->SetHitSE("SwordHit_S");
 
@@ -80,33 +72,34 @@ void RangeAttack::Load(void)
 	//パラメータ追加
 	ApplyAttackParam("RangeAttack", COLLIDER_TAG::PlayerLargeAttack);
 
+	//当たり判定OFF
+	SetJudgeFlg(false);
+
 }
 
 void RangeAttack::Start(SCALE setScale)
 {
+	//サイズ変更
 	switch (setScale)
 	{
 	case RangeAttack::SCALE::Min:
 	{
 		scaleSize = scaleSizeMin;
-
 		break;
 	}
 	case RangeAttack::SCALE::Normal:
 	{
 		scaleSize = scaleSizeNormal;
-
 		break;
 	}
 	case RangeAttack::SCALE::Big:
 	{
 		scaleSize = scaleSizeBig;
-
 		break;
 	}
 	}
 
-	//半径変更
+	//攻撃範囲を更新
 	attackCollRef->SetRadius(scaleSize);
 
 	//当たり判定ON
@@ -127,7 +120,6 @@ void RangeAttack::SubUpdate(void)
 	trans.pos.x = playerTrans.pos.x;
 	trans.pos.z = playerTrans.pos.z ;
 	trans.pos.y = 40;
-
 }
 
 void RangeAttack::SubDraw(void)

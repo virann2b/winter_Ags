@@ -38,7 +38,7 @@ public:
 	// 更新処理
 	void Update(void)override;
 
-	//後始末
+	// 状態遷移前1度行う終了処理
 	void Exit(void)override;
 
 private:
@@ -48,22 +48,22 @@ private:
 
 #pragma region 受け取る参照変数・関数
 
-	// 空中攻撃開始アニメーションの再生関数のポインタ
+	// 空中攻撃開始アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimAirAttackStart;
-	// 空中攻撃終了アニメーションの再生関数のポインタ
+	// 空中攻撃終了アニメーションの再生関数ポインタ
 	const std::function<void(void)> PlayAnimAirAttackEnd;
 
-	// 範囲攻撃発生ポインタ
+	// 範囲攻撃発生関数ポインタ
 	const std::function<void(void)> ArriveAttackRange;
-	// 範囲攻撃発生ポインタ
+	// 範囲攻撃終了関数ポインタ
 	const std::function<void(void)> EndAttackRange;
 
-	// アニメーション再生
+	// アニメーション再生比率取得関数ポインタ
 	const std::function<float(void)> AnimRate;
 
-	// 待機アニメーションの再生関数のポインタ
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
-	//アニメーション終了関数ポインタ
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> IsAnimeEnd;
 
 	// 地面と設置しているか

@@ -10,10 +10,11 @@ class GameCamera : public CameraBase
 {
 public:
 
+	//カメラモード
 	enum class Mode
 	{
-		LockOn,		//フリーモード
-		Remote,		//追従モード
+		LockOn,		//追従モード
+		Remote,		//フリーモード
 		Gun			//銃モード
 	};
 

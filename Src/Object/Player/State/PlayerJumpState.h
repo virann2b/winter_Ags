@@ -59,35 +59,32 @@ private:
 	// ジャンプカウント最大フラグ
 	bool& IsMaxJump;
 
-	// 移動関数のポインタ
+	// 移動関数ポインタ
 	const std::function<void(const Vector3&)> MoveAccel;
 
-	// ジャンプ開始アニメーションの再生関数のポインタ
+	// ジャンプ開始アニメーション再生関数ポインタ
 	const std::function<void(void)> PlayAnimeJumpStart;
-	// ジャンプ滞空アニメーションの再生関数のポインタ
+	// ジャンプ滞空アニメーション再生関数ポインタ
 	const std::function<void(void)> PlayAnimeJumpLoop;
-	// 着地アニメーションの再生関数のポインタ
+	// 着地アニメーション再生関数ポインタ
 	const std::function<void(void)> PlayAnimeStamp;
 
-	// アニメーション終了取得関数のポインタ
+	// アニメーション終了取得関数ポインタ
 	const std::function<bool(void)> IsAnimeEnd;
 
-	// 待機状態に戻る関数のポインタ
+	// 待機状態に遷移する関数ポインタ
 	const std::function<void(void)> ChangeStateIdle;
 
 #pragma endregion
 
 	// ステップ
-	enum class STEP {
+	enum class STEP 
+	{
+		Start,	// ジャンプ開始
 
-		// ジャンプ開始
-		Start,
+		Loop,	// 滞空
 
-		// 滞空
-		Loop,
-
-		// 着地
-		Stamp,
+		Stamp,	// 着地
 	};
 
 	// 現在ステップ
